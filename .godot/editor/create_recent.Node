@@ -1,2 +1,9 @@
+MarginContainer
+OptionButton
+Label
+HBoxContainer
+CSGBox3D
+CollisionShape3D
+CharacterBody3D
 AudioStreamPlayer3D
 SpatialAudioPlayer3D

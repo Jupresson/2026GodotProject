@@ -1,0 +1,26 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://bbb5jh054gf02"]
+
+[ext_resource type="Texture2D" uid="uid://qb6nxywuggt5" path="res://assets/textures/ground/Concrete047A_2K-JPG/Concrete047A_2K-JPG_Color_BlackAndWhite_Bright.jpg" id="1_7jpm1"]
+[ext_resource type="Texture2D" uid="uid://2hew0edocynt" path="res://assets/textures/ground/Concrete047A_2K-JPG/Concrete047A_2K-JPG_AmbientOcclusion.jpg" id="2_ivy1a"]
+[ext_resource type="Texture2D" uid="uid://bike2x52w276e" path="res://assets/textures/ground/Concrete047A_2K-JPG/Concrete047A_2K-JPG_Displacement.jpg" id="3_kf4hf"]
+[ext_resource type="Texture2D" uid="uid://dmum46jjplk4u" path="res://assets/textures/ground/Concrete047A_2K-JPG/Concrete047A_2K-JPG_NormalGL.jpg" id="4_ib0r2"]
+[ext_resource type="Texture2D" uid="uid://lni3f8614vjq" path="res://assets/textures/ground/Concrete047A_2K-JPG/Concrete047A_2K-JPG_Roughness.jpg" id="5_pb5xl"]
+
+[resource]
+albedo_color = Color(0.78091204, 0.70403636, 0.47685504, 1)
+albedo_texture = ExtResource("1_7jpm1")
+roughness_texture = ExtResource("5_pb5xl")
+roughness_texture_channel = 4
+normal_enabled = true
+normal_texture = ExtResource("4_ib0r2")
+ao_enabled = true
+ao_texture = ExtResource("2_ivy1a")
+ao_texture_channel = 4
+heightmap_scale = 1.0
+heightmap_texture = ExtResource("3_kf4hf")
+uv1_scale = Vector3(0.16, 0.16, 0.16)
+uv1_triplanar = true
+uv1_world_triplanar = true
+uv2_scale = Vector3(0.16, 0.16, 0.16)
+uv2_triplanar = true
+uv2_world_triplanar = true

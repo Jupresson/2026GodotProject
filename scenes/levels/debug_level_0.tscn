@@ -1,0 +1,72 @@
+[gd_scene format=3 uid="uid://cyl7kqak801em"]
+
+[ext_resource type="Texture2D" uid="uid://cvj3tyha1prs5" path="res://assets/kloofendal_48d_partly_cloudy_puresky_4k.exr" id="1_yga4y"]
+[ext_resource type="Material" uid="uid://3rm8js8ve5tt" path="res://materials/walls/old_decorative_wallpaper_uf2vbflaw_2k.tres" id="3_2uc22"]
+[ext_resource type="PackedScene" uid="uid://bwmtu28l42jk4" path="res://scenes/chracters/player.tscn" id="3_k4pef"]
+[ext_resource type="Material" uid="uid://bbb5jh054gf02" path="res://materials/ground/Concrete047A_2K-JPG.tres" id="4_mnawm"]
+[ext_resource type="Material" uid="uid://b8aho48ice6cg" path="res://materials/ceiling/OfficeCeiling001_2K-JPG.tres" id="5_mnawm"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_ywejv"]
+panorama = ExtResource("1_yga4y")
+
+[sub_resource type="Sky" id="Sky_7mycd"]
+sky_material = SubResource("PanoramaSkyMaterial_ywejv")
+
+[sub_resource type="Environment" id="Environment_k4pef"]
+background_mode = 2
+sky = SubResource("Sky_7mycd")
+sky_rotation = Vector3(0, 1.5707964, 0)
+ambient_light_source = 2
+ambient_light_color = Color(0.3607137, 0.3607137, 0.36071366, 1)
+ambient_light_sky_contribution = 0.0
+ssr_fade_in = 1.1357097e-05
+ssr_fade_out = 0.01
+ssao_enabled = true
+sdfgi_use_occlusion = true
+sdfgi_bounce_feedback = 0.99
+glow_levels/1 = 16.0
+glow_levels/2 = 8.0
+glow_levels/3 = 4.0
+glow_levels/4 = 2.0
+glow_levels/5 = 1.0
+glow_levels/6 = 0.5
+glow_levels/7 = 0.25
+glow_normalized = true
+glow_hdr_threshold = 0.0
+glow_hdr_scale = 0.0
+glow_hdr_luminance_cap = 256.0
+
+[node name="DebugLevel0" type="Node3D" unique_id=336337069]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1829113985]
+environment = SubResource("Environment_k4pef")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1273910819]
+transform = Transform3D(0.069858916, 0.80453366, 0.58978444, -0.4970604, -0.4845321, 0.7198331, 0.8648994, -0.34344524, 0.36605287, 0, 0, 0)
+shadow_enabled = true
+directional_shadow_blend_splits = true
+
+[node name="Player" parent="." unique_id=1184689841 instance=ExtResource("3_k4pef")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 14.185104, 0)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="." unique_id=2115568926]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.16761589, 2.9077759, -2.8335686)
+use_collision = true
+size = Vector3(45.84674, 4.8155518, 1)
+material = ExtResource("3_2uc22")
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="." unique_id=1422100959]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.16761589, 2.9077759, 3.8229551)
+use_collision = true
+size = Vector3(45.84674, 4.8155518, 1)
+material = ExtResource("3_2uc22")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=1421569943]
+use_collision = true
+size = Vector3(50, 1, 50)
+material = ExtResource("4_mnawm")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="." unique_id=1399896233]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5881376, 5.3238854, 6.3995304)
+material_override = ExtResource("5_mnawm")
+size = Vector3(41.52368, 1, 9.0373535)
