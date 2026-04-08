@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://7l5j66jr6abv" path="res://addons/screenspace_projection/screenspace_projection.tscn" id="1_4c57u"]
 [ext_resource type="Script" uid="uid://bu20byed0iwi4" path="res://code/fps.gd" id="1_dg77c"]
 [ext_resource type="Script" uid="uid://c8loy7tke5nj5" path="res://code/preset_selector.gd" id="1_jyhfs"]
-[ext_resource type="PackedScene" uid="uid://dioxlov7b8m2g" path="res://scenes/level0.tscn" id="2_jyhfs"]
+[ext_resource type="PackedScene" uid="uid://cyl7kqak801em" path="res://scenes/levels/debug_level_0.tscn" id="2_jyhfs"]
 
 [sub_resource type="Environment" id="Environment_272bh"]
 background_mode = 4
@@ -45,7 +45,7 @@ outline_color = Color(0, 0, 0, 1)
 environment = SubResource("Environment_272bh")
 attributes = SubResource("CameraAttributesPhysical_jyhfs")
 
-[node name="Level0" parent="Projection/ProjectionInput" parent_id_path=PackedInt32Array(1708432616, 1493971111) index="0" unique_id=314479356 instance=ExtResource("2_jyhfs")]
+[node name="DebugLevel0" parent="Projection/ProjectionInput" parent_id_path=PackedInt32Array(1708432616, 1493971111) index="0" unique_id=336337069 instance=ExtResource("2_jyhfs")]
 
 [node name="DemoUI" type="VBoxContainer" parent="." unique_id=1614559278]
 offset_left = 5.0
