@@ -1,149 +1,79 @@
-# Screenspace Perspective Projection for Godot
+# Project Notes (Godot 4.6.x)
 
-**High-FOV rendering with Panini projection and alternative lens models**
+This file is a practical checklist for this project setup.
+Keep this as the source of truth for integration and troubleshooting.
 
-[![Demo](https://img.youtube.com/vi/LE9kxUQ-l14/0.jpg)](https://www.youtube.com/watch?v=LE9kxUQ-l14)
+## Current addons and plugin state
 
----
+- ScreenSpace Projection is present at addons/screenspace_projection.
+- ScreenSpace Projection is scene based and should be instanced, not enabled as an editor plugin.
+- Spatial Audio Extended is installed at addons/spatial_audio_extended and is currently enabled in project settings.
+- Current enabled editor plugin: res://addons/spatial_audio_extended/plugin.cfg.
 
-## What It Solves
+## Import and setup notes
 
-Standard rectilinear projection breaks down at extreme FOV (all FOVs in this README are vertical).
-Most games ship around ~75° FOV, and most players rarely go above ~100° FOV horizontally:
+- Blender import is currently disabled in project settings (import/blender/enabled=false).
+- Main lens setup scene: addons/screenspace_projection/screenspace_projection.tscn.
+- Parent world content under ScreenSpaceProjection/ProjectionInput.
+- Draw UI outside ProjectionInput so UI is not lens-distorted.
+- For best upscale quality, use Forward+ renderer when using FSR2.
 
-- **High FOV (120°+)**: edge stretching and exaggerated motion (feel like you're moving faster by increasing FOV)
-- **Medium FOV (75°)**: claustrophobic feeling and lack of environmental awareness
+## Lens pipeline and effect ordering
 
-This project makes higher FOVs usable by remapping the rendered image through lens-style projections as a post-processing pass.
+Treat projection as a lens stage in the middle of the frame pipeline.
 
-This project:
-- Allows 120–150° vertical FOV without heavy edge stretching: more awareness of environment
-- Allows stylized effects e.g. fisheye or bodycam
-- Increases visibility in small spaces
-- Reduces exaggerated motion at high FOVs.
+| Before lens (inside ProjectionInput camera) | After lens (on ScreenSpaceProjection camera) |
+|---------------------------------------------|-----------------------------------------------|
+| SSR                                         | Film grain                                    |
+| SSAO                                        | Auto exposure                                 |
+| SSGI                                        | Bloom / glow                                  |
+| Volumetric fog                              | Color grading / LUT                           |
+| Depth of field                              | Tonemapping                                   |
+| Motion blur                                 |                                               |
+| Upscaling (FSR2)                            |                                               |
 
----
+Notes:
+- Chromatic aberration and vignette in screenspace_projection.gdshader happen inside the lens stage.
+- Keep gameplay UI and debug overlays after lens output.
 
-## Demo Images
+## Shader compatibility note
 
-![Rectilinear – 90° FOV](demo-images/1_rectilinear_FOV_90.jpg)
+Known error:
+- Unknown identifier in expression: NEED_CHECK
+- set_code: Shader compilation failed
 
-![Rectilinear – 150° FOV](demo-images/2_rectilinear_FOV_150.jpg)
+Cause:
+- Older shader versions used a multiline ACCUM macro in sample_anisotropic.
+- Some Godot 4.6.x environments fail macro expansion in that block.
 
-![Panini – 150° FOV](demo-images/3_panini_FOV_150.jpg)
+Current fix in this repo:
+- screenspace_projection.gdshader now uses explicit accumulation logic instead of multiline macros.
 
-![Fisheye (Stereographic) – 150° FOV](demo-images/4_fisheye_(stereo)_FOV_150.jpg)
+Why it can appear suddenly:
+- Engine reinstall or minor update
+- GPU driver update
+- Shader cache invalidation or full reimport
 
-![Fisheye (Equisolid) – 150° FOV](demo-images/5_fisheye_(equisolid)_FOV_150.jpg)
+## Tuning checklist
 
-![Equirectangular – 150° FOV](demo-images/6_equirectangular_FOV_150.jpg)
+- Soft center image: increase upscale and use FSR2.
+- Edge shimmer/aliasing: raise max_major_radius and max_minor_radius.
+- Black corners: increase fill.
+- Distorted UI: move UI out of ProjectionInput.
 
----
+## Upgrade policy (recommended)
 
-## Quick start
+- For active production, keep the current stable engine version.
+- Test engine upgrades in a duplicated project folder first.
+- For Godot 4.7 testing, verify:
+  - screenspace_projection.gdshader compiles cleanly
+  - lens effect order still matches this README
+  - player movement, collisions, and camera feel are unchanged
+  - save/load and story progression still work
 
-Requires Forward+ renderer for FSR2. It can work without FSR2, but performance and quality will be worse.
-
-### Demo
-
-1. Open in Godot 4.x (tested in 4.6)
-2. Run the demo scene
-3. Press **1–8** for projections, **Q** for UI, **E** for day/night
-
-> Try: `2` (150° rectilinear) vs `4` (150° Panini)
-
-### Integration
-
-The "addon" is just a scene, it **DOES NOT** need to be enabled in `Project Settings → Plugins`
-
-1. Add `addons/screenspace_projection/screenspace_projection.tscn` to your scene
-2. Parent your 3D world to `ScreenSpaceProjection/ProjectionInput`
-3. Put UI and post-effects outside the `ScreenSpaceProjection` node
-4. Adjust parameters in the inspector
-
----
-
-## How it works
-```
-Main (Node3D)
-├── ScreenSpaceProjection (Projection Controller)
-│ ├── _ProjectionOutput (MeshInstance3D) ← fullscreen quad + shader
-│ └── ProjectionInput (SubViewport)
-│   ├── Level0 (your 3D scene)
-└── UI (Control)
-```
-
-**Pipeline:** scene renders → pre-lens post-effects → shader remaps through lens → post-lens post-effects → UI
-
----
-
-## Projections
-
-- **Panini** (recommended): wide-angle correction, keeps vertical lines straight and lines from center of screen straight
-  - Best for 90–150° FOV. Typical `strength`: 0.3–0.5.
-- **Rectilinear**: standard perspective (reference)
-- **Cylindrical / Spherical**: panoramic mappings
-- **Fisheye**: extreme wide-angle (>150°)
-
----
-
-## Configuration
-
-- **`projection_mode`** – projection type
-- **`strength`** – intensity (Panini D 0–1, others blend 0–1)
-- **`fill`** – auto-zoom to hide corners
-- **`upscale`** – SubViewport resolution multiplier
-- **`supersample_upscale_amount`** – how much of extra resolution comes from upscaling (FSR2) vs supersampling
-
-**Recommended quality / performance setup**
-
-- start at `upscale: 1.0`
-- enable FSR2
-- increase to `2.0–2.5` if the center gets soft
-- typical FSR2 use: `upscale: 2.0–2.5`, `supersample: 0.3–0.5`
-
-**Optional lens effects**
-
-- chromatic aberration (BK7 dispersion)
-- vignette (cos⁴ falloff)
-
-**Sampling**
-
-- anisotropic filtering via `max_major_radius`, `max_minor_radius`
-
-**Common issues**
-
-- soft center → increase `upscale` and use FSR2
-- shimmer in center when not moving due to FSR2 → use `MSAA 2x` (expensive)
-- aliasing on edges of screen → increase `max_major_radius/max_minor_radius`
-- black corners → increase `fill`
-- distorted UI → place UI outside `ProjectionInput` viewport
-
----
-
-## Effect ordering
-
-This projection acts like a lens stage.
-Effects that rely on scene buffers must run before it.
-Color-only effects should run after it.
-
-| Before lens (inside SubViewport Camera) | After lens (on `ScreenSpaceProjection` camera) |
-|-----------------------------------------|------------------------------------------------|
-| SSR                                    | Film grain                                    |
-| SSAO                                   | Auto exposure                                 |
-| SSGI                                   | Bloom / glow                                  |
-| Volumetric fog                         | Color grading / LUT                           |
-| Depth of field                         | Tonemapping                                   |
-| Motion blur                            |                                               |
-| Upscaling (FSR2)                       |                                               |
-
-Chromatic aberration and vignette are applied inside the projection shader itself, so they happen inside the lens and follow the projection distortion.
-
-UI should be drawn on top of projection output, outside the `ProjectionInput` viewport.
-
----
+Only migrate the main branch after the test copy is stable.
 
 ## License
 
-- `assets/` folder: **CC0 license**
-- `addons/` folder and rest of project: **MIT license**
+- assets folder: CC0
+- addons and project code: MIT

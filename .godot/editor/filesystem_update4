@@ -1,1 +1,4 @@
 res://scenes/main.tscn
+res://addons/spatial_audio_extended/spatial_audio_player_3d.gd
+res://addons/screenspace_projection/screenspace_projection.gdshader
+res://readme.md
