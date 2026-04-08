@@ -197,3 +197,7 @@ func set_external_render_scaling(mode: int, scale: float) -> void:
 
 func clear_external_render_scaling() -> void:
 	_use_external_scaling = false
+
+
+func set_pipeline_upscale(value: float) -> void:
+	upscale = clampf(value, 1.0, 4.0)

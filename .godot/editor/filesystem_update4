@@ -1,4 +1,5 @@
+res://addons/screenspace_projection/screenspace_projection.gd
+res://scripts/ui/options_settings.gd
+res://scenes/ui/options.tscn
 res://scenes/main.tscn
 res://addons/spatial_audio_extended/spatial_audio_player_3d.gd
-res://scenes/ui/options.tscn
-res://scripts/ui/options_settings.gd

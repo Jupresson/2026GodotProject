@@ -24,12 +24,64 @@ layout_mode = 2
 alignment = 1
 script = ExtResource("1_ad3a0")
 
-[node name="ResolutionOptionButton" type="OptionButton" parent="HBoxContainer/OptionsSettings" unique_id=945522851]
+[node name="TitleLabel" type="Label" parent="HBoxContainer/OptionsSettings" unique_id=200000001]
+layout_mode = 2
+text = "OPTIONS"
+horizontal_alignment = 1
+
+[node name="Tabs" type="TabContainer" parent="HBoxContainer/OptionsSettings" unique_id=200000002]
+layout_mode = 2
+custom_minimum_size = Vector2(760, 420)
+
+[node name="DisplayTab" type="VBoxContainer" parent="HBoxContainer/OptionsSettings/Tabs" unique_id=200000003]
+layout_mode = 2
+alignment = 0
+
+[node name="DisplayLabel" type="Label" parent="HBoxContainer/OptionsSettings/Tabs/DisplayTab" unique_id=200000004]
+layout_mode = 2
+text = "Display"
+
+[node name="ResolutionOptionButton" type="OptionButton" parent="HBoxContainer/OptionsSettings/Tabs/DisplayTab" unique_id=945522851]
 layout_mode = 2
 
-[node name="Scaler" type="OptionButton" parent="HBoxContainer/OptionsSettings" unique_id=72827339]
+[node name="FullScreenCheckBox" type="CheckBox" parent="HBoxContainer/OptionsSettings/Tabs/DisplayTab" unique_id=1306045593]
 layout_mode = 2
-selected = 0
+text = "FullScreen"
+
+[node name="ScreenSelector" type="OptionButton" parent="HBoxContainer/OptionsSettings/Tabs/DisplayTab" unique_id=155177638]
+layout_mode = 2
+
+[node name="VsyncCheckBox" type="CheckBox" parent="HBoxContainer/OptionsSettings/Tabs/DisplayTab" unique_id=1405848371]
+layout_mode = 2
+text = "VSYNC Enable"
+
+[node name="GraphicsTab" type="VBoxContainer" parent="HBoxContainer/OptionsSettings/Tabs" unique_id=200000005]
+layout_mode = 2
+alignment = 0
+
+[node name="GraphicsLabel" type="Label" parent="HBoxContainer/OptionsSettings/Tabs/GraphicsTab" unique_id=200000006]
+layout_mode = 2
+text = "Graphics"
+
+[node name="CameraUpscaleBox" type="HBoxContainer" parent="HBoxContainer/OptionsSettings/Tabs/GraphicsTab" unique_id=200000007]
+layout_mode = 2
+
+[node name="CameraUpscaleLabel" type="Label" parent="HBoxContainer/OptionsSettings/Tabs/GraphicsTab/CameraUpscaleBox" unique_id=200000008]
+layout_mode = 2
+text = "Camera Upscale: 200% - 3840x2160"
+custom_minimum_size = Vector2(260, 0)
+
+[node name="CameraUpscaleSlider" type="HSlider" parent="HBoxContainer/OptionsSettings/Tabs/GraphicsTab/CameraUpscaleBox" unique_id=200000009]
+layout_mode = 2
+custom_minimum_size = Vector2(200, 0)
+min_value = 100.0
+max_value = 300.0
+value = 200.0
+ticks_on_borders = true
+
+[node name="Scaler" type="OptionButton" parent="HBoxContainer/OptionsSettings/Tabs/GraphicsTab" unique_id=72827339]
+layout_mode = 2
+selected = 2
 item_count = 3
 popup/item_0/text = "SCALER"
 popup/item_0/id = 0
@@ -40,27 +92,26 @@ popup/item_1/id = 1
 popup/item_2/text = "AMD FSR 2.2"
 popup/item_2/id = 2
 
-[node name="ScaleBox" type="HBoxContainer" parent="HBoxContainer/OptionsSettings" unique_id=998024474]
+[node name="ScaleBox" type="HBoxContainer" parent="HBoxContainer/OptionsSettings/Tabs/GraphicsTab" unique_id=998024474]
 layout_mode = 2
 
-[node name="ScaleSlider" type="HSlider" parent="HBoxContainer/OptionsSettings/ScaleBox" unique_id=1508224308]
-visible = false
+[node name="ScaleLabel" type="Label" parent="HBoxContainer/OptionsSettings/Tabs/GraphicsTab/ScaleBox" unique_id=582638578]
+layout_mode = 2
+text = "100% - 1920x1080"
+custom_minimum_size = Vector2(260, 0)
+
+[node name="ScaleSlider" type="HSlider" parent="HBoxContainer/OptionsSettings/Tabs/GraphicsTab/ScaleBox" unique_id=1508224308]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 min_value = 50.0
-max_value = 200.0
+max_value = 100.0
 value = 100.0
 ticks_on_borders = true
 
-[node name="ScaleLabel" type="Label" parent="HBoxContainer/OptionsSettings/ScaleBox" unique_id=582638578]
+[node name="FSROptions" type="OptionButton" parent="HBoxContainer/OptionsSettings/Tabs/GraphicsTab" unique_id=666106452]
 visible = false
 layout_mode = 2
-text = "100% - 1920x1080"
-
-[node name="FSROptions" type="OptionButton" parent="HBoxContainer/OptionsSettings" unique_id=666106452]
-visible = false
-layout_mode = 2
-selected = 0
+selected = 4
 item_count = 5
 popup/item_0/text = "FSR Options"
 popup/item_0/id = 0
@@ -75,21 +126,44 @@ popup/item_3/id = 3
 popup/item_4/text = "Ultra Quality"
 popup/item_4/id = 4
 
-[node name="FullScreenCheckBox" type="CheckBox" parent="HBoxContainer/OptionsSettings" unique_id=1306045593]
+[node name="PresetLabel" type="Label" parent="HBoxContainer/OptionsSettings/Tabs/GraphicsTab" unique_id=200000010]
 layout_mode = 2
-text = "FullScreen"
+text = "Quick Presets"
 
-[node name="VsyncCheckBox" type="CheckBox" parent="HBoxContainer/OptionsSettings" unique_id=1405848371]
+[node name="PresetGrid" type="GridContainer" parent="HBoxContainer/OptionsSettings/Tabs/GraphicsTab" unique_id=200000011]
 layout_mode = 2
-text = "VSYNC Enable"
+columns = 2
 
-[node name="ScreenSelector" type="OptionButton" parent="HBoxContainer/OptionsSettings" unique_id=155177638]
+[node name="NativeSharpButton" type="Button" parent="HBoxContainer/OptionsSettings/Tabs/GraphicsTab/PresetGrid" unique_id=200000012]
 layout_mode = 2
+text = "Native Sharp"
 
-[connection signal="item_selected" from="HBoxContainer/OptionsSettings/ResolutionOptionButton" to="HBoxContainer/OptionsSettings" method="_on_option_button_item_selected"]
-[connection signal="item_selected" from="HBoxContainer/OptionsSettings/Scaler" to="HBoxContainer/OptionsSettings" method="_on_scaler_item_selected"]
-[connection signal="value_changed" from="HBoxContainer/OptionsSettings/ScaleBox/ScaleSlider" to="HBoxContainer/OptionsSettings" method="_on_scale_slider_value_changed"]
-[connection signal="item_selected" from="HBoxContainer/OptionsSettings/FSROptions" to="HBoxContainer/OptionsSettings" method="_on_fsr_options_item_selected"]
-[connection signal="toggled" from="HBoxContainer/OptionsSettings/FullScreenCheckBox" to="HBoxContainer/OptionsSettings" method="_on_full_screen_check_box_toggled"]
-[connection signal="toggled" from="HBoxContainer/OptionsSettings/VsyncCheckBox" to="HBoxContainer/OptionsSettings" method="_on_vsync_check_box_toggled"]
-[connection signal="item_selected" from="HBoxContainer/OptionsSettings/ScreenSelector" to="HBoxContainer/OptionsSettings" method="_on_screen_selector_item_selected"]
+[node name="PerformanceButton" type="Button" parent="HBoxContainer/OptionsSettings/Tabs/GraphicsTab/PresetGrid" unique_id=200000013]
+layout_mode = 2
+text = "Performance"
+
+[node name="BalancedButton" type="Button" parent="HBoxContainer/OptionsSettings/Tabs/GraphicsTab/PresetGrid" unique_id=200000014]
+layout_mode = 2
+text = "Balanced"
+
+[node name="QualityButton" type="Button" parent="HBoxContainer/OptionsSettings/Tabs/GraphicsTab/PresetGrid" unique_id=200000015]
+layout_mode = 2
+text = "Quality"
+
+[node name="UltraButton" type="Button" parent="HBoxContainer/OptionsSettings/Tabs/GraphicsTab/PresetGrid" unique_id=200000016]
+layout_mode = 2
+text = "Ultra Quality"
+
+[connection signal="item_selected" from="HBoxContainer/OptionsSettings/Tabs/DisplayTab/ResolutionOptionButton" to="HBoxContainer/OptionsSettings" method="_on_option_button_item_selected"]
+[connection signal="toggled" from="HBoxContainer/OptionsSettings/Tabs/DisplayTab/FullScreenCheckBox" to="HBoxContainer/OptionsSettings" method="_on_full_screen_check_box_toggled"]
+[connection signal="toggled" from="HBoxContainer/OptionsSettings/Tabs/DisplayTab/VsyncCheckBox" to="HBoxContainer/OptionsSettings" method="_on_vsync_check_box_toggled"]
+[connection signal="item_selected" from="HBoxContainer/OptionsSettings/Tabs/DisplayTab/ScreenSelector" to="HBoxContainer/OptionsSettings" method="_on_screen_selector_item_selected"]
+[connection signal="value_changed" from="HBoxContainer/OptionsSettings/Tabs/GraphicsTab/CameraUpscaleBox/CameraUpscaleSlider" to="HBoxContainer/OptionsSettings" method="_on_camera_upscale_slider_value_changed"]
+[connection signal="item_selected" from="HBoxContainer/OptionsSettings/Tabs/GraphicsTab/Scaler" to="HBoxContainer/OptionsSettings" method="_on_scaler_item_selected"]
+[connection signal="value_changed" from="HBoxContainer/OptionsSettings/Tabs/GraphicsTab/ScaleBox/ScaleSlider" to="HBoxContainer/OptionsSettings" method="_on_scale_slider_value_changed"]
+[connection signal="item_selected" from="HBoxContainer/OptionsSettings/Tabs/GraphicsTab/FSROptions" to="HBoxContainer/OptionsSettings" method="_on_fsr_options_item_selected"]
+[connection signal="pressed" from="HBoxContainer/OptionsSettings/Tabs/GraphicsTab/PresetGrid/NativeSharpButton" to="HBoxContainer/OptionsSettings" method="_on_native_sharp_button_pressed"]
+[connection signal="pressed" from="HBoxContainer/OptionsSettings/Tabs/GraphicsTab/PresetGrid/PerformanceButton" to="HBoxContainer/OptionsSettings" method="_on_performance_button_pressed"]
+[connection signal="pressed" from="HBoxContainer/OptionsSettings/Tabs/GraphicsTab/PresetGrid/BalancedButton" to="HBoxContainer/OptionsSettings" method="_on_balanced_button_pressed"]
+[connection signal="pressed" from="HBoxContainer/OptionsSettings/Tabs/GraphicsTab/PresetGrid/QualityButton" to="HBoxContainer/OptionsSettings" method="_on_quality_button_pressed"]
+[connection signal="pressed" from="HBoxContainer/OptionsSettings/Tabs/GraphicsTab/PresetGrid/UltraButton" to="HBoxContainer/OptionsSettings" method="_on_ultra_button_pressed"]

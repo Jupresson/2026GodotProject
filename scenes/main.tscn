@@ -55,6 +55,7 @@ offset_right = 95.0
 offset_bottom = 99.0
 
 [node name="PresetSelector" type="Label" parent="DemoUI" unique_id=798436180]
+visible = false
 layout_mode = 2
 label_settings = SubResource("LabelSettings_kek77")
 script = ExtResource("1_jyhfs")
@@ -67,7 +68,16 @@ text = "FPS: 0"
 label_settings = SubResource("LabelSettings_kek77")
 script = ExtResource("1_dg77c")
 
-[node name="Options" parent="DemoUI" unique_id=1918278917 instance=ExtResource("5_tbgi4")]
-layout_mode = 2
+[node name="Options" parent="." unique_id=1918278917 instance=ExtResource("5_tbgi4")]
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 642.0
+offset_top = 422.0
+offset_right = 732.0
+offset_bottom = 422.0
+grow_horizontal = 1
+grow_vertical = 1
+size_flags_vertical = 4
 
 [editable path="Projection"]
