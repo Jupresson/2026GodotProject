@@ -1,7 +1,10 @@
-MarginContainer
 OptionButton
+CheckBox
 Label
 HBoxContainer
+HSlider
+VBoxContainer
+MarginContainer
 CSGBox3D
 CollisionShape3D
 CharacterBody3D
