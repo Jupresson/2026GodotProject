@@ -1,4 +1,4 @@
-# Project Notes (Godot 4.6.x)
+# Project Notes (Godot 4.6.2)
 
 This file is a practical checklist for this project setup.
 Keep this as the source of truth for integration and troubleshooting.
