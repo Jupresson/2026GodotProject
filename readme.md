@@ -1,6 +1,6 @@
 # 2026 Godot Project
 
-![Project icon](icon.png)
+![Project icon](icon.jpg)
 
 A Godot 4.6.2 3D prototype focused on stylized lens projection, spatial acoustics, and fast FPS-style iteration.
 This README covers how the rendering pipeline is organized, how addons are wired, and what to check when things break.
