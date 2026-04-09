@@ -1,26 +1,70 @@
-# Project Notes (Godot 4.6.2)
+# 2026 Godot Project
 
-This file is a practical checklist for this project setup.
-Keep this as the source of truth for integration and troubleshooting.
+![Project icon](icon.png)
 
-## Current addons and plugin state
+A Godot 4.6.2 3D prototype focused on stylized lens projection, spatial acoustics, and fast FPS-style iteration.
+This README covers how the rendering pipeline is organized, how addons are wired, and what to check when things break.
 
-- ScreenSpace Projection is present at addons/screenspace_projection.
-- ScreenSpace Projection is scene based and should be instanced, not enabled as an editor plugin.
-- Spatial Audio Extended is installed at addons/spatial_audio_extended and is currently enabled in project settings.
-- Current enabled editor plugin: res://addons/spatial_audio_extended/plugin.cfg.
+## Overview
 
-## Import and setup notes
+This project combines:
 
-- Blender import is currently disabled in project settings (import/blender/enabled=false).
-- Main lens setup scene: addons/screenspace_projection/screenspace_projection.tscn.
-- Parent world content under ScreenSpaceProjection/ProjectionInput.
-- Draw UI outside ProjectionInput so UI is not lens-distorted.
-- For best upscale quality, use Forward+ renderer when using FSR2.
+- Lens-style projection with controlled effect ordering via ScreenSpace Projection.
+- Extended acoustic behavior in 3D space using Spatial Audio Extended.
+- A modular scene and script layout designed for rapid gameplay prototyping.
 
-## Lens pipeline and effect ordering
+## Project Structure (Compact)
 
-Treat projection as a lens stage in the middle of the frame pipeline.
+```text
+.
+|- addons/
+|  |- screenspace_projection/
+|  \- spatial_audio_extended/
+|- assets/
+|- materials/
+|- scenes/
+|  |- levels/
+|  |- ui/
+|  \- main.tscn
+|- code/
+|- scripts/
+|  |- base_classes/
+|  |- controllers/
+|  \- ui/
+\- project.godot
+```
+
+Key locations:
+
+- Main entry scene and composition: scenes/main.tscn
+- Lens setup scene: addons/screenspace_projection/screenspace_projection.tscn
+- Gameplay code and controllers: code/ and scripts/controllers/
+
+## Tech and Runtime
+
+- Engine: Godot 4.6.2
+- Renderer target: Forward+ (recommended when using FSR2)
+- Blender import setting: import/blender/enabled=false
+
+## Addons and Plugin State
+
+- ScreenSpace Projection: addons/screenspace_projection
+- ScreenSpace Projection usage: scene-based (instance in scenes, do not enable as an editor plugin)
+- Spatial Audio Extended: addons/spatial_audio_extended
+- Enabled editor plugin: res://addons/spatial_audio_extended/plugin.cfg
+
+## Core Scene Integration
+
+- Lens setup scene: addons/screenspace_projection/screenspace_projection.tscn
+- Parent world content under: ScreenSpaceProjection/ProjectionInput
+- Keep gameplay UI and debug overlays outside ProjectionInput to avoid lens distortion
+
+> [!TIP]
+> If HUD or debug labels appear warped, they are likely rendered inside ProjectionInput.
+
+## Lens Pipeline Order
+
+Treat ScreenSpace Projection as a lens stage in the middle of your frame pipeline.
 
 | Before lens (inside ProjectionInput camera) | After lens (on ScreenSpaceProjection camera) |
 |---------------------------------------------|-----------------------------------------------|
@@ -32,48 +76,55 @@ Treat projection as a lens stage in the middle of the frame pipeline.
 | Motion blur                                 |                                               |
 | Upscaling (FSR2)                            |                                               |
 
-Notes:
-- Chromatic aberration and vignette in screenspace_projection.gdshader happen inside the lens stage.
-- Keep gameplay UI and debug overlays after lens output.
+Additional notes:
 
-## Shader compatibility note
+- Chromatic aberration and vignette in screenspace_projection.gdshader run inside the lens stage.
+- Keep UI composition after lens output.
 
-Known error:
+## Shader Compatibility and Known Error
+
+Observed error:
+
 - Unknown identifier in expression: NEED_CHECK
 - set_code: Shader compilation failed
 
-Cause:
-- Older shader versions used a multiline ACCUM macro in sample_anisotropic.
-- Some Godot 4.6.x environments fail macro expansion in that block.
+Root cause:
 
-Current fix in this repo:
-- screenspace_projection.gdshader now uses explicit accumulation logic instead of multiline macros.
+- Older shader revisions used a multiline ACCUM macro in sample_anisotropic.
+- Some Godot 4.6.x setups fail macro expansion for this block.
 
-Why it can appear suddenly:
+Current repo fix:
+
+- screenspace_projection.gdshader uses explicit accumulation logic instead of multiline macros.
+
+Why this may appear again:
+
 - Engine reinstall or minor update
 - GPU driver update
-- Shader cache invalidation or full reimport
+- Shader cache invalidation / full reimport
 
-## Tuning checklist
+> [!WARNING]
+> If this error returns, compare local shader changes against repository version before editing project rendering settings.
 
-- Soft center image: increase upscale and use FSR2.
-- Edge shimmer/aliasing: raise max_major_radius and max_minor_radius.
-- Black corners: increase fill.
-- Distorted UI: move UI out of ProjectionInput.
+## Visual Tuning Checklist
 
-## Upgrade policy (recommended)
+- Soft center image: increase upscale and use FSR2
+- Edge shimmer/aliasing: raise max_major_radius and max_minor_radius
+- Black corners: increase fill
+- Distorted UI: move UI out of ProjectionInput
 
-- For active production, keep the current stable engine version.
+## Recommended Upgrade Workflow
+
+For active production:
+
+- Stay on the current stable engine version.
 - Test engine upgrades in a duplicated project folder first.
-- For Godot 4.7 testing, verify:
-  - screenspace_projection.gdshader compiles cleanly
-  - lens effect order still matches this README
-  - player movement, collisions, and camera feel are unchanged
-  - save/load and story progression still work
 
-Only migrate the main branch after the test copy is stable.
+For Godot 4.7 validation, verify all of the following:
 
-## License
+- screenspace_projection.gdshader compiles cleanly
+- Lens effect ordering still matches this README
+- Player movement, collisions, and camera feel are unchanged
+- Save/load and story progression remain stable
 
-- assets folder: CC0
-- addons and project code: MIT
+Migrate the main branch only after the test copy is fully stable.
