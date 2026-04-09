@@ -6,13 +6,6 @@ extends Node3D
 ## Fullscreen mesh that displays the post-processed result (projection + CA + vignette).
 @onready var out_mesh: MeshInstance3D = $_ProjectionOutput
 
-signal external_scaling_applied(mode: int, scale: float)
-
-
-var _use_external_scaling: bool = false
-var _external_scaling_mode: int = Viewport.SCALING_3D_MODE_FSR2
-var _external_scaling_scale: float = 1.0
-
 
 ## Master enable for the whole pipeline.
 ## When false, the offscreen viewport renders at native size and the shader is disabled (passthrough).
@@ -126,10 +119,7 @@ func _process(_delta: float) -> void:
 			if viewport.size != Vector2i(new_size):
 				viewport.size = Vector2i(new_size)
 
-			if _use_external_scaling:
-				viewport.scaling_3d_mode = _external_scaling_mode
-				viewport.scaling_3d_scale = _external_scaling_scale
-			elif viewport.scaling_3d_mode == Viewport.SCALING_3D_MODE_BILINEAR:
+			if viewport.scaling_3d_mode == Viewport.SCALING_3D_MODE_BILINEAR:
 				viewport.scaling_3d_scale = 1.0
 			else:
 				viewport.scaling_3d_scale = min(
@@ -179,25 +169,3 @@ func _apply_shader_params() -> void:
 	# Sampling
 	mat.set_shader_parameter("max_major_radius", max_major_radius)
 	mat.set_shader_parameter("max_minor_radius", max_minor_radius)
-
-
-func set_external_render_scaling(mode: int, scale: float) -> void:
-	if viewport == null:
-		return
-
-	var clamped_scale := clampf(scale, 0.25, 2.0)
-	if mode != Viewport.SCALING_3D_MODE_BILINEAR and mode != Viewport.SCALING_3D_MODE_FSR2:
-		mode = Viewport.SCALING_3D_MODE_BILINEAR
-
-	_use_external_scaling = true
-	_external_scaling_mode = mode
-	_external_scaling_scale = clamped_scale
-	external_scaling_applied.emit(_external_scaling_mode, _external_scaling_scale)
-
-
-func clear_external_render_scaling() -> void:
-	_use_external_scaling = false
-
-
-func set_pipeline_upscale(value: float) -> void:
-	upscale = clampf(value, 1.0, 4.0)

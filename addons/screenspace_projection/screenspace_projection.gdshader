@@ -206,9 +206,19 @@ vec4 sample_anisotropic(
 	vec2 dsource_dx_uv,
 	vec2 dsource_dy_uv
 ) {
-	// Note: this function intentionally avoids multiline macros for accumulation.
-	// Some Godot 4.6.x setups fail macro expansion here and surface
-	// "Unknown identifier in expression: NEED_CHECK" during shader compilation.
+	/*
+	Old implementation (kept for reference):
+	#define IN01(U) (all(greaterThanEqual((U), vec2(0.0))) && all(lessThanEqual((U), vec2(1.0))))
+	#define ACCUM(NEED_CHECK, UV, W) \
+		if (!(NEED_CHECK) || IN01(UV)) { \
+			sum  += textureGrad(tex, (UV), dsource_dx_uv, dsource_dy_uv) * (W); \
+			wsum += (W); \
+		}
+
+	Some Godot 4.6.x setups fail macro expansion in this block and report:
+	"Unknown identifier in expression: NEED_CHECK".
+	*/
+
 	vec2 inv_texel_uv = 1.0 / max(texel_uv, vec2(EPS));
 	vec2 fp_dx_tex = dsource_dx_uv * inv_texel_uv;
 	vec2 fp_dy_tex = dsource_dy_uv * inv_texel_uv;
@@ -256,8 +266,8 @@ vec4 sample_anisotropic(
 		vec4 sum = vec4(0.0);
 		float wsum = 0.0;
 
-		// Explicit accumulation keeps behavior deterministic across compiler backends.
-		if (!need_check || (all(greaterThanEqual(base_uv, vec2(0.0))) && all(lessThanEqual(base_uv, vec2(1.0))))) {
+		// Compatibility fix: use explicit accumulation instead of multiline macros.
+		if (!need_check || in_01(base_uv)) {
 			sum += textureGrad(tex, base_uv, dsource_dx_uv, dsource_dy_uv);
 			wsum += 1.0;
 		}
@@ -274,28 +284,28 @@ vec4 sample_anisotropic(
 				float pair = (float(mi) * w0 + float(mi1) * w1) / W;
 
 				vec2 o = major_step_uv * pair;
-				vec2 uv_pos = base_uv + o;
-				if (!need_check || (all(greaterThanEqual(uv_pos, vec2(0.0))) && all(lessThanEqual(uv_pos, vec2(1.0))))) {
-					sum += textureGrad(tex, uv_pos, dsource_dx_uv, dsource_dy_uv) * W;
+				vec2 uv_plus = base_uv + o;
+				if (!need_check || in_01(uv_plus)) {
+					sum += textureGrad(tex, uv_plus, dsource_dx_uv, dsource_dy_uv) * W;
 					wsum += W;
 				}
 
-				vec2 uv_neg = base_uv - o;
-				if (!need_check || (all(greaterThanEqual(uv_neg, vec2(0.0))) && all(lessThanEqual(uv_neg, vec2(1.0))))) {
-					sum += textureGrad(tex, uv_neg, dsource_dx_uv, dsource_dy_uv) * W;
+				vec2 uv_minus = base_uv - o;
+				if (!need_check || in_01(uv_minus)) {
+					sum += textureGrad(tex, uv_minus, dsource_dx_uv, dsource_dy_uv) * W;
 					wsum += W;
 				}
 			} else {
 				vec2 o = major_step_uv * float(mi);
-				vec2 uv_pos = base_uv + o;
-				if (!need_check || (all(greaterThanEqual(uv_pos, vec2(0.0))) && all(lessThanEqual(uv_pos, vec2(1.0))))) {
-					sum += textureGrad(tex, uv_pos, dsource_dx_uv, dsource_dy_uv) * w0;
+				vec2 uv_plus = base_uv + o;
+				if (!need_check || in_01(uv_plus)) {
+					sum += textureGrad(tex, uv_plus, dsource_dx_uv, dsource_dy_uv) * w0;
 					wsum += w0;
 				}
 
-				vec2 uv_neg = base_uv - o;
-				if (!need_check || (all(greaterThanEqual(uv_neg, vec2(0.0))) && all(lessThanEqual(uv_neg, vec2(1.0))))) {
-					sum += textureGrad(tex, uv_neg, dsource_dx_uv, dsource_dy_uv) * w0;
+				vec2 uv_minus = base_uv - o;
+				if (!need_check || in_01(uv_minus)) {
+					sum += textureGrad(tex, uv_minus, dsource_dx_uv, dsource_dy_uv) * w0;
 					wsum += w0;
 				}
 			}

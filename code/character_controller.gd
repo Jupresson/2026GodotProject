@@ -18,13 +18,9 @@ extends CharacterBody3D
 @export var max_look_up: float = 89.0
 @export var max_look_down: float = -89.0
 
-# Camera node used as the gameplay listener/view camera.
 @export var camera_path: NodePath = ^"Camera3D"
 @export var capture_on_click: bool = true
-# When true, all SpatialAudioPlayer3D nodes use this camera as listener target.
-@export var auto_bind_spatial_audio_listener: bool = true
 
-# Visual camera offset from the body origin (first-person eye height).
 @export var camera_offset: Vector3 = Vector3(0.0, 1.65, 0.0)
 
 var base_gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
@@ -44,8 +40,6 @@ var _initialized := false
 
 func _ready() -> void:
 	_has_focus = DisplayServer.window_is_focused()
-	# Keep this camera active, screenspace-projection reads from the active camera.
-	cam.current = true
 
 	_yaw_deg = rad_to_deg(rotation.y)
 	_pitch_deg = rad_to_deg(cam.rotation.x)
@@ -61,22 +55,7 @@ func _ready() -> void:
 	_curr_yaw = _yaw_deg
 	_initialized = true
 
-	if auto_bind_spatial_audio_listener:
-		# Spatial audio compatibility hook for Projection/SubViewport setups.
-		_bind_spatial_audio_listener()
-
 	_update_camera_visual(1.0)
-
-func _bind_spatial_audio_listener() -> void:
-	# Make SpatialAudioPlayer3D nodes follow this controller's camera in custom viewport setups.
-	# World setup note:
-	# 1) Use SpatialAudioPlayer3D for 3D sounds.
-	# 2) Keep ProjectionInput SubViewport property audio_listener_enable_3d = true.
-	# 3) Keep this auto-bind enabled unless you assign custom_listener_target manually.
-	var players := get_tree().root.find_children("*", "SpatialAudioPlayer3D", true, false)
-	for p in players:
-		if p is Node:
-			(p as Node).set("custom_listener_target", cam)
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_APPLICATION_FOCUS_IN:

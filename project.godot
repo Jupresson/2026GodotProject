@@ -30,6 +30,7 @@ enabled=PackedStringArray("res://addons/spatial_audio_extended/plugin.cfg")
 
 folder_colors={
 "res://assets/": "purple",
+"res://docs/": "gray",
 "res://materials/": "pink",
 "res://scenes/": "green",
 "res://scripts/": "red"
