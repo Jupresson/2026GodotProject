@@ -14,7 +14,7 @@ config/name="2026GodotProject"
 config/description="Combine the spacial audio plugin and the godot-screenspace-projection project effects to one world (main)"
 run/main_scene="uid://6ue6d4gl0nup"
 config/features=PackedStringArray("4.6", "Forward Plus")
-config/icon="uid://1tsjqvtxq2t7"
+config/icon="uid://cchuj6pamq0d1"
 
 [display]
 
