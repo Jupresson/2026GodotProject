@@ -1,130 +1,88 @@
-# 2026 Godot Project
+# 2026GodotProject
 
-![Project icon](icon.png)
+![Project Icon](icon.png)
 
-A Godot 4.6.2 3D prototype focused on stylized lens projection, spatial acoustics, and fast FPS-style iteration.
-This README covers how the rendering pipeline is organized, how addons are wired, and what to check when things break.
+A Godot 4.6 first-person prototype project built around a custom controller plugin: **UCharacterBody3D**.
 
-## Overview
+The project currently runs a playable sample scene with:
 
-This project combines:
+- FPS-style movement (walk, sprint, crouch, jump, slide)
+- Mouse look with clamped vertical rotation
+- Head bob while moving
+- Runtime graphics/options panel (window mode, resolution, scaling, FSR2, VSync, screen selection)
+- FPS debug label
+- Bodycam shader integration in the sample scene
 
-- Lens-style projection with controlled effect ordering via ScreenSpace Projection.
-- Extended acoustic behavior in 3D space using Spatial Audio Extended.
-- A modular scene and script layout designed for rapid gameplay prototyping.
+## Project Status
 
-## Project Structure (Compact)
+> [!NOTE]
+> This repository is a foundation/prototype workspace. Folder structure for content (`entities`, `scenes`, `resources`, `audio`, `graphics`, `scripts`) is prepared for expansion.
+
+## Requirements
+
+- Godot Engine 4.6
+- Forward Plus renderer
+- Windows target configured to use D3D12
+- Jolt Physics enabled for 3D physics
+
+## Quick Start
+
+1. Open this folder in Godot.
+2. Run the project.
+3. The current main scene is `addons/ultimate_character/Sample/SampleScene.tscn`.
+
+## Default Controls
+
+- Move: `W` `A` `S` `D`
+- Sprint: `Shift`
+- Crouch: `Ctrl`
+- Jump: `Space`
+- Look: Mouse
+
+Input actions are configured in `project.godot` as:
+
+- `move_left`, `move_right`, `move_forward`, `move_backward`
+- `action_sprint`, `action_crouch`, `action_jump`
+
+## Using UCharacterBody3D In Your Own Scene
+
+1. Ensure the plugin is enabled in Project Settings > Plugins.
+2. Add a `UCharacterBody3D` node to your scene.
+3. Configure exported movement and control settings in the Inspector.
+4. Confirm your InputMap action names match the controller settings.
+
+The custom node script is located at `addons/ultimate_character/ucharacterbody3d.gd`.
+
+## UI Systems Included
+
+- `ui/fps_debug.tscn`: Minimal FPS display
+- `ui/options_example.tscn`: Graphics/settings menu example
+- `ui/Options_Setting.gd`: Resolution, fullscreen, render scale, FSR2 presets, VSync, and screen selection logic
+
+## Workspace Layout
 
 ```text
-.
-|- addons/
-|  |- screenspace_projection/
-|  \- spatial_audio_extended/
-|- assets/
-|- materials/
-|- scenes/
-|  |- levels/
-|  |- ui/
-|  \- main.tscn
-|- code/
-|- scripts/
-|  |- base_classes/
-|  |- controllers/
-|  \- ui/
-\- project.godot
+addons/       # Plugins (includes ultimate_character)
+audio/        # Ambient, music, and SFX placeholders
+autoloads/    # Global singleton scripts (currently empty scaffold)
+entities/     # Gameplay entities (scaffold)
+graphics/     # Materials, shaders, textures
+resources/    # Shared resources (scaffold)
+scenes/       # Game scenes (scaffold)
+scripts/      # Game scripts (scaffold)
+ui/           # Debug and options UI scenes/scripts
 ```
 
-Key locations:
+## Next Recommended Steps
 
-- Main entry scene and composition: scenes/main.tscn
-- Lens setup scene: addons/screenspace_projection/screenspace_projection.tscn
-- Gameplay code and controllers: code/ and scripts/controllers/
+1. Move from plugin sample scene to your own `scenes/` main scene.
+2. Add core game entities under `entities/` and supporting logic in `scripts/`.
+3. Promote shared managers (audio, save, settings) into `autoloads/` as needed.
+4. Expand options persistence (save/load display settings between sessions).
 
-## Tech and Runtime
+## Credits
 
-- Engine: Godot 4.6.2
-- Renderer target: Forward+ (recommended when using FSR2)
-- Blender import setting: import/blender/enabled=false
+The controller implementation is based on the Ultimate First Person Controller tutorial by @Lukky:
 
-## Addons and Plugin State
-
-- ScreenSpace Projection: addons/screenspace_projection
-- ScreenSpace Projection usage: scene-based (instance in scenes, do not enable as an editor plugin)
-- Spatial Audio Extended: addons/spatial_audio_extended
-- Enabled editor plugin: res://addons/spatial_audio_extended/plugin.cfg
-
-## Core Scene Integration
-
-- Lens setup scene: addons/screenspace_projection/screenspace_projection.tscn
-- Parent world content under: ScreenSpaceProjection/ProjectionInput
-- Keep gameplay UI and debug overlays outside ProjectionInput to avoid lens distortion
-
-> [!TIP]
-> If HUD or debug labels appear warped, they are likely rendered inside ProjectionInput.
-
-## Lens Pipeline Order
-
-Treat ScreenSpace Projection as a lens stage in the middle of your frame pipeline.
-
-| Before lens (inside ProjectionInput camera) | After lens (on ScreenSpaceProjection camera) |
-|---------------------------------------------|-----------------------------------------------|
-| SSR                                         | Film grain                                    |
-| SSAO                                        | Auto exposure                                 |
-| SSGI                                        | Bloom / glow                                  |
-| Volumetric fog                              | Color grading / LUT                           |
-| Depth of field                              | Tonemapping                                   |
-| Motion blur                                 |                                               |
-| Upscaling (FSR2)                            |                                               |
-
-Additional notes:
-
-- Chromatic aberration and vignette in screenspace_projection.gdshader run inside the lens stage.
-- Keep UI composition after lens output.
-
-## Shader Compatibility and Known Error
-
-Observed error:
-
-- Unknown identifier in expression: NEED_CHECK
-- set_code: Shader compilation failed
-
-Root cause:
-
-- Older shader revisions used a multiline ACCUM macro in sample_anisotropic.
-- Some Godot 4.6.x setups fail macro expansion for this block.
-
-Current repo fix:
-
-- screenspace_projection.gdshader uses explicit accumulation logic instead of multiline macros.
-
-Why this may appear again:
-
-- Engine reinstall or minor update
-- GPU driver update
-- Shader cache invalidation / full reimport
-
-> [!WARNING]
-> If this error returns, compare local shader changes against repository version before editing project rendering settings.
-
-## Visual Tuning Checklist
-
-- Soft center image: increase upscale and use FSR2
-- Edge shimmer/aliasing: raise max_major_radius and max_minor_radius
-- Black corners: increase fill
-- Distorted UI: move UI out of ProjectionInput
-
-## Recommended Upgrade Workflow
-
-For active production:
-
-- Stay on the current stable engine version.
-- Test engine upgrades in a duplicated project folder first.
-
-For Godot 4.7 validation, verify all of the following:
-
-- screenspace_projection.gdshader compiles cleanly
-- Lens effect ordering still matches this README
-- Player movement, collisions, and camera feel are unchanged
-- Save/load and story progression remain stable
-
-Migrate the main branch only after the test copy is fully stable.
+- Part 1: https://youtu.be/xIKErMgJ1Yk
+- Part 2 (optional free-look extension): https://youtu.be/WF7d21zOD0M
