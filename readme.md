@@ -79,10 +79,3 @@ ui/           # Debug and options UI scenes/scripts
 2. Add core game entities under `entities/` and supporting logic in `scripts/`.
 3. Promote shared managers (audio, save, settings) into `autoloads/` as needed.
 4. Expand options persistence (save/load display settings between sessions).
-
-## Credits
-
-The controller implementation is based on the Ultimate First Person Controller tutorial by @Lukky:
-
-- Part 1: https://youtu.be/xIKErMgJ1Yk
-- Part 2 (optional free-look extension): https://youtu.be/WF7d21zOD0M
