@@ -67,14 +67,7 @@ npx skills add https://github.com/github/awesome-copilot --skill create-readme -
 
 ---
 
-## 4) Weekly Skill Training Plan
-
-- **Monday:** Pick 1 feature, define acceptance criteria
-- **Tuesday:** Build first pass + tests
-- **Wednesday:** Refactor with composition/best practices
-- **Thursday:** PR + code review checklist
-- **Friday:** Docs update (`README`, changelog, task board)
-- **Weekend (optional):** Retrospective + next feature breakdown
+## 4)
 
 ---
 
