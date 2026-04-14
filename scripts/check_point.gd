@@ -37,3 +37,7 @@ func _on_area_3d_body_entered(body: Node3D) -> void:
 		print("respawnpoint set "+ str(self.global_position))
 		var spawn_facing_radians := Vector3(0.0, deg_to_rad(_spawn_facing_y_degrees), 0.0)
 		GameManager.set_checkpoint(self.global_position, spawn_facing_radians)
+		_remove()
+
+func _remove():
+	self.queue_free()
