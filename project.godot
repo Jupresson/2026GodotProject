@@ -15,6 +15,10 @@ run/main_scene="uid://dj1fkbs5vhuti"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="uid://cchuj6pamq0d1"
 
+[autoload]
+
+GameManager="*uid://bhgdqau1swh0d"
+
 [display]
 
 window/vsync/vsync_mode=0

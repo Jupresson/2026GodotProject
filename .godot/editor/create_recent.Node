@@ -1,9 +1,10 @@
-Area3D
+HealthComponent
+UCharacterBody3D
 CollisionShape3D
+Area3D
 MeshInstance3D
 VBoxContainer
 Node
-UCharacterBody3D
 CharacterBody3D
 CSGBox3D
 Camera3D
