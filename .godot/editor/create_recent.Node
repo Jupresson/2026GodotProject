@@ -1,7 +1,9 @@
+Area3D
+CollisionShape3D
+MeshInstance3D
 VBoxContainer
 Node
 UCharacterBody3D
-CollisionShape3D
 CharacterBody3D
 CSGBox3D
 Camera3D

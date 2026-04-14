@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://iw6qbd2a0337"]
 
-[ext_resource type="Script" uid="uid://bkdcitducwkex" path="res://ui/FPS_Label.gd" id="1_n8aa3"]
+[ext_resource type="Script" uid="uid://bkdcitducwkex" path="res://ui/scripts/FPS_Label.gd" id="1_n8aa3"]
 
 [node name="FpsDebug" type="Control" unique_id=120319615]
 layout_mode = 3

@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://b5yfoyn25mqey"]
+
+[ext_resource type="Script" uid="uid://d25006pqwxlnj" path="res://scripts/spikes.gd" id="1_s0g1x"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_t3eke"]
+size = Vector3(5, 5, 5)
+
+[node name="Spikes" type="Node3D" unique_id=574156475]
+script = ExtResource("1_s0g1x")
+
+[node name="Area3D" type="Area3D" parent="." unique_id=1013017264]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=841570829]
+shape = SubResource("BoxShape3D_t3eke")
+debug_color = Color(0.9843137, 0.12156863, 0.03529412, 1)
+
+[connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]
