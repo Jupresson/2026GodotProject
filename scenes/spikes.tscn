@@ -3,7 +3,10 @@
 [ext_resource type="Script" uid="uid://d25006pqwxlnj" path="res://scripts/spikes.gd" id="1_s0g1x"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_t3eke"]
-size = Vector3(5, 5, 5)
+size = Vector3(3, 1.5, 3)
+
+[sub_resource type="PrismMesh" id="PrismMesh_5pg7g"]
+size = Vector3(0.7, 2.145, 0.39)
 
 [node name="Spikes" type="Node3D" unique_id=574156475]
 script = ExtResource("1_s0g1x")
@@ -13,5 +16,105 @@ script = ExtResource("1_s0g1x")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=841570829]
 shape = SubResource("BoxShape3D_t3eke")
 debug_color = Color(0.9843137, 0.12156863, 0.03529412, 1)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=927805852]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+mesh = SubResource("PrismMesh_5pg7g")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D" unique_id=48739443]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+mesh = SubResource("PrismMesh_5pg7g")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D/MeshInstance3D" unique_id=965102318]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0)
+mesh = SubResource("PrismMesh_5pg7g")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D/MeshInstance3D/MeshInstance3D" unique_id=1296512039]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, 0)
+mesh = SubResource("PrismMesh_5pg7g")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D/MeshInstance3D/MeshInstance3D/MeshInstance3D" unique_id=930290321]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+mesh = SubResource("PrismMesh_5pg7g")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="MeshInstance3D" unique_id=1859495680]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.5)
+mesh = SubResource("PrismMesh_5pg7g")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D/MeshInstance3D2" unique_id=1064228446]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+mesh = SubResource("PrismMesh_5pg7g")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D/MeshInstance3D2/MeshInstance3D" unique_id=284134354]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0)
+mesh = SubResource("PrismMesh_5pg7g")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D/MeshInstance3D2/MeshInstance3D/MeshInstance3D" unique_id=115827464]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, 0)
+mesh = SubResource("PrismMesh_5pg7g")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D/MeshInstance3D2/MeshInstance3D/MeshInstance3D/MeshInstance3D" unique_id=1865204735]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+mesh = SubResource("PrismMesh_5pg7g")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="MeshInstance3D/MeshInstance3D2" unique_id=1505543033]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.5)
+mesh = SubResource("PrismMesh_5pg7g")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D/MeshInstance3D2/MeshInstance3D2" unique_id=1615168697]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+mesh = SubResource("PrismMesh_5pg7g")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D/MeshInstance3D2/MeshInstance3D2/MeshInstance3D" unique_id=1302021874]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0)
+mesh = SubResource("PrismMesh_5pg7g")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D/MeshInstance3D2/MeshInstance3D2/MeshInstance3D/MeshInstance3D" unique_id=1077181519]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, 0)
+mesh = SubResource("PrismMesh_5pg7g")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D/MeshInstance3D2/MeshInstance3D2/MeshInstance3D/MeshInstance3D/MeshInstance3D" unique_id=1256632271]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+mesh = SubResource("PrismMesh_5pg7g")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="MeshInstance3D/MeshInstance3D2/MeshInstance3D2" unique_id=716905296]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.5)
+mesh = SubResource("PrismMesh_5pg7g")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D/MeshInstance3D2/MeshInstance3D2/MeshInstance3D2" unique_id=1868285708]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+mesh = SubResource("PrismMesh_5pg7g")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D/MeshInstance3D2/MeshInstance3D2/MeshInstance3D2/MeshInstance3D" unique_id=1143882879]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0)
+mesh = SubResource("PrismMesh_5pg7g")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D/MeshInstance3D2/MeshInstance3D2/MeshInstance3D2/MeshInstance3D/MeshInstance3D" unique_id=1784347252]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, 0)
+mesh = SubResource("PrismMesh_5pg7g")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D/MeshInstance3D2/MeshInstance3D2/MeshInstance3D2/MeshInstance3D/MeshInstance3D/MeshInstance3D" unique_id=1671379690]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+mesh = SubResource("PrismMesh_5pg7g")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="MeshInstance3D/MeshInstance3D2/MeshInstance3D2/MeshInstance3D2" unique_id=1249340952]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)
+mesh = SubResource("PrismMesh_5pg7g")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D/MeshInstance3D2/MeshInstance3D2/MeshInstance3D2/MeshInstance3D2" unique_id=74077443]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+mesh = SubResource("PrismMesh_5pg7g")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D/MeshInstance3D2/MeshInstance3D2/MeshInstance3D2/MeshInstance3D2/MeshInstance3D" unique_id=430006298]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0)
+mesh = SubResource("PrismMesh_5pg7g")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D/MeshInstance3D2/MeshInstance3D2/MeshInstance3D2/MeshInstance3D2/MeshInstance3D/MeshInstance3D" unique_id=734928631]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, 0)
+mesh = SubResource("PrismMesh_5pg7g")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D/MeshInstance3D2/MeshInstance3D2/MeshInstance3D2/MeshInstance3D2/MeshInstance3D/MeshInstance3D/MeshInstance3D" unique_id=1505572921]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
+mesh = SubResource("PrismMesh_5pg7g")
 
 [connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]

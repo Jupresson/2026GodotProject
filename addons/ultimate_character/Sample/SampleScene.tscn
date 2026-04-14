@@ -7,6 +7,18 @@
 [ext_resource type="PackedScene" uid="uid://b5yfoyn25mqey" path="res://scenes/spikes.tscn" id="5_pt6io"]
 [ext_resource type="PackedScene" uid="uid://bwmtu28l42jk4" path="res://scenes/player.tscn" id="6_866nw"]
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ardm0"]
+shader = ExtResource("4_1ohy6")
+shader_parameter/aspect = 1.0
+shader_parameter/distortion = 1.0
+shader_parameter/radius = 1.07
+shader_parameter/alpha = 1.0
+shader_parameter/crop = 0.943
+shader_parameter/crop_color = Color(0, 0, 0, 1)
+shader_parameter/crop_feathering = 0.1
+shader_parameter/channel_offset = 0.005
+shader_parameter/noise_strength = 5.0
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jvxgj"]
 albedo_color = Color(0.385493, 0.385492, 0.385492, 1)
 
@@ -20,28 +32,57 @@ albedo_color = Color(0.0999859, 0.099986, 0.099986, 1)
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
 ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
 
-[sub_resource type="Sky" id="Sky_pnuh5"]
+[sub_resource type="Sky" id="Sky_866nw"]
 sky_material = SubResource("ProceduralSkyMaterial_yncq4")
 
 [sub_resource type="Environment" id="Environment_04r10"]
 background_mode = 2
-sky = SubResource("Sky_pnuh5")
+sky = SubResource("Sky_866nw")
 tonemap_mode = 2
 glow_enabled = true
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ardm0"]
-shader = ExtResource("4_1ohy6")
-shader_parameter/aspect = 1.0
-shader_parameter/distortion = 1.0
-shader_parameter/radius = 1.07
-shader_parameter/alpha = 1.0
-shader_parameter/crop = 0.943
-shader_parameter/crop_color = Color(0, 0, 0, 1)
-shader_parameter/crop_feathering = 0.1
-shader_parameter/channel_offset = 0.005
-shader_parameter/noise_strength = 5.0
-
 [node name="World" type="Node3D" unique_id=1538390799]
+
+[node name="UI" type="Node" parent="." unique_id=1722083988]
+
+[node name="DebugLayer" type="CanvasLayer" parent="UI" unique_id=1634715436]
+layer = 2
+
+[node name="FpsDebug" parent="UI/DebugLayer" unique_id=120319615 instance=ExtResource("2_pt6io")]
+metadata/_edit_use_anchors_ = true
+
+[node name="UILayer" type="CanvasLayer" parent="UI" unique_id=1609627138]
+
+[node name="Options_Example" parent="UI/UILayer" unique_id=1325791104 instance=ExtResource("3_866nw")]
+metadata/_edit_use_anchors_ = true
+
+[node name="Shaders" type="Node" parent="." unique_id=1734547910]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="Shaders" unique_id=670284657]
+layer = 0
+
+[node name="ColorRect" type="ColorRect" parent="Shaders/CanvasLayer" unique_id=1835652393]
+material = SubResource("ShaderMaterial_ardm0")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Player" parent="." unique_id=1914000597 instance=ExtResource("6_866nw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1945333, 0)
+
+[node name="Spikes" parent="." unique_id=574156475 instance=ExtResource("5_pt6io")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.0740623, 0.5, 5.8929653)
+
+[node name="CheckPoint" parent="." unique_id=1893375358 instance=ExtResource("2_866nw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5876417, 0.5, -1.048604)
+
+[node name="CheckPoint2" parent="." unique_id=989715862 instance=ExtResource("2_866nw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.9021096, 1, -2.097208)
+spawn_facing_y_degrees = -74.865
 
 [node name="Geometry" type="Node3D" parent="." unique_id=1285394178]
 
@@ -132,38 +173,3 @@ shadow_enabled = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Environment" unique_id=1426649661]
 environment = SubResource("Environment_04r10")
-
-[node name="UI" type="Node" parent="." unique_id=1722083988]
-
-[node name="DebugLayer" type="CanvasLayer" parent="UI" unique_id=1634715436]
-layer = 2
-
-[node name="FpsDebug" parent="UI/DebugLayer" unique_id=120319615 instance=ExtResource("2_pt6io")]
-
-[node name="UILayer" type="CanvasLayer" parent="UI" unique_id=1609627138]
-
-[node name="Options_Example" parent="UI/UILayer" unique_id=1325791104 instance=ExtResource("3_866nw")]
-
-[node name="Shaders" type="Node" parent="." unique_id=1734547910]
-
-[node name="CanvasLayer" type="CanvasLayer" parent="Shaders" unique_id=670284657]
-layer = 0
-
-[node name="ColorRect" type="ColorRect" parent="Shaders/CanvasLayer" unique_id=1835652393]
-material = SubResource("ShaderMaterial_ardm0")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-metadata/_edit_use_anchors_ = true
-
-[node name="Spikes" parent="." unique_id=574156475 instance=ExtResource("5_pt6io")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.0740623, 0.5, 5.8929653)
-
-[node name="CheckPoint" parent="." unique_id=1893375358 instance=ExtResource("2_866nw")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5876417, 0.5, -1.048604)
-
-[node name="Player" parent="." unique_id=1914000597 instance=ExtResource("6_866nw")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1945333, 0)

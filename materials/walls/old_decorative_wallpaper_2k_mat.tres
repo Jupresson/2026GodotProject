@@ -1,0 +1,25 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://3rm8js8ve5tt"]
+
+[ext_resource type="Texture2D" uid="uid://btmofr5h04ylm" path="res://assets/textures/walls/old_decorative_wallpaper_uf2vbflaw_2k/Old_Decorative_Wallpaper_uf2vbflaw_2K_BaseBlackAndWhite_Inverted_Bright.jpg" id="1_eqlwa"]
+[ext_resource type="Texture2D" uid="uid://b0jf4wlxsxnlq" path="res://assets/textures/walls/old_decorative_wallpaper_uf2vbflaw_2k/Old_Decorative_Wallpaper_uf2vbflaw_2K_AO.jpg" id="2_hpbje"]
+[ext_resource type="Texture2D" uid="uid://bavy43ympqfjy" path="res://assets/textures/walls/old_decorative_wallpaper_uf2vbflaw_2k/Old_Decorative_Wallpaper_uf2vbflaw_2K_Displacement.jpg" id="3_lh6fi"]
+[ext_resource type="Texture2D" uid="uid://lj5scjawufaf" path="res://assets/textures/walls/old_decorative_wallpaper_uf2vbflaw_2k/Old_Decorative_Wallpaper_uf2vbflaw_2K_Normal.jpg" id="4_14dfv"]
+[ext_resource type="Texture2D" uid="uid://cftpw3q6lva3o" path="res://assets/textures/walls/old_decorative_wallpaper_uf2vbflaw_2k/Old_Decorative_Wallpaper_uf2vbflaw_2K_Roughness.jpg" id="5_bxccp"]
+
+[resource]
+albedo_color = Color(0.9607843, 0.85490197, 0.5372549, 1)
+albedo_texture = ExtResource("1_eqlwa")
+roughness_texture = ExtResource("5_bxccp")
+roughness_texture_channel = 4
+normal_enabled = true
+normal_texture = ExtResource("4_14dfv")
+ao_enabled = true
+ao_texture = ExtResource("2_hpbje")
+heightmap_scale = 1.0
+heightmap_texture = ExtResource("3_lh6fi")
+uv1_scale = Vector3(0.205, 0.205, 0.205)
+uv1_triplanar = true
+uv1_world_triplanar = true
+uv2_scale = Vector3(0.205, 0.205, 0.205)
+uv2_triplanar = true
+uv2_world_triplanar = true

@@ -138,7 +138,7 @@ func _ready():
 	
 	# Only game: Run normal ready logic
 	if !Engine.is_editor_hint():
-		#Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 		
 		pass
 

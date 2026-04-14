@@ -4,8 +4,10 @@
 [ext_resource type="Script" uid="uid://d0ies2qn7sx5b" path="res://scripts/components/healt_component.gd" id="2_qhqgy"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_dqkch"]
+radius = 0.35
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qlg0r"]
+radius = 0.35
 height = 1.3
 
 [node name="Player" type="CharacterBody3D" unique_id=1914000597 groups=["player"]]
@@ -25,6 +27,7 @@ disabled = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
 
 [node name="Camera" type="Camera3D" parent="Head" unique_id=333131559]
+fov = 110.0
 
 [node name="RayCast3D" type="RayCast3D" parent="." unique_id=2101007585]
 target_position = Vector3(0, 2, 0)
