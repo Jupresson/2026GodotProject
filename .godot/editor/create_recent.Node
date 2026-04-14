@@ -1,3 +1,4 @@
+CSGBox3D
 HealthComponent
 UCharacterBody3D
 CollisionShape3D
@@ -6,7 +7,6 @@ MeshInstance3D
 VBoxContainer
 Node
 CharacterBody3D
-CSGBox3D
 Camera3D
 ColorRect
 CanvasLayer
