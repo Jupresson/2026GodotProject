@@ -5,7 +5,7 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ardm0"]
 shader = ExtResource("1_xfw3y")
 shader_parameter/aspect = 1.0
-shader_parameter/distortion = 1.0
+shader_parameter/distortion = 1.25
 shader_parameter/radius = 1.07
 shader_parameter/alpha = 1.0
 shader_parameter/crop = 0.943

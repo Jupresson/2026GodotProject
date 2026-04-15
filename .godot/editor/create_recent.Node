@@ -1,3 +1,8 @@
+FuncGodotMap
+MeshInstance3D
+GridMap
+CSGBox3D
+CSGMesh3D
 StaticBody3D
 CollisionShape3D
 Area3D
@@ -6,10 +11,5 @@ Button
 Label
 VBoxContainer
 HBoxContainer
-MeshInstance3D
 SpotLight3D
-RoommateSpace
-RoommateRoot
-RoommateStyler
 Node
-OmniLight3D

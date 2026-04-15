@@ -1,35 +1,77 @@
-[gd_scene format=3 uid="uid://cb7sgtk11y8ci"]
+[gd_scene format=4 uid="uid://cb7sgtk11y8ci"]
 
 [ext_resource type="PackedScene" uid="uid://cae4vnwco30xv" path="res://scenes/body_cam_shader.tscn" id="1_1q7iv"]
 [ext_resource type="PackedScene" uid="uid://b6dxwilaxeoun" path="res://scenes/perfromance_debug.tscn" id="1_gj3kh"]
 [ext_resource type="PackedScene" uid="uid://bwmtu28l42jk4" path="res://scenes/player.tscn" id="4_65guy"]
 [ext_resource type="PackedScene" uid="uid://b5yfoyn25mqey" path="res://scenes/spikes.tscn" id="5_p6rmu"]
 [ext_resource type="PackedScene" uid="uid://dhyc01xe37yl" path="res://scenes/check_point.tscn" id="6_34hum"]
+[ext_resource type="Script" uid="uid://cwu5cf7a0awcd" path="res://addons/func_godot/src/map/func_godot_map.gd" id="8_p6rmu"]
+[ext_resource type="Resource" uid="uid://dif30r13c1pg3" path="res://trenchroom/2026GodotProject_map_settings.tres" id="9_p6rmu"]
+[ext_resource type="Texture2D" uid="uid://cjbasmsuke385" path="res://trenchroom/textures/carpet/carpet_color.png" id="10_34hum"]
 [ext_resource type="PackedScene" uid="uid://cmcuqbrua5e7p" path="res://scenes/next_level_portal.tscn" id="10_myogd"]
 [ext_resource type="PackedScene" uid="uid://curpy8cqmq2cg" path="res://scenes/light.tscn" id="14_gj3kh"]
 
-[sub_resource type="Environment" id="Environment_gj3kh"]
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_3mnpy"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_6ayib"]
+sky_material = SubResource("ProceduralSkyMaterial_3mnpy")
+
+[sub_resource type="Environment" id="Environment_65guy"]
+background_mode = 2
+sky = SubResource("Sky_6ayib")
+tonemap_mode = 2
 glow_enabled = true
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vhkxn"]
+albedo_texture = ExtResource("10_34hum")
+metallic_specular = 0.0
+texture_filter = 2
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_1q7iv"]
+_surfaces = [{
+"aabb": AABB(-2, -0.5, -2, 4, 1, 4),
+"attribute_data": PackedByteArray("AACAvQAAgLwAAIA9AACAvAAAgD0AAIA8AACAvQAAgDwAAIA9AACAPAAAgL0AAIA8AACAvQAAgLwAAIA9AACAvAAAgL0AAIA9AACAvQAAgL0AAIA9AACAvQAAgD0AAIA9AACAPQAAgD0AAIC9AACAPQAAgL0AAIC9AACAPQAAgL0AAIC9AACAvAAAgD0AAIC8AACAPQAAgDwAAIC9AACAPAAAgD0AAIA8AACAvQAAgDwAAIC9AACAvAAAgD0AAIC8"),
+"format": 34359742487,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"material": SubResource("StandardMaterial3D_vhkxn"),
+"name": "carpet/carpet_color",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("AAAAQAAAAD8AAADAAAAAwAAAAD8AAADAAAAAwAAAAL8AAADAAAAAQAAAAL8AAADAAAAAwAAAAL8AAABAAAAAwAAAAL8AAADAAAAAwAAAAD8AAADAAAAAwAAAAD8AAABAAAAAwAAAAL8AAABAAAAAQAAAAL8AAABAAAAAQAAAAL8AAADAAAAAwAAAAL8AAADAAAAAwAAAAD8AAABAAAAAwAAAAD8AAADAAAAAQAAAAD8AAADAAAAAQAAAAD8AAABAAAAAQAAAAD8AAABAAAAAQAAAAD8AAADAAAAAQAAAAL8AAADAAAAAQAAAAL8AAABAAAAAQAAAAL8AAABAAAAAwAAAAL8AAABAAAAAwAAAAD8AAABAAAAAQAAAAD8AAABA/////wAA/7//////AAD/v/////8AAP+//////wAA/78AAP9//3//vwAA/3//f/+/AAD/f/9//78AAP9//3//v/9/AAD//////38AAP//////fwAA//////9/AAD//////3////9//7//f////3//v/9/////f/+//3////9//7////9//////////3//////////f/////////9///////9//3////+//3//f////7//f/9/////v/9//3////+/")
+}]
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_gj3kh"]
+points = PackedVector3Array(2, 0.5, 2, 2, -0.5, 2, -2, 0.5, 2, -2, -0.5, 2, 2, 0.5, -2, 2, -0.5, -2, -2, 0.5, -2, -2, -0.5, -2)
+
 [node name="Level0" type="Node3D" unique_id=511111068]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1799285946]
+environment = SubResource("Environment_65guy")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=682228704]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
 
 [node name="PerfromanceDebug" parent="." unique_id=1477393005 instance=ExtResource("1_gj3kh")]
 
 [node name="BodyCamShader" parent="." unique_id=1294743552 instance=ExtResource("1_1q7iv")]
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=359284010]
-environment = SubResource("Environment_gj3kh")
-
 [node name="others" type="Node" parent="." unique_id=840316879]
 
 [node name="Spikes" parent="others" unique_id=574156475 instance=ExtResource("5_p6rmu")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.7534943, -0.37637877, -5.41155)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.901588, -1, 28)
+visible = false
 
 [node name="CheckPoint2" parent="others" unique_id=1893375358 instance=ExtResource("6_34hum")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.051979, -0.33580852, -2.097208)
 spawn_facing_y_degrees = -74.865
 
 [node name="Player" parent="others" unique_id=1914000597 instance=ExtResource("4_65guy")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, -0.3315935, 0)
 
 [node name="Light" parent="others" unique_id=2096687380 instance=ExtResource("14_gj3kh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.369059, 3.7981577, 2.5549698)
@@ -41,4 +83,17 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25851917, -0.2108612, -6.7
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.7402725, 0, -14.545782)
 next_scene_path = "uid://cb7sgtk11y8ci"
 
-[node name="Geometry" type="Node3D" parent="." unique_id=1743037896]
+[node name="FuncGodotMap" type="Node3D" parent="." unique_id=384156039]
+script = ExtResource("8_p6rmu")
+local_map_file = "uid://cnjocgx0pgwgt"
+map_settings = ExtResource("9_p6rmu")
+metadata/_custom_type_script = "uid://cwu5cf7a0awcd"
+
+[node name="entity_0_worldspawn" type="StaticBody3D" parent="FuncGodotMap" unique_id=1663914522]
+collision_mask = 0
+
+[node name="entity_0_mesh_instance" type="MeshInstance3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=1778150908]
+mesh = SubResource("ArrayMesh_1q7iv")
+
+[node name="entity_0_brush_0_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=157804200]
+shape = SubResource("ConvexPolygonShape3D_gj3kh")
