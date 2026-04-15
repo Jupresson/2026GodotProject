@@ -5,9 +5,6 @@
 [ext_resource type="PackedScene" uid="uid://bwmtu28l42jk4" path="res://scenes/player.tscn" id="4_65guy"]
 [ext_resource type="PackedScene" uid="uid://b5yfoyn25mqey" path="res://scenes/spikes.tscn" id="5_p6rmu"]
 [ext_resource type="PackedScene" uid="uid://dhyc01xe37yl" path="res://scenes/check_point.tscn" id="6_34hum"]
-[ext_resource type="Resource" uid="uid://br64fowmytpq1" path="res://scripts/room_styles/base_style.tres" id="6_vhkxn"]
-[ext_resource type="Script" uid="uid://fs4hus52px6a" path="res://addons/roommate/nodes/space.gd" id="8_6ayib"]
-[ext_resource type="PackedScene" uid="uid://o084bwgqxtlr" path="res://scenes/rooms/base_room.tscn" id="9_65guy"]
 [ext_resource type="PackedScene" uid="uid://cmcuqbrua5e7p" path="res://scenes/next_level_portal.tscn" id="10_myogd"]
 [ext_resource type="PackedScene" uid="uid://curpy8cqmq2cg" path="res://scenes/light.tscn" id="14_gj3kh"]
 
@@ -45,67 +42,3 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.7402725, 0, -14.545782)
 next_scene_path = "uid://cb7sgtk11y8ci"
 
 [node name="Geometry" type="Node3D" parent="." unique_id=1743037896]
-
-[node name="BaseRoom" parent="." unique_id=712094729 instance=ExtResource("9_65guy")]
-linked_mesh_container = NodePath("")
-
-[node name="RoommateSpace" parent="BaseRoom" index="0" unique_id=394824815]
-size = Vector3(4, 3, 52)
-
-[node name="RoommateSpace2" type="Node3D" parent="BaseRoom" unique_id=1922963675]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0, 0)
-script = ExtResource("8_6ayib")
-size = Vector3(4, 3, 60)
-style = ExtResource("6_vhkxn")
-metadata/_custom_type_script = "uid://fs4hus52px6a"
-
-[node name="RoommateSpace3" type="Node3D" parent="BaseRoom" unique_id=1566582731]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0, -9.25)
-script = ExtResource("8_6ayib")
-size = Vector3(4, 3, 60)
-style = ExtResource("6_vhkxn")
-metadata/_custom_type_script = "uid://fs4hus52px6a"
-
-[node name="RoommateSpace4" type="Node3D" parent="BaseRoom" unique_id=820540398]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0, -17.5)
-script = ExtResource("8_6ayib")
-size = Vector3(4, 3, 60)
-style = ExtResource("6_vhkxn")
-metadata/_custom_type_script = "uid://fs4hus52px6a"
-
-[node name="RoommateSpace5" type="Node3D" parent="BaseRoom" unique_id=1128291532]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0, -26)
-script = ExtResource("8_6ayib")
-size = Vector3(4, 3, 60)
-style = ExtResource("6_vhkxn")
-metadata/_custom_type_script = "uid://fs4hus52px6a"
-
-[node name="RoommateSpace6" type="Node3D" parent="BaseRoom" unique_id=2042907988]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0, -34.25)
-script = ExtResource("8_6ayib")
-size = Vector3(4, 3, 60)
-style = ExtResource("6_vhkxn")
-metadata/_custom_type_script = "uid://fs4hus52px6a"
-
-[node name="RoommateSpace7" type="Node3D" parent="BaseRoom" unique_id=111389665]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -28, 0, -28)
-script = ExtResource("8_6ayib")
-size = Vector3(4, 3, 60)
-style = ExtResource("6_vhkxn")
-metadata/_custom_type_script = "uid://fs4hus52px6a"
-
-[node name="RoommateSpace8" type="Node3D" parent="BaseRoom" unique_id=1063156343]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 27.75, 0, -28)
-script = ExtResource("8_6ayib")
-size = Vector3(4, 3, 60)
-style = ExtResource("6_vhkxn")
-metadata/_custom_type_script = "uid://fs4hus52px6a"
-
-[node name="RoommateSpace9" type="Node3D" parent="BaseRoom" unique_id=68480067]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0, -56)
-script = ExtResource("8_6ayib")
-size = Vector3(4, 3, 60)
-style = ExtResource("6_vhkxn")
-metadata/_custom_type_script = "uid://fs4hus52px6a"
-
-[editable path="BaseRoom"]
