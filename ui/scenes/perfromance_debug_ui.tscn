@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://iw6qbd2a0337"]
 
-[ext_resource type="Script" uid="uid://bkdcitducwkex" path="res://ui/scripts/FPS_Label.gd" id="1_n8aa3"]
+[ext_resource type="Script" uid="uid://bkdcitducwkex" path="res://ui/scripts/FPS_Label.gd" id="1_7te1f"]
 
-[node name="FpsDebug" type="Control" unique_id=120319615]
+[node name="PerfromanceDebugUI" type="Control" unique_id=120319615]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -26,4 +26,4 @@ alignment = 1
 layout_mode = 2
 size_flags_horizontal = 0
 text = "12 fps D:"
-script = ExtResource("1_n8aa3")
+script = ExtResource("1_7te1f")

@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://cmcuqbrua5e7p"]
+
+[ext_resource type="Script" uid="uid://c3i1fpl4rblb8" path="res://scripts/next_level.gd" id="1_rf0ph"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_v4186"]
+size = Vector3(2.8173218, 2.6264648, 1)
+
+[node name="NextLevelPortal" type="Node3D" unique_id=1268293512]
+script = ExtResource("1_rf0ph")
+
+[node name="Area3D" type="Area3D" parent="." unique_id=811422834]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=988185159]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.008758545, 0.8132324, 0)
+shape = SubResource("BoxShape3D_v4186")
+debug_color = Color(0.9839038, 0, 0.35305634, 0.41960785)
+
+[connection signal="body_entered" from="Area3D" to="." method="_on_area_3d_body_entered"]

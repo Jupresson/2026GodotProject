@@ -11,11 +11,5 @@ size = Vector3(1, 0.055, 1)
 
 [node name="Light" type="Node3D" unique_id=2096687380]
 
-[node name="SpotLight3D" type="SpotLight3D" parent="." unique_id=2075017930]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
-light_color = Color(0.9999991, 0.99767333, 0.80469525, 1)
-light_energy = 2.0
-spot_range = 15.0
-
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=805977302]
 mesh = SubResource("BoxMesh_24oxn")

@@ -1,14 +1,23 @@
 [gd_scene format=3 uid="uid://bc31p7gj1yyny"]
 
-[ext_resource type="Script" uid="uid://dnr6riruhdp2v" path="res://ui/scripts/Options_Setting.gd" id="2_p6hdn"]
+[ext_resource type="Script" uid="uid://dnr6riruhdp2v" path="res://ui/scripts/Options_Setting.gd" id="1_lcbjn"]
 
-[node name="Options_Example" type="Control" unique_id=1351568746]
+[node name="OptionsUI" type="Control" unique_id=1351568746]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1624368091]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.25565878, 0.25565878, 0.25565878, 1)
 
 [node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=904253779]
 layout_mode = 1
@@ -23,7 +32,7 @@ alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 alignment = 1
-script = ExtResource("2_p6hdn")
+script = ExtResource("1_lcbjn")
 
 [node name="Resolution_OptionButton" type="OptionButton" parent="HBoxContainer/Options_Setting" unique_id=886868455]
 layout_mode = 2
@@ -86,6 +95,10 @@ text = "VSYNC Enabled"
 [node name="Screen_Selector" type="OptionButton" parent="HBoxContainer/Options_Setting" unique_id=283571684]
 layout_mode = 2
 
+[node name="BackButton" type="Button" parent="HBoxContainer/Options_Setting" unique_id=171173665]
+layout_mode = 2
+text = "Back"
+
 [connection signal="item_selected" from="HBoxContainer/Options_Setting/Resolution_OptionButton" to="HBoxContainer/Options_Setting" method="_on_option_button_item_selected"]
 [connection signal="value_changed" from="HBoxContainer/Options_Setting/ScaleBox/ScaleSlider" to="HBoxContainer/Options_Setting" method="_on_scale_slider_value_changed"]
 [connection signal="item_selected" from="HBoxContainer/Options_Setting/Scaler" to="HBoxContainer/Options_Setting" method="_on_scaler_item_selected"]
@@ -93,3 +106,4 @@ layout_mode = 2
 [connection signal="toggled" from="HBoxContainer/Options_Setting/FullScreen_CheckBox" to="HBoxContainer/Options_Setting" method="_on_full_screen_check_box_toggled"]
 [connection signal="toggled" from="HBoxContainer/Options_Setting/vsync_checkbox" to="HBoxContainer/Options_Setting" method="_on_vsync_checkbox_toggled"]
 [connection signal="item_selected" from="HBoxContainer/Options_Setting/Screen_Selector" to="HBoxContainer/Options_Setting" method="_on_screen_selector_item_selected"]
+[connection signal="pressed" from="HBoxContainer/Options_Setting/BackButton" to="HBoxContainer/Options_Setting" method="_on_back_pressed"]

@@ -1,5 +1,7 @@
 extends VBoxContainer
 
+const MENU_SCENE_PATH := "res://ui/scenes/start_ui.tscn"
+
 @onready var resolution_option_button = $Resolution_OptionButton
 @onready var full_screen_check_box = $FullScreen_CheckBox
 @onready var scale_label = $ScaleBox/ScaleLabel
@@ -140,4 +142,8 @@ func _on_screen_selector_item_selected(index):
 	
 	if mode == Window.MODE_FULLSCREEN:
 		_window.set_mode(Window.MODE_FULLSCREEN)
+
+
+func _on_back_pressed() -> void:
+	SceneManager.change_scene(MENU_SCENE_PATH)
 	

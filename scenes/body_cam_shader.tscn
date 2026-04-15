@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://cae4vnwco30xv"]
+
+[ext_resource type="Shader" uid="uid://cv41hwb0obad6" path="res://graphics/shaders/bodycam_shader.gdshader" id="1_xfw3y"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ardm0"]
+shader = ExtResource("1_xfw3y")
+shader_parameter/aspect = 1.0
+shader_parameter/distortion = 1.0
+shader_parameter/radius = 1.07
+shader_parameter/alpha = 1.0
+shader_parameter/crop = 0.943
+shader_parameter/crop_color = Color(0, 0, 0, 1)
+shader_parameter/crop_feathering = 0.1
+shader_parameter/channel_offset = 0.005
+shader_parameter/noise_strength = 5.0
+
+[node name="BodyCamShader" type="CanvasLayer" unique_id=1294743552]
+layer = 0
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=282506275]
+material = SubResource("ShaderMaterial_ardm0")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+metadata/_edit_use_anchors_ = true

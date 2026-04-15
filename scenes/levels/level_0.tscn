@@ -1,8 +1,7 @@
 [gd_scene format=4 uid="uid://cb7sgtk11y8ci"]
 
-[ext_resource type="PackedScene" uid="uid://iw6qbd2a0337" path="res://ui/scenes/fps_debug.tscn" id="1_jjvta"]
-[ext_resource type="PackedScene" uid="uid://bc31p7gj1yyny" path="res://ui/scenes/options_example.tscn" id="2_3mnpy"]
-[ext_resource type="Shader" uid="uid://cv41hwb0obad6" path="res://graphics/shaders/bodycam_shader.gdshader" id="3_6ayib"]
+[ext_resource type="PackedScene" uid="uid://cae4vnwco30xv" path="res://scenes/body_cam_shader.tscn" id="1_1q7iv"]
+[ext_resource type="PackedScene" uid="uid://b6dxwilaxeoun" path="res://scenes/perfromance_debug.tscn" id="1_gj3kh"]
 [ext_resource type="Material" uid="uid://bbb5jh054gf02" path="res://materials/ground/Concrete_2k_mat-JPG.tres" id="4_1q7iv"]
 [ext_resource type="PackedScene" uid="uid://bwmtu28l42jk4" path="res://scenes/player.tscn" id="4_65guy"]
 [ext_resource type="Material" uid="uid://be8kg2oofa52w" path="res://materials/ground/Carpet_2k_mat.tres" id="4_gj3kh"]
@@ -11,24 +10,13 @@
 [ext_resource type="Resource" uid="uid://br64fowmytpq1" path="res://scripts/room_styles/base_style.tres" id="6_vhkxn"]
 [ext_resource type="Script" uid="uid://fs4hus52px6a" path="res://addons/roommate/nodes/space.gd" id="8_6ayib"]
 [ext_resource type="PackedScene" uid="uid://o084bwgqxtlr" path="res://scenes/rooms/base_room.tscn" id="9_65guy"]
+[ext_resource type="PackedScene" uid="uid://cmcuqbrua5e7p" path="res://scenes/next_level_portal.tscn" id="10_myogd"]
 [ext_resource type="Material" uid="uid://3rm8js8ve5tt" path="res://materials/walls/old_decorative_wallpaper_2k_mat.tres" id="11_1q7iv"]
 [ext_resource type="Material" uid="uid://b8aho48ice6cg" path="res://materials/ceiling/OfficeCeiling_2k_mat.tres" id="12_gj3kh"]
 [ext_resource type="PackedScene" uid="uid://curpy8cqmq2cg" path="res://scenes/light.tscn" id="14_gj3kh"]
 
 [sub_resource type="Environment" id="Environment_gj3kh"]
 glow_enabled = true
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_vhkxn"]
-shader = ExtResource("3_6ayib")
-shader_parameter/aspect = 1.05
-shader_parameter/distortion = 1.1
-shader_parameter/radius = 1.07
-shader_parameter/alpha = 1.0
-shader_parameter/crop = 0.943
-shader_parameter/crop_color = Color(0, 0, 0, 1)
-shader_parameter/crop_feathering = 0.15
-shader_parameter/channel_offset = 0.009000003687379993
-shader_parameter/noise_strength = 5.0
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_1q7iv"]
 _surfaces = [{
@@ -71,37 +59,12 @@ data = PackedVector3Array(-0.5, -0.5, -20.5, -1, -0.5, -20.5, -0.5, -0.5, -21, -
 
 [node name="Level0" type="Node3D" unique_id=511111068]
 
+[node name="DebugUI" parent="." unique_id=1477393005 instance=ExtResource("1_gj3kh")]
+
+[node name="BodyCamShader" parent="." unique_id=1294743552 instance=ExtResource("1_1q7iv")]
+
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=359284010]
 environment = SubResource("Environment_gj3kh")
-
-[node name="UI" type="Node" parent="." unique_id=818381387]
-
-[node name="DebugLayer" type="CanvasLayer" parent="UI" unique_id=1675482563]
-layer = 2
-
-[node name="FpsDebug" parent="UI/DebugLayer" unique_id=120319615 instance=ExtResource("1_jjvta")]
-metadata/_edit_use_anchors_ = true
-
-[node name="UILayer" type="CanvasLayer" parent="UI" unique_id=1195141027]
-visible = false
-
-[node name="Options_Example" parent="UI/UILayer" unique_id=1351568746 instance=ExtResource("2_3mnpy")]
-metadata/_edit_use_anchors_ = true
-
-[node name="Shaders" type="Node" parent="." unique_id=1426449893]
-
-[node name="CanvasLayer" type="CanvasLayer" parent="Shaders" unique_id=948295565]
-layer = 0
-
-[node name="ColorRect" type="ColorRect" parent="Shaders/CanvasLayer" unique_id=1012291891]
-material = SubResource("ShaderMaterial_vhkxn")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-metadata/_edit_use_anchors_ = true
 
 [node name="others" type="Node" parent="." unique_id=840316879]
 
@@ -129,6 +92,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.0300493, 3.7981577, 2.55496
 
 [node name="Light" parent="others/Light" unique_id=653870379 instance=ExtResource("14_gj3kh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25851917, -0.2108612, -6.7158337)
+
+[node name="NextLevelPortal" parent="others" unique_id=1268293512 instance=ExtResource("10_myogd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.3931875, 0, -14.545782)
+next_scene_path = "uid://cb7sgtk11y8ci"
 
 [node name="Geometry" type="Node3D" parent="." unique_id=1743037896]
 

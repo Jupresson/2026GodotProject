@@ -1,3 +1,10 @@
+CollisionShape3D
+Area3D
+ColorRect
+Button
+Label
+VBoxContainer
+HBoxContainer
 MeshInstance3D
 SpotLight3D
 RoommateSpace
@@ -6,9 +13,3 @@ RoommateStyler
 Node
 OmniLight3D
 CSGBox3D
-StaticBody3D
-CSGMesh3D
-HealthComponent
-UCharacterBody3D
-CollisionShape3D
-Area3D

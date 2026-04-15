@@ -1,23 +1,11 @@
 [gd_scene format=3 uid="uid://dj1fkbs5vhuti"]
 
+[ext_resource type="PackedScene" uid="uid://b6dxwilaxeoun" path="res://scenes/perfromance_debug.tscn" id="1_866nw"]
 [ext_resource type="PackedScene" uid="uid://dhyc01xe37yl" path="res://scenes/check_point.tscn" id="2_866nw"]
-[ext_resource type="PackedScene" uid="uid://iw6qbd2a0337" path="res://ui/scenes/fps_debug.tscn" id="2_pt6io"]
-[ext_resource type="PackedScene" uid="uid://bc31p7gj1yyny" path="res://ui/scenes/options_example.tscn" id="3_866nw"]
-[ext_resource type="Shader" uid="uid://cv41hwb0obad6" path="res://graphics/shaders/bodycam_shader.gdshader" id="4_1ohy6"]
+[ext_resource type="PackedScene" uid="uid://cae4vnwco30xv" path="res://scenes/body_cam_shader.tscn" id="3_1ohy6"]
+[ext_resource type="PackedScene" uid="uid://bc31p7gj1yyny" path="res://ui/scenes/options_ui.tscn" id="3_866nw"]
 [ext_resource type="PackedScene" uid="uid://b5yfoyn25mqey" path="res://scenes/spikes.tscn" id="5_pt6io"]
 [ext_resource type="PackedScene" uid="uid://bwmtu28l42jk4" path="res://scenes/player.tscn" id="6_866nw"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ardm0"]
-shader = ExtResource("4_1ohy6")
-shader_parameter/aspect = 1.0
-shader_parameter/distortion = 1.0
-shader_parameter/radius = 1.07
-shader_parameter/alpha = 1.0
-shader_parameter/crop = 0.943
-shader_parameter/crop_color = Color(0, 0, 0, 1)
-shader_parameter/crop_feathering = 0.1
-shader_parameter/channel_offset = 0.005
-shader_parameter/noise_strength = 5.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jvxgj"]
 albedo_color = Color(0.385493, 0.385492, 0.385492, 1)
@@ -45,11 +33,7 @@ glow_enabled = true
 
 [node name="UI" type="Node" parent="." unique_id=1722083988]
 
-[node name="DebugLayer" type="CanvasLayer" parent="UI" unique_id=1634715436]
-layer = 2
-
-[node name="FpsDebug" parent="UI/DebugLayer" unique_id=120319615 instance=ExtResource("2_pt6io")]
-metadata/_edit_use_anchors_ = true
+[node name="DebugLayer" parent="UI" unique_id=1477393005 instance=ExtResource("1_866nw")]
 
 [node name="UILayer" type="CanvasLayer" parent="UI" unique_id=1609627138]
 
@@ -58,18 +42,7 @@ metadata/_edit_use_anchors_ = true
 
 [node name="Shaders" type="Node" parent="." unique_id=1734547910]
 
-[node name="CanvasLayer" type="CanvasLayer" parent="Shaders" unique_id=670284657]
-layer = 0
-
-[node name="ColorRect" type="ColorRect" parent="Shaders/CanvasLayer" unique_id=1835652393]
-material = SubResource("ShaderMaterial_ardm0")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-metadata/_edit_use_anchors_ = true
+[node name="BodyCamShader" parent="Shaders" unique_id=1294743552 instance=ExtResource("3_1ohy6")]
 
 [node name="Player" parent="." unique_id=1914000597 instance=ExtResource("6_866nw")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1945333, 0)

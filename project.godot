@@ -11,13 +11,14 @@ config_version=5
 [application]
 
 config/name="2026GodotProject"
-run/main_scene="uid://dj1fkbs5vhuti"
+run/main_scene="uid://q2u6dpkfqquf"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="uid://cchuj6pamq0d1"
 
 [autoload]
 
 GameManager="*uid://bhgdqau1swh0d"
+SceneManager="*res://scripts/managers/scene_manager.gd"
 
 [display]
 

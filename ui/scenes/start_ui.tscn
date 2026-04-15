@@ -1,0 +1,57 @@
+[gd_scene format=3 uid="uid://q2u6dpkfqquf"]
+
+[ext_resource type="Script" uid="uid://ci4c8mtg6uirs" path="res://ui/scripts/start_menu.gd" id="1_ik73a"]
+
+[node name="StartUI" type="Control" unique_id=2146434342]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+script = ExtResource("1_ik73a")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=67525639]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.25565878, 0.25565878, 0.25565878, 1)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=840404995]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer" unique_id=1494221578]
+layout_mode = 2
+size_flags_horizontal = 4
+alignment = 1
+
+[node name="Header" type="Label" parent="HBoxContainer/VBoxContainer" unique_id=1204394888]
+layout_mode = 2
+text = "The Game"
+
+[node name="Start" type="Button" parent="HBoxContainer/VBoxContainer" unique_id=898696790]
+layout_mode = 2
+text = "Start"
+
+[node name="Settings" type="Button" parent="HBoxContainer/VBoxContainer" unique_id=951438376]
+layout_mode = 2
+text = "Settings
+"
+
+[node name="Quit" type="Button" parent="HBoxContainer/VBoxContainer" unique_id=403681444]
+layout_mode = 2
+text = "Quit"
+
+[connection signal="pressed" from="HBoxContainer/VBoxContainer/Start" to="." method="_on_start_pressed"]
+[connection signal="pressed" from="HBoxContainer/VBoxContainer/Settings" to="." method="_on_settings_pressed"]
+[connection signal="pressed" from="HBoxContainer/VBoxContainer/Quit" to="." method="_on_quit_pressed"]
