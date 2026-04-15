@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://dol4yskd2vkjo" path="res://assets/textures/ground/Carpet016_2K-JPG/Carpet016_2K-JPG_Roughness.jpg" id="5_bptuk"]
 
 [resource]
-albedo_color = Color(0.78091204, 0.70403636, 0.47685504, 1)
+albedo_color = Color(0.8072984, 0.7343084, 0.5118075, 1)
 albedo_texture = ExtResource("1_r08lm")
 roughness_texture = ExtResource("5_bptuk")
 roughness_texture_channel = 4

@@ -3,7 +3,7 @@ class_name SceneManagerClass
 
 const LOADING_SCENE_PATH := "res://ui/scenes/loading_screen_ui.tscn"
 const DEFAULT_MIN_LOADING_TIME := 2.0
-const FAKE_PROGRESS_CAP := 90.0
+const FAKE_PROGRESS_CAP := 99.0
 const PROGRESS_SPEED := 120.0
 
 signal scene_change_started(scene_path: String)

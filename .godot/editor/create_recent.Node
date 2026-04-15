@@ -1,3 +1,4 @@
+StaticBody3D
 CollisionShape3D
 Area3D
 ColorRect
@@ -12,4 +13,3 @@ RoommateRoot
 RoommateStyler
 Node
 OmniLight3D
-CSGBox3D

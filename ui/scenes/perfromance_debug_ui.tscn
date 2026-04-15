@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://iw6qbd2a0337"]
 
-[ext_resource type="Script" uid="uid://bkdcitducwkex" path="res://ui/scripts/FPS_Label.gd" id="1_7te1f"]
+[ext_resource type="Script" uid="uid://biu54arfr5yyb" path="res://ui/scripts/performance_debug_ui.gd" id="1_pdbg"]
 
 [node name="PerfromanceDebugUI" type="Control" unique_id=120319615]
 layout_mode = 3
@@ -10,20 +10,86 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+script = ExtResource("1_pdbg")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1597120689]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 23.0
 grow_horizontal = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=101307299]
+[node name="TitleLabel" type="Label" parent="VBoxContainer" unique_id=1490185438]
 layout_mode = 2
-alignment = 1
+text = "Performance Stats"
+horizontal_alignment = 1
 
-[node name="FPS_Label" type="Label" parent="VBoxContainer/HBoxContainer" unique_id=2006086515]
+[node name="MetricsContainer" type="VBoxContainer" parent="VBoxContainer" unique_id=1917652201]
+unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 0
-text = "12 fps D:"
-script = ExtResource("1_7te1f")
+
+[node name="FPSRow" type="HBoxContainer" parent="VBoxContainer/MetricsContainer" unique_id=1746364182]
+layout_mode = 2
+
+[node name="FPSLabel" type="Label" parent="VBoxContainer/MetricsContainer/FPSRow" unique_id=2055109696]
+layout_mode = 2
+text = "FPS"
+
+[node name="FPSValue" type="Label" parent="VBoxContainer/MetricsContainer/FPSRow" unique_id=487168551]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "..."
+
+[node name="FrameTimeRow" type="HBoxContainer" parent="VBoxContainer/MetricsContainer" unique_id=1328762184]
+layout_mode = 2
+
+[node name="FrameTimeLabel" type="Label" parent="VBoxContainer/MetricsContainer/FrameTimeRow" unique_id=2022921595]
+layout_mode = 2
+text = "Frame Time"
+
+[node name="FrameTimeValue" type="Label" parent="VBoxContainer/MetricsContainer/FrameTimeRow" unique_id=441663046]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "..."
+
+[node name="PhysicsTimeRow" type="HBoxContainer" parent="VBoxContainer/MetricsContainer" unique_id=1767736968]
+layout_mode = 2
+
+[node name="PhysicsTimeLabel" type="Label" parent="VBoxContainer/MetricsContainer/PhysicsTimeRow" unique_id=2005880601]
+layout_mode = 2
+text = "Physics Time"
+
+[node name="PhysicsTimeValue" type="Label" parent="VBoxContainer/MetricsContainer/PhysicsTimeRow" unique_id=1089908465]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "..."
+
+[node name="ObjectCountRow" type="HBoxContainer" parent="VBoxContainer/MetricsContainer" unique_id=1482316240]
+layout_mode = 2
+
+[node name="ObjectCountLabel" type="Label" parent="VBoxContainer/MetricsContainer/ObjectCountRow" unique_id=399302343]
+layout_mode = 2
+text = "Object Count"
+
+[node name="ObjectCountValue" type="Label" parent="VBoxContainer/MetricsContainer/ObjectCountRow" unique_id=2100080763]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "..."
+
+[node name="RamUsageRow" type="HBoxContainer" parent="VBoxContainer/MetricsContainer" unique_id=1532819474]
+layout_mode = 2
+
+[node name="RamUsageLabel" type="Label" parent="VBoxContainer/MetricsContainer/RamUsageRow" unique_id=963784521]
+layout_mode = 2
+text = "RAM Usage"
+
+[node name="RamUsageValue" type="Label" parent="VBoxContainer/MetricsContainer/RamUsageRow" unique_id=1457318934]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "..."
