@@ -25,19 +25,6 @@ shader_parameter/noise_strength = 5.0
 
 [node name="Player" type="CharacterBody3D" unique_id=1914000597 groups=["player"]]
 script = ExtResource("1_g2els")
-jump_velocity = 4.35
-walk_speed = 3.0
-sprint_speed = 4.6
-crouch_speed = 2.0
-head_bob_walking_speed = 12.0
-head_bob_sprinting_speed = 15.0
-head_bob_crouching_speed = 11.0
-head_bob_intensity = 0.09
-fov_low = null
-fov_high = null
-fov_fall_boost = null
-fov_fall_speed_max = null
-fov_smooth_speed = null
 metadata/_custom_type_script = "uid://cps4j0bdsx55v"
 
 [node name="CollisionShapeNormal" type="CollisionShape3D" parent="." unique_id=1439296526]

@@ -2,7 +2,7 @@ extends Node
 class_name SceneManagerClass
 
 const LOADING_SCENE_PATH := "res://ui/scenes/loading_screen_ui.tscn"
-const DEFAULT_MIN_LOADING_TIME := 2.0
+const DEFAULT_MIN_LOADING_TIME := 1.0
 const FAKE_PROGRESS_CAP := 99.0
 const PROGRESS_SPEED := 120.0
 

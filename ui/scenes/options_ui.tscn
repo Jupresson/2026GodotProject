@@ -33,6 +33,10 @@ unique_name_in_owner = true
 layout_mode = 2
 alignment = 1
 script = ExtResource("1_lcbjn")
+debug_force_settings_on_startup = true
+debug_startup_fullscreen = true
+debug_startup_fsr_preset_index = 2
+debug_startup_screen_index = 1
 
 [node name="Resolution_OptionButton" type="OptionButton" parent="HBoxContainer/Options_Setting" unique_id=886868455]
 layout_mode = 2

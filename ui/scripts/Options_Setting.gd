@@ -12,7 +12,7 @@ const MENU_SCENE_PATH := "res://ui/scenes/start_ui.tscn"
 
 
 var Resolutions: Dictionary = {"3840x2160":Vector2i(3840,2160),
-								"2560x1440":Vector2i(2560,1080),
+								"2560x1440":Vector2i(2560,1440),
 								"1920x1080":Vector2i(1920,1080),
 								"1366x768":Vector2i(1366,768),
 								"1536x864":Vector2i(1536,864),
@@ -25,8 +25,8 @@ var Resolutions: Dictionary = {"3840x2160":Vector2i(3840,2160),
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	Add_Resolutions()
-	Check_Variables()
 	Get_Screens()
+	Check_Variables()
 
 func Check_Variables():
 	var _window = get_window()

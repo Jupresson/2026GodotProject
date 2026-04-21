@@ -6,11 +6,17 @@ class_name UCharacterBody3D
 
 signal step_requested(intensity: float, is_sprinting: bool, is_crouching: bool)
 
+const STEP_SOUNDS_FOLDER: String = "res://assets/sounds/sfx/general_step/"
+const STEP_VOLUME_DB: float = -5.0
+const JUMP_SOUNDS_FOLDER: String = "res://assets/sounds/sfx/general_jump/"
+const JUMP_VOLUME_DB: float = -10.0
+const STEP_PITCH_RANGE: Vector2 = Vector2(0.96, 1.04)
+
 @export_group("Character Speeds")
-@export var jump_velocity : float = 4.5
-@export var walk_speed : float = 5.0
-@export var sprint_speed : float = 8.0
-@export var crouch_speed : float = 3.0
+@export var jump_velocity : float = 4.35
+@export var walk_speed : float = 3.0
+@export var sprint_speed : float = 4.6
+@export var crouch_speed : float = 1.6
 @export var slide_speed : float = 7.0
 
 @export_group("Character Settings")
@@ -20,11 +26,11 @@ signal step_requested(intensity: float, is_sprinting: bool, is_crouching: bool)
 @export var crouching_height : float = 1.3
 ## The slide length in seconds for how far the player can slide
 @export var sliding_length : float = 1.0
-@export var head_bob_walking_speed : float = 14.0
-@export var head_bob_sprinting_speed : float = 22.0
-@export var head_bob_crouching_speed : float = 10.0
+@export var head_bob_walking_speed : float = 12.0
+@export var head_bob_sprinting_speed : float = 15.0
+@export var head_bob_crouching_speed : float = 11.0
 ## The head bob intensity is for crouching, where walking is multiplied by 2, and sprinting is multiplied by 4
-@export var head_bob_intensity : float = 0.05
+@export var head_bob_intensity : float = 0.09
 
 @export_group("Camera FOV")
 @export var fov_low : float = 125.8
@@ -32,6 +38,10 @@ signal step_requested(intensity: float, is_sprinting: bool, is_crouching: bool)
 @export var fov_fall_boost : float = 8.0
 @export var fov_fall_speed_max : float = 30.0
 @export var fov_smooth_speed : float = 6.0
+
+@export_group("Jump Feel")
+## Grace period after stepping off a ledge where jumping is still allowed.
+@export var coyote_time : float = 0.3
 
 @export_group("Controls")
 ## The InputMap action string to be used for LEFT movement
@@ -71,6 +81,7 @@ var head_bob_current_intensity = 0.0
 var head_bob_vector = Vector2.ZERO
 var head_bob_index = 0.0
 var last_velocity = Vector3.ZERO
+var coyote_timer = 0.3
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
@@ -152,6 +163,7 @@ func _ready():
 	# Only game: Run normal ready logic
 	if !Engine.is_editor_hint():
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+		step_requested.connect(_handle_head_bob_sound)
 		
 		pass
 
@@ -235,11 +247,16 @@ func _physics_process(delta):
 		# Add the gravity.
 		if !is_on_floor():
 			velocity.y -= gravity * delta
+			coyote_timer = maxf(coyote_timer - delta, 0.0)
+		else:
+			coyote_timer = coyote_time
 
 		# Handle jump.
-		if Input.is_action_just_pressed(JUMP) and is_on_floor():
+		if Input.is_action_just_pressed(JUMP) and (is_on_floor() or coyote_timer > 0.0):
 			velocity.y = jump_velocity
 			is_sliding = false
+			coyote_timer = 0.0
+			_handle_jump_sound()
 
 		# Handle the movement/deceleration.
 		if is_on_floor():
@@ -287,11 +304,34 @@ func _update_dynamic_fov(delta : float):
 	target_fov = clampf(target_fov, fov_low, max_fov)
 	camera_node.fov = lerpf(camera_node.fov, target_fov, delta * fov_smooth_speed)
 
-func _handle_head_bob_sound(_type: String):
-	if _type == "is_sprinting":
-		pass
-	elif _type == "is_walking":
-		pass
-	elif _type == "is_crouching":
-		pass
+func _handle_head_bob_sound(intensity: float, is_sprinting: bool, is_crouching: bool) -> void:
+	var volume_db: float = STEP_VOLUME_DB
+	if is_sprinting:
+		volume_db += 2.0
+	elif is_crouching:
+		volume_db -= 1.5
+	volume_db += lerpf(-1.5, 1.5, intensity)
+
+	AudioManager.play_random_global_from_folder(
+		STEP_SOUNDS_FOLDER,
+		&"SFX",
+		volume_db,
+		AudioManager.PitchMode.CUSTOM_RANGE,
+		AudioManager.PitchPreset.NORMAL,
+		STEP_PITCH_RANGE,
+		1.0,
+		true
+	)
 		
+func _handle_jump_sound():
+	var volume_db: float = JUMP_VOLUME_DB
+	AudioManager.play_random_global_from_folder(
+		JUMP_SOUNDS_FOLDER,
+		&"SFX",
+		volume_db,
+		AudioManager.PitchMode.CUSTOM_RANGE,
+		AudioManager.PitchPreset.NORMAL,
+		STEP_PITCH_RANGE,
+		1.0,
+		true
+	)	
