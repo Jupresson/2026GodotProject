@@ -4,6 +4,8 @@ class_name UCharacterBody3D
 
 ## A 3D physics body using a revamped template script.
 
+signal step_requested(intensity: float, is_sprinting: bool, is_crouching: bool)
+
 @export_group("Character Speeds")
 @export var jump_velocity : float = 4.5
 @export var walk_speed : float = 5.0
@@ -23,6 +25,13 @@ class_name UCharacterBody3D
 @export var head_bob_crouching_speed : float = 10.0
 ## The head bob intensity is for crouching, where walking is multiplied by 2, and sprinting is multiplied by 4
 @export var head_bob_intensity : float = 0.05
+
+@export_group("Camera FOV")
+@export var fov_low : float = 125.8
+@export var fov_high : float = 145.8
+@export var fov_fall_boost : float = 8.0
+@export var fov_fall_speed_max : float = 30.0
+@export var fov_smooth_speed : float = 6.0
 
 @export_group("Controls")
 ## The InputMap action string to be used for LEFT movement
@@ -53,6 +62,8 @@ var head_node : Node3D
 var camera_node : Camera3D
 var raycast_node : RayCast3D
 
+var shader_node : ColorRect
+
 var current_speed = walk_speed
 var slide_timer = 0.0
 var slide_vector = Vector2.ZERO
@@ -80,7 +91,9 @@ func _enter_tree():
 		head_node = $Head
 		camera_node = $Head/Camera
 		raycast_node = $RayCast3D
-
+		shader_node = $BodyCamShader/ColorRect
+		camera_node.fov = fov_low
+		
 func _ready():
 	# Only editor: Create child nodes
 	if Engine.is_editor_hint():
@@ -207,8 +220,12 @@ func _physics_process(delta):
 			head_bob_index += head_bob_crouching_speed * delta
 		
 		if is_on_floor() and !is_sliding and input_dir != Vector2.ZERO:
+			var previous_bob_y = head_bob_vector.y
 			head_bob_vector.y = sin(head_bob_index)
 			head_bob_vector.x = sin(head_bob_index/2)+0.5
+			if previous_bob_y > 0.0 and head_bob_vector.y <= 0.0:
+				var step_intensity := clampf(absf(velocity.length()) / maxf(sprint_speed, 0.001), 0.0, 1.0)
+				step_requested.emit(step_intensity, is_sprinting, is_crouching)
 			camera_node.position.y = lerp(camera_node.position.y, head_bob_vector.y * (head_bob_current_intensity/2.0), delta * 10.0)
 			camera_node.position.x = lerp(camera_node.position.x, head_bob_vector.x * head_bob_current_intensity, delta * 10.0)
 		else:
@@ -247,7 +264,34 @@ func _physics_process(delta):
 		else:
 			velocity.x = move_toward(velocity.x, 0, current_speed)
 			velocity.z = move_toward(velocity.z, 0, current_speed)
+
+		_update_dynamic_fov(delta)
 		
 		last_velocity = velocity
 		
 		move_and_slide()
+
+func _update_dynamic_fov(delta : float):
+	if camera_node == null:
+		return
+
+	var horizontal_speed := Vector2(velocity.x, velocity.z).length()
+	var speed_ratio := clampf(horizontal_speed / maxf(sprint_speed, 0.001), 0.0, 1.0)
+	var target_fov := lerpf(fov_low, fov_high, speed_ratio)
+
+	var fall_speed := maxf(-velocity.y, 0.0)
+	var fall_ratio := clampf(fall_speed / maxf(fov_fall_speed_max, 0.001), 0.0, 1.0)
+	target_fov += fall_ratio * fov_fall_boost
+
+	var max_fov := fov_high + fov_fall_boost
+	target_fov = clampf(target_fov, fov_low, max_fov)
+	camera_node.fov = lerpf(camera_node.fov, target_fov, delta * fov_smooth_speed)
+
+func _handle_head_bob_sound(_type: String):
+	if _type == "is_sprinting":
+		pass
+	elif _type == "is_walking":
+		pass
+	elif _type == "is_crouching":
+		pass
+		

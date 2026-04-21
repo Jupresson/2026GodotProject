@@ -1,6 +1,5 @@
 [gd_scene format=4 uid="uid://cb7sgtk11y8ci"]
 
-[ext_resource type="PackedScene" uid="uid://cae4vnwco30xv" path="res://scenes/body_cam_shader.tscn" id="1_1q7iv"]
 [ext_resource type="PackedScene" uid="uid://b6dxwilaxeoun" path="res://scenes/perfromance_debug.tscn" id="1_gj3kh"]
 [ext_resource type="PackedScene" uid="uid://bwmtu28l42jk4" path="res://scenes/player.tscn" id="4_65guy"]
 [ext_resource type="PackedScene" uid="uid://b5yfoyn25mqey" path="res://scenes/spikes.tscn" id="5_p6rmu"]
@@ -57,8 +56,6 @@ transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545
 shadow_enabled = true
 
 [node name="PerfromanceDebug" parent="." unique_id=1477393005 instance=ExtResource("1_gj3kh")]
-
-[node name="BodyCamShader" parent="." unique_id=1294743552 instance=ExtResource("1_1q7iv")]
 
 [node name="others" type="Node" parent="." unique_id=840316879]
 

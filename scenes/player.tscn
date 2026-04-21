@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cps4j0bdsx55v" path="res://addons/ultimate_character/ucharacterbody3d.gd" id="1_g2els"]
 [ext_resource type="Script" uid="uid://d0ies2qn7sx5b" path="res://scripts/components/healt_component.gd" id="2_qhqgy"]
+[ext_resource type="Shader" uid="uid://cv41hwb0obad6" path="res://graphics/shaders/bodycam_shader.gdshader" id="3_qhqgy"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_dqkch"]
 radius = 0.35
@@ -10,15 +11,33 @@ radius = 0.35
 radius = 0.35
 height = 1.3
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ardm0"]
+shader = ExtResource("3_qhqgy")
+shader_parameter/aspect = 1.0
+shader_parameter/distortion = 1.25
+shader_parameter/radius = 1.07
+shader_parameter/alpha = 1.0
+shader_parameter/crop = 0.943
+shader_parameter/crop_color = Color(0, 0, 0, 1)
+shader_parameter/crop_feathering = 0.1
+shader_parameter/channel_offset = 0.005
+shader_parameter/noise_strength = 5.0
+
 [node name="Player" type="CharacterBody3D" unique_id=1914000597 groups=["player"]]
 script = ExtResource("1_g2els")
 jump_velocity = 4.35
 walk_speed = 3.0
-sprint_speed = 4.3
+sprint_speed = 4.6
 crouch_speed = 2.0
-head_bob_sprinting_speed = 19.0
+head_bob_walking_speed = 12.0
+head_bob_sprinting_speed = 15.0
 head_bob_crouching_speed = 11.0
 head_bob_intensity = 0.09
+fov_low = null
+fov_high = null
+fov_fall_boost = null
+fov_fall_speed_max = null
+fov_smooth_speed = null
 metadata/_custom_type_script = "uid://cps4j0bdsx55v"
 
 [node name="CollisionShapeNormal" type="CollisionShape3D" parent="." unique_id=1439296526]
@@ -42,3 +61,16 @@ target_position = Vector3(0, 2, 0)
 [node name="HealthComponent" type="Node" parent="." unique_id=1446474810]
 script = ExtResource("2_qhqgy")
 metadata/_custom_type_script = "uid://d0ies2qn7sx5b"
+
+[node name="BodyCamShader" type="CanvasLayer" parent="." unique_id=1294743552]
+layer = 0
+
+[node name="ColorRect" type="ColorRect" parent="BodyCamShader" unique_id=282506275]
+material = SubResource("ShaderMaterial_ardm0")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+metadata/_edit_use_anchors_ = true
