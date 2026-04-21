@@ -1,7 +1,8 @@
+Node3D
+CSGBox3D
 FuncGodotMap
 MeshInstance3D
 GridMap
-CSGBox3D
 CSGMesh3D
 StaticBody3D
 CollisionShape3D
@@ -12,4 +13,3 @@ Label
 VBoxContainer
 HBoxContainer
 SpotLight3D
-Node

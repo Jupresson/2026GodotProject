@@ -84,6 +84,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.7402725, 0, -14.545782)
 next_scene_path = "uid://cb7sgtk11y8ci"
 
 [node name="FuncGodotMap" type="Node3D" parent="." unique_id=384156039]
+visible = false
 script = ExtResource("8_p6rmu")
 local_map_file = "uid://cnjocgx0pgwgt"
 map_settings = ExtResource("9_p6rmu")
@@ -97,3 +98,50 @@ mesh = SubResource("ArrayMesh_1q7iv")
 
 [node name="entity_0_brush_0_collision_shape" type="CollisionShape3D" parent="FuncGodotMap/entity_0_worldspawn" unique_id=157804200]
 shape = SubResource("ConvexPolygonShape3D_gj3kh")
+
+[node name="Node3D" type="Node3D" parent="." unique_id=1062229648]
+
+[node name="CSGBox3D7" type="CSGBox3D" parent="Node3D" unique_id=592295744]
+transform = Transform3D(-1.9009369e-07, 0.49999994, -8.905446, 5.0935455e-08, 0.8660253, 5.1415615, 4.5022464, 1.1313338e-08, -4.3417361e-07, -7.5613346, 1.0730119, -3.8391747)
+use_collision = true
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Node3D" unique_id=1613454093]
+transform = Transform3D(11.68748, 0, 0, 0, 1, 0, 0, 0, 10.283124, -0.19117704, 0, 3.0283248)
+use_collision = true
+size = Vector3(1.0327148, 1, 1.5889893)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Node3D" unique_id=1189580609]
+transform = Transform3D(4.5022473, 0, 0, 0, 1, 0, 0, 0, 10.283124, 5.4386654, 1.0730119, 0)
+use_collision = true
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Node3D" unique_id=2135251322]
+transform = Transform3D(4.5022473, 0, 0, 0, 1, 0, 0, 0, 10.283124, 5.4386654, 1.0730119, -9.211527)
+use_collision = true
+size = Vector3(1, 1, 0.3428955)
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="Node3D" unique_id=1122906484]
+transform = Transform3D(4.5022473, 0, 0, 0, 1, 0, 0, 0, 10.283124, 5.4386654, 1.0730119, -14.690121)
+use_collision = true
+size = Vector3(1, 1, 0.3428955)
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="Node3D" unique_id=938384643]
+transform = Transform3D(4.5022473, 0, 0, 0, 1, 0, 0, 0, 10.283124, 5.4386654, 1.0730119, -19.979347)
+use_collision = true
+size = Vector3(1, 1, 0.3428955)
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="Node3D" unique_id=1762744704]
+transform = Transform3D(4.5022473, 0, 0, 0, 1, 0, 0, 0, 10.283124, 5.4386654, 1.0730119, -26.299007)
+use_collision = true
+size = Vector3(1, 1, 0.3428955)
+
+[node name="CSGBox3D8" type="CSGBox3D" parent="Node3D" unique_id=1955841818]
+transform = Transform3D(-1.8371578e-07, 0.58792627, -8.318166, 7.055867e-08, 0.8089142, 6.045718, 4.502246, 1.1313339e-08, -4.3417361e-07, -7.3352227, 1.0730119, 0.16082525)
+use_collision = true
+
+[node name="CSGBox3D9" type="CSGBox3D" parent="Node3D" unique_id=219547870]
+transform = Transform3D(-1.7593366e-07, 0.6642261, -7.6869583, 8.818936e-08, 0.74753135, 6.8303194, 4.502246, 1.1313339e-08, -4.3417361e-07, -7.3352227, 1.0730119, 4.1608253)
+use_collision = true
+
+[node name="CSGBox3D10" type="CSGBox3D" parent="Node3D" unique_id=693470955]
+transform = Transform3D(-1.6545279e-07, 0.7406168, -6.909512, 1.0656166e-07, 0.6719273, 7.615854, 4.502246, 1.131334e-08, -4.3417361e-07, -7.3352227, 1.0730119, 8.160826)
+use_collision = true
