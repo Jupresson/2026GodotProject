@@ -7,10 +7,20 @@ class_name UCharacterBody3D
 signal step_requested(intensity: float, is_sprinting: bool, is_crouching: bool)
 
 const STEP_SOUNDS_FOLDER: String = "res://assets/sounds/sfx/general_step/"
-const STEP_VOLUME_DB: float = -5.0
-const JUMP_SOUNDS_FOLDER: String = "res://assets/sounds/sfx/general_jump/"
-const JUMP_VOLUME_DB: float = -10.0
+const STEP_VOLUME_DB: float = 5.0
 const STEP_PITCH_RANGE: Vector2 = Vector2(0.96, 1.04)
+
+const JUMP_SOUNDS_FOLDER: String = "res://assets/sounds/sfx/general_jump/"
+const JUMP_VOLUME_DB: float = -5.0
+const JUMP_PITCH_RANGE: Vector2 = Vector2(0.86, 0.9)
+
+const DASH_SOUNDS_FOLDER: String = "res://assets/sounds/sfx/general_dash/"
+const DASH_VOLUME_DB: float = -3
+const DASH_PITCH_RANGE: Vector2 = Vector2(0.96, 1.04)
+
+const LAND_SOUNDS_FOLDER: String = "res://assets/sounds/sfx/general_land/"
+const LAND_VOLUME_DB: float = -3
+const LAND_PITCH_RANGE: Vector2 = Vector2(0.96, 1.04)
 
 @export_group("Character Speeds")
 @export var jump_velocity : float = 4.35
@@ -191,6 +201,7 @@ func _physics_process(delta):
 				is_sliding = true
 				slide_timer = sliding_length
 				slide_vector = input_dir
+				_handle_dash_sound()
 			
 			is_walking = false
 			is_sprinting = false
@@ -324,14 +335,37 @@ func _handle_head_bob_sound(intensity: float, is_sprinting: bool, is_crouching: 
 	)
 		
 func _handle_jump_sound():
-	var volume_db: float = JUMP_VOLUME_DB
 	AudioManager.play_random_global_from_folder(
 		JUMP_SOUNDS_FOLDER,
 		&"SFX",
-		volume_db,
+		JUMP_VOLUME_DB,
 		AudioManager.PitchMode.CUSTOM_RANGE,
 		AudioManager.PitchPreset.NORMAL,
-		STEP_PITCH_RANGE,
+		JUMP_PITCH_RANGE,
 		1.0,
 		true
 	)	
+
+func _handle_dash_sound():
+	AudioManager.play_random_global_from_folder(
+		DASH_SOUNDS_FOLDER,
+		&"SFX",
+		DASH_VOLUME_DB,
+		AudioManager.PitchMode.CUSTOM_RANGE,
+		AudioManager.PitchPreset.NORMAL,
+		DASH_PITCH_RANGE,
+		1.0,
+		true
+	)	
+
+func _handle_land_sound():
+	AudioManager.play_random_global_from_folder(
+		LAND_SOUNDS_FOLDER,
+		&"SFX",
+		LAND_VOLUME_DB,
+		AudioManager.PitchMode.CUSTOM_RANGE,
+		AudioManager.PitchPreset.NORMAL,
+		LAND_PITCH_RANGE,
+		1.0,
+		true
+	)
