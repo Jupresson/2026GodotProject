@@ -22,8 +22,6 @@ const LAND_SOUNDS_FOLDER: String = "res://assets/sounds/sfx/general_land/"
 const LAND_VOLUME_DB: float = 0
 const LAND_PITCH_RANGE: Vector2 = Vector2(0.86, 1.34)
 
-const SLIDE_LOOP_KEY_PREFIX: String = "ucharacter_slide_loop_"
-
 @export_group("Character Speeds")
 @export var jump_velocity : float = 4.35
 @export var walk_speed : float = 3.0
@@ -54,15 +52,6 @@ const SLIDE_LOOP_KEY_PREFIX: String = "ucharacter_slide_loop_"
 @export_group("Jump Feel")
 ## Grace period after stepping off a ledge where jumping is still allowed.
 @export var coyote_time : float = 0.3
-
-@export_group("Slide Audio")
-@export var slide_loop_stream: AudioStream
-@export var slide_loop_base_volume_db: float = -14.0
-@export var slide_loop_max_volume_db: float = -4.0
-@export var slide_loop_min_speed: float = 2.0
-@export var slide_loop_max_speed: float = 9.0
-@export var slide_loop_pitch_range: Vector2 = Vector2(0.92, 1.08)
-@export var slide_loop_fade_out_speed: float = 18.0
 
 @export_group("Controls")
 ## The InputMap action string to be used for LEFT movement
@@ -105,8 +94,6 @@ var last_velocity = Vector3.ZERO
 var coyote_timer = 0.3
 var was_on_ground : bool = false
 var has_ground_state : bool = false
-var slide_loop_player: AudioStreamPlayer
-var slide_loop_key: StringName = StringName()
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
@@ -189,7 +176,6 @@ func _ready():
 	if !Engine.is_editor_hint():
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 		step_requested.connect(_handle_head_bob_sound)
-		slide_loop_key = StringName("%s%s" % [SLIDE_LOOP_KEY_PREFIX, str(get_instance_id())])
 		
 		pass
 
@@ -246,8 +232,6 @@ func _physics_process(delta):
 			slide_timer -= delta
 			if slide_timer <= 0:
 				is_sliding = false
-
-		_update_slide_audio(delta)
 		
 		# Handle head bob.
 		if is_sprinting:
@@ -327,11 +311,6 @@ func _physics_process(delta):
 			was_on_ground = is_on_floor()
 			has_ground_state = true
 
-func _exit_tree() -> void:
-	if Engine.is_editor_hint():
-		return
-	_stop_slide_loop_immediately()
-
 func _update_dynamic_fov(delta : float):
 	if camera_node == null:
 		return
@@ -404,57 +383,3 @@ func _handle_land_sound():
 	)
 
 	return true
-
-func _update_slide_audio(delta: float) -> void:
-	if slide_loop_stream == null:
-		_stop_slide_loop_immediately()
-		return
-
-	var horizontal_speed := Vector2(velocity.x, velocity.z).length()
-	var should_play := is_sliding and is_on_floor() and horizontal_speed > slide_loop_min_speed
-
-	if should_play:
-		if slide_loop_player == null or !is_instance_valid(slide_loop_player):
-			_ensure_slide_stream_loops()
-			slide_loop_player = AudioManager.play_global_loop(
-				slide_loop_key,
-				slide_loop_stream,
-				&"SFX",
-				slide_loop_base_volume_db,
-				AudioManager.PitchMode.CUSTOM_VALUE,
-				AudioManager.PitchPreset.NORMAL,
-				slide_loop_pitch_range,
-				1.0
-			)
-
-		if slide_loop_player != null and is_instance_valid(slide_loop_player):
-			var speed_ratio := clampf(
-				(horizontal_speed - slide_loop_min_speed) / maxf(slide_loop_max_speed - slide_loop_min_speed, 0.001),
-				0.0,
-				1.0
-			)
-			slide_loop_player.volume_db = lerpf(slide_loop_base_volume_db, slide_loop_max_volume_db, speed_ratio)
-			slide_loop_player.pitch_scale = lerpf(slide_loop_pitch_range.x, slide_loop_pitch_range.y, speed_ratio)
-	else:
-		if slide_loop_player != null and is_instance_valid(slide_loop_player):
-			slide_loop_player.volume_db = move_toward(slide_loop_player.volume_db, -80.0, slide_loop_fade_out_speed * delta)
-			if slide_loop_player.volume_db <= -70.0:
-				_stop_slide_loop_immediately()
-		else:
-			_stop_slide_loop_immediately()
-
-func _stop_slide_loop_immediately() -> void:
-	AudioManager.stop_global_loop(slide_loop_key)
-	slide_loop_player = null
-
-func _ensure_slide_stream_loops() -> void:
-	if slide_loop_stream is AudioStreamWAV:
-		var wav_stream := slide_loop_stream as AudioStreamWAV
-		if wav_stream.loop_mode == AudioStreamWAV.LOOP_DISABLED:
-			wav_stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
-	elif slide_loop_stream is AudioStreamOggVorbis:
-		var ogg_stream := slide_loop_stream as AudioStreamOggVorbis
-		ogg_stream.loop = true
-	elif slide_loop_stream is AudioStreamMP3:
-		var mp3_stream := slide_loop_stream as AudioStreamMP3
-		mp3_stream.loop = true
