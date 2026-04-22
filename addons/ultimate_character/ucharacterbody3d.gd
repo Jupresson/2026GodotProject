@@ -18,6 +18,8 @@ const DASH_SOUNDS_FOLDER: String = "res://assets/sounds/sfx/general_dash/"
 const DASH_VOLUME_DB: float = -3
 const DASH_PITCH_RANGE: Vector2 = Vector2(0.96, 1.04)
 
+const SLIDE_SFX: AudioStream = preload("res://assets/sounds/sfx/general_slide/slide_1.ogg")
+
 const LAND_SOUNDS_FOLDER: String = "res://assets/sounds/sfx/general_land/"
 const LAND_VOLUME_DB: float = 0
 const LAND_PITCH_RANGE: Vector2 = Vector2(0.86, 1.34)
@@ -179,6 +181,11 @@ func _ready():
 		
 		pass
 
+
+func _exit_tree() -> void:
+	if !Engine.is_editor_hint():
+		pass
+
 func _input(event):
 	if !Engine.is_editor_hint():
 		if event is InputEventMouseMotion and !is_sliding:
@@ -204,6 +211,8 @@ func _physics_process(delta):
 				slide_timer = sliding_length
 				slide_vector = input_dir
 				_handle_dash_sound()
+				if is_on_floor():
+					_play_slide_sound()
 			
 			is_walking = false
 			is_sprinting = false
@@ -268,6 +277,8 @@ func _physics_process(delta):
 		# handle jump sound
 		if has_ground_state and is_on_floor():
 			if !was_on_ground:
+				if is_sliding:
+					_play_slide_sound()
 				was_on_ground = _handle_land_sound()
 		
 		# Handle jump.
@@ -369,6 +380,16 @@ func _handle_dash_sound():
 		1.0,
 		true
 	)	
+
+
+
+func _play_slide_sound() -> void:
+	AudioManager.play_spatial_sfx(
+		SLIDE_SFX,
+		global_position,
+		AudioManager.SFX_BUS,
+		0.0
+	)
 
 func _handle_land_sound():
 	AudioManager.play_random_global_from_folder(
