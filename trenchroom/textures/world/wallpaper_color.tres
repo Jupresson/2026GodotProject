@@ -1,0 +1,8 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://bpor06ajsl3t4"]
+
+[ext_resource type="Texture2D" uid="uid://b0yqo3b1bk5ec" path="res://trenchroom/textures/world/wallpaper_color.png" id="1_2n2jo"]
+
+[resource]
+albedo_texture = ExtResource("1_2n2jo")
+metallic_specular = 0.0
+texture_filter = 2

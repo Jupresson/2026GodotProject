@@ -9,4 +9,6 @@
 script = ExtResource("3_iemk2")
 entity_fgd = ExtResource("2_sg7m4")
 base_texture_dir = "res://trenchroom/textures"
+clip_texture = "special/clip"
+skip_texture = "special/skip"
 metadata/_custom_type_script = "uid://38q6k0ctahjn"
