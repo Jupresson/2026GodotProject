@@ -1,769 +1,416 @@
 extends Node
-class_name AudioManagerClass
 
-const MASTER_BUS: StringName = &"Master"
-const MUSIC_BUS: StringName = &"Music"
-const SFX_BUS: StringName = &"SFX"
-const AMBIENT_BUS: StringName = &"Ambient"
-const UI_BUS: StringName = &"UI"
+const DEFAULT_BUS: StringName = &"Master"
 
-const DEFAULT_SPATIAL_POOL_SIZE: int = 16
-const DEFAULT_GLOBAL_POOL_SIZE: int = 10
-const DEFAULT_UNIT_SIZE: float = 8.0
-const DEFAULT_MAX_DISTANCE: float = 80.0
-
-enum PitchMode {
-	PRESET,
-	CUSTOM_RANGE,
-	CUSTOM_VALUE
+enum BusCategory {
+	MUSIC,
+	SFX,
+	AMBIENT,
+	UI,
 }
 
-enum PitchPreset {
-	VERY_LOW,
-	LOW,
-	NORMAL,
-	HIGH,
-	VERY_HIGH,
-	RANDOM_SUBTLE,
-	RANDOM_WIDE
+enum PlaybackKind {
+	GLOBAL_2D,
+	SPATIAL_3D,
 }
 
-const _PITCH_PRESET_RANGES = {
-	PitchPreset.VERY_LOW: Vector2(0.65, 0.8),
-	PitchPreset.LOW: Vector2(0.8, 0.95),
-	PitchPreset.NORMAL: Vector2(1.0, 1.0),
-	PitchPreset.HIGH: Vector2(1.05, 1.2),
-	PitchPreset.VERY_HIGH: Vector2(1.2, 1.4),
-	PitchPreset.RANDOM_SUBTLE: Vector2(0.95, 1.05),
-	PitchPreset.RANDOM_WIDE: Vector2(0.8, 1.25)
-}
 
-var _available_spatial_players: Array[AudioStreamPlayer3D] = []
-var _active_spatial_players: Array[AudioStreamPlayer3D] = []
-var _available_global_players: Array[AudioStreamPlayer] = []
-var _active_global_players: Array[AudioStreamPlayer] = []
-var _looping_spatial_players: Dictionary[StringName, AudioStreamPlayer3D] = {}
-var _looping_global_players: Dictionary[StringName, AudioStreamPlayer] = {}
-var _last_random_bank_indices: Dictionary[StringName, int] = {}
-var _stream_bank_cache: Dictionary = {}
-var _player_fade_tweens: Dictionary[int, Tween] = {}
+class SoundRequest:
+	extends RefCounted
+
+	var stream: AudioStream = null
+	var folder_path: String = ""
+	var playback_kind: PlaybackKind = PlaybackKind.GLOBAL_2D
+	var bus_category: BusCategory = BusCategory.SFX
+	var volume_db: float = 0.0
+	var pitch_scale: float = 1.0
+	var pitch_range: Vector2 = Vector2.ONE
+	var unique_tag: StringName = &""
+	var category: StringName = &""
+	var global_position: Vector3 = Vector3.ZERO
+	var spatial_unit_size: float = 1.0
+	var spatial_max_distance: float = 0.0
+	var spatial_attenuation_model: int = AudioStreamPlayer3D.ATTENUATION_INVERSE_DISTANCE
+	var spatial_doppler_tracking: int = AudioStreamPlayer3D.DOPPLER_TRACKING_DISABLED
+	var search_recursively: bool = true
+	var fade_out_seconds: float = 0.15
+
+
+class ActiveSound:
+	extends RefCounted
+
+	var id: int = 0
+	var player: Node = null
+	var unique_tag: StringName = &""
+	var category: StringName = &""
+	var stream_length: float = 0.0
+	var elapsed_time: float = 0.0
+	var fade_out_seconds: float = 0.0
+	var fading_out: bool = false
+	var fade_tween: Tween = null
+
+
+var _active_sounds: Dictionary = {}
+var _folder_cache: Dictionary = {}
+var _next_sound_id: int = 1
+var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
+
+const BUS_NAMES: Dictionary = {
+	BusCategory.MUSIC: &"Music",
+	BusCategory.SFX: &"SFX",
+	BusCategory.AMBIENT: &"Ambient",
+	BusCategory.UI: &"UI",
+}
 
 
 func _ready() -> void:
-	add_to_group("autoload")
-	process_mode = Node.PROCESS_MODE_ALWAYS
 	add_to_group("audio_manager")
-	_ensure_audio_buses()
-	_seed_spatial_pool(DEFAULT_SPATIAL_POOL_SIZE)
-	_seed_global_pool(DEFAULT_GLOBAL_POOL_SIZE)
+	_rng.randomize()
+	set_process(true)
 
 
-func play_global(
-	stream: AudioStream,
-	bus_name: StringName = SFX_BUS,
-	volume_db: float = 0.0,
-	pitch_mode: PitchMode = PitchMode.PRESET,
-	pitch_preset: PitchPreset = PitchPreset.NORMAL,
-	custom_pitch_range: Vector2 = Vector2(1.0, 1.0),
-	custom_pitch_scale: float = 1.0,
-	fade_in_seconds: float = 0.0
-) -> AudioStreamPlayer:
+func _exit_tree() -> void:
+	set_process(false)
+	stop_all()
+
+
+func _process(delta: float) -> void:
+	if _active_sounds.is_empty():
+		return
+
+	var active_ids: Array = _active_sounds.keys()
+	for raw_id in active_ids:
+		var sound_id := int(raw_id)
+		var entry := _active_sounds.get(sound_id) as ActiveSound
+		if entry == null:
+			_active_sounds.erase(sound_id)
+			continue
+
+		if not is_instance_valid(entry.player):
+			_active_sounds.erase(sound_id)
+			continue
+
+		if entry.fading_out:
+			continue
+
+		entry.elapsed_time += delta
+		if entry.fade_out_seconds <= 0.0:
+			continue
+
+		if entry.stream_length <= 0.0:
+			continue
+
+		var fade_start_time := maxf(entry.stream_length - entry.fade_out_seconds, 0.0)
+		if entry.elapsed_time >= fade_start_time:
+			_begin_fade_out(sound_id, entry, false)
+
+
+func play_sound(request: SoundRequest) -> Node:
+	if request == null:
+		push_error("AudioManager.play_sound() requires a SoundRequest.")
+		return null
+
+	var stream := _resolve_stream(request)
 	if stream == null:
-		push_warning("AudioManager.play_global() received a null stream.")
+		push_warning("AudioManager.play_sound() could not resolve an AudioStream.")
 		return null
 
-	var player: AudioStreamPlayer = _acquire_global_player() as AudioStreamPlayer
-	_configure_global_player(player, stream, bus_name, volume_db)
-	if fade_in_seconds > 0.0:
-		_set_player_gain(player, -80.0)
-	_apply_pitch(player, pitch_mode, pitch_preset, custom_pitch_range, custom_pitch_scale)
-	player.play()
-	if fade_in_seconds > 0.0:
-		_tween_player_volume(player, volume_db, fade_in_seconds)
+	if request.unique_tag != &"":
+		stop_by_unique_tag(request.unique_tag)
+
+	var player := _create_player(request.playback_kind)
+	if player == null:
+		push_error("AudioManager.play_sound() could not create an audio player.")
+		return null
+
+	var sound_id := _next_sound_id
+	_next_sound_id += 1
+
+	var entry := ActiveSound.new()
+	entry.id = sound_id
+	entry.player = player
+	entry.unique_tag = request.unique_tag
+	entry.category = request.category
+	entry.stream_length = maxf(stream.get_length(), 0.0)
+	entry.fade_out_seconds = maxf(request.fade_out_seconds, 0.0)
+	_active_sounds[sound_id] = entry
+
+	_configure_player(player, request, stream)
+	player.name = "Audio_%d" % sound_id
+	_get_spawn_parent(request.playback_kind).add_child(player)
+	_apply_spatial_position(player, request)
+	_track_player(player, sound_id)
+	_start_player(player)
+
 	return player
 
 
-func play_spatial(
-	stream: AudioStream,
-	world_position: Vector3,
-	bus_name: StringName = SFX_BUS,
-	volume_db: float = 0.0,
-	unit_size: float = DEFAULT_UNIT_SIZE,
-	max_distance: float = DEFAULT_MAX_DISTANCE,
-	pitch_mode: PitchMode = PitchMode.PRESET,
-	pitch_preset: PitchPreset = PitchPreset.NORMAL,
-	custom_pitch_range: Vector2 = Vector2(1.0, 1.0),
-	custom_pitch_scale: float = 1.0
-) -> AudioStreamPlayer3D:
-	if stream == null:
-		push_warning("AudioManager.play_spatial() received a null stream.")
-		return null
-
-	var player: AudioStreamPlayer3D = _acquire_spatial_player() as AudioStreamPlayer3D
-	_configure_spatial_player(player, stream, world_position, bus_name, volume_db, unit_size, max_distance)
-	_apply_pitch(player, pitch_mode, pitch_preset, custom_pitch_range, custom_pitch_scale)
-	player.play()
-	return player
-
-
-func play_global_from_path(
-	resource_path: String,
-	bus_name: StringName = SFX_BUS,
-	volume_db: float = 0.0,
-	pitch_mode: PitchMode = PitchMode.PRESET,
-	pitch_preset: PitchPreset = PitchPreset.NORMAL,
-	custom_pitch_range: Vector2 = Vector2(1.0, 1.0),
-	custom_pitch_scale: float = 1.0,
-	fade_in_seconds: float = 0.0
-) -> AudioStreamPlayer:
-	var stream: AudioStream = load(resource_path) as AudioStream
-	return play_global(stream, bus_name, volume_db, pitch_mode, pitch_preset, custom_pitch_range, custom_pitch_scale, fade_in_seconds)
-
-
-func play_spatial_from_path(
-	resource_path: String,
-	world_position: Vector3,
-	bus_name: StringName = SFX_BUS,
-	volume_db: float = 0.0,
-	unit_size: float = DEFAULT_UNIT_SIZE,
-	max_distance: float = DEFAULT_MAX_DISTANCE,
-	pitch_mode: PitchMode = PitchMode.PRESET,
-	pitch_preset: PitchPreset = PitchPreset.NORMAL,
-	custom_pitch_range: Vector2 = Vector2(1.0, 1.0),
-	custom_pitch_scale: float = 1.0
-) -> AudioStreamPlayer3D:
-	var stream: AudioStream = load(resource_path) as AudioStream
-	return play_spatial(stream, world_position, bus_name, volume_db, unit_size, max_distance, pitch_mode, pitch_preset, custom_pitch_range, custom_pitch_scale)
-
-
-func play_ui(stream: AudioStream, volume_db: float = 0.0, pitch_preset: PitchPreset = PitchPreset.NORMAL) -> AudioStreamPlayer:
-	return play_global(stream, UI_BUS, volume_db, PitchMode.PRESET, pitch_preset)
-
-
-func play_music(stream: AudioStream, volume_db: float = -6.0) -> AudioStreamPlayer:
-	return play_global(stream, MUSIC_BUS, volume_db)
-
-
-func play_ambient_spatial(
-	stream: AudioStream,
-	world_position: Vector3,
-	volume_db: float = 0.0,
-	unit_size: float = DEFAULT_UNIT_SIZE,
-	max_distance: float = DEFAULT_MAX_DISTANCE
-) -> AudioStreamPlayer3D:
-	return play_spatial(stream, world_position, AMBIENT_BUS, volume_db, unit_size, max_distance)
-
-
-func play_global_loop(
-	key: StringName,
-	stream: AudioStream,
-	bus_name: StringName = MUSIC_BUS,
-	volume_db: float = 0.0,
-	pitch_mode: PitchMode = PitchMode.PRESET,
-	pitch_preset: PitchPreset = PitchPreset.NORMAL,
-	custom_pitch_range: Vector2 = Vector2(1.0, 1.0),
-	custom_pitch_scale: float = 1.0,
-	fade_in_seconds: float = 0.0
-) -> AudioStreamPlayer:
-	if key.is_empty():
-		push_warning("AudioManager.play_global_loop() received an empty key.")
-		return null
-
-	var existing: AudioStreamPlayer = _looping_global_players.get(key, null) as AudioStreamPlayer
-	if existing is AudioStreamPlayer and is_instance_valid(existing):
-		return existing
-
-	var player: AudioStreamPlayer = _acquire_global_player() as AudioStreamPlayer
-	_configure_global_player(player, stream, bus_name, volume_db)
-	if fade_in_seconds > 0.0:
-		_set_player_gain(player, -80.0)
-	_apply_pitch(player, pitch_mode, pitch_preset, custom_pitch_range, custom_pitch_scale)
-	player.stream_paused = false
-	_looping_global_players[key] = player
-	player.play()
-	if fade_in_seconds > 0.0:
-		_tween_player_volume(player, volume_db, fade_in_seconds)
-	return player
-
-
-func play_spatial_loop(
-	key: StringName,
-	stream: AudioStream,
-	world_position: Vector3,
-	bus_name: StringName = AMBIENT_BUS,
-	volume_db: float = 0.0,
-	unit_size: float = DEFAULT_UNIT_SIZE,
-	max_distance: float = DEFAULT_MAX_DISTANCE,
-	pitch_mode: PitchMode = PitchMode.PRESET,
-	pitch_preset: PitchPreset = PitchPreset.NORMAL,
-	custom_pitch_range: Vector2 = Vector2(1.0, 1.0),
-	custom_pitch_scale: float = 1.0
-) -> AudioStreamPlayer3D:
-	if key.is_empty():
-		push_warning("AudioManager.play_spatial_loop() received an empty key.")
-		return null
-
-	var existing: AudioStreamPlayer3D = _looping_spatial_players.get(key, null) as AudioStreamPlayer3D
-	if existing is AudioStreamPlayer3D and is_instance_valid(existing):
-		return existing
-
-	var player: AudioStreamPlayer3D = _acquire_spatial_player() as AudioStreamPlayer3D
-	_configure_spatial_player(player, stream, world_position, bus_name, volume_db, unit_size, max_distance)
-	_apply_pitch(player, pitch_mode, pitch_preset, custom_pitch_range, custom_pitch_scale)
-	player.stream_paused = false
-	_looping_spatial_players[key] = player
-	player.play()
-	return player
-
-
-func stop_global_loop(key: StringName, fade_out_seconds: float = 0.0) -> void:
-	if not _looping_global_players.has(key):
+func stop_by_unique_tag(unique_tag: StringName) -> void:
+	if unique_tag == &"":
 		return
+	_stop_entries(Callable(self, "_entry_matches_unique_tag").bind(unique_tag))
 
-	var player: AudioStreamPlayer = _looping_global_players[key]
-	_looping_global_players.erase(key)
 
-	if fade_out_seconds <= 0.0:
-		_release_global_player(player)
+func stop_by_category(category: StringName) -> void:
+	if category == &"":
 		return
-
-	if player == null or not is_instance_valid(player):
-		return
-
-	_tween_player_volume(player, -80.0, fade_out_seconds, true)
-
-
-func stop_spatial_loop(key: StringName) -> void:
-	if not _looping_spatial_players.has(key):
-		return
-
-	_release_spatial_player(_looping_spatial_players[key])
-	_looping_spatial_players.erase(key)
+	_stop_entries(Callable(self, "_entry_matches_category").bind(category))
 
 
 func stop_all() -> void:
-	for key in _looping_spatial_players.keys():
-		_release_spatial_player(_looping_spatial_players[key])
-	_looping_spatial_players.clear()
-
-	for key in _looping_global_players.keys():
-		_release_global_player(_looping_global_players[key])
-	_looping_global_players.clear()
-
-	for player in _active_spatial_players.duplicate():
-		_release_spatial_player(player)
-
-	for player in _active_global_players.duplicate():
-		_release_global_player(player)
+	_stop_entries(Callable(self, "_entry_matches_all"))
 
 
-func set_bus_volume_linear(bus_name: StringName, linear_value: float) -> void:
-	var bus_index: int = AudioServer.get_bus_index(bus_name)
-	if bus_index == -1:
-		push_warning("AudioManager.set_bus_volume_linear() could not find bus: %s" % bus_name)
-		return
+func _resolve_stream(request: SoundRequest) -> AudioStream:
+	if not request.folder_path.is_empty():
+		var folder_stream := _pick_random_stream_from_folder(request.folder_path, request.search_recursively)
+		if folder_stream != null:
+			return folder_stream
 
-	var safe_linear: float = clampf(linear_value, 0.0001, 1.0)
-	AudioServer.set_bus_volume_db(bus_index, linear_to_db(safe_linear))
+	if request.stream != null:
+		return request.stream
 
-
-func set_bus_volume_db(bus_name: StringName, volume_db: float) -> void:
-	var bus_index: int = AudioServer.get_bus_index(bus_name)
-	if bus_index == -1:
-		push_warning("AudioManager.set_bus_volume_db() could not find bus: %s" % bus_name)
-		return
-
-	AudioServer.set_bus_volume_db(bus_index, volume_db)
+	return null
 
 
-func set_bus_mute(bus_name: StringName, muted: bool) -> void:
-	var bus_index: int = AudioServer.get_bus_index(bus_name)
-	if bus_index == -1:
-		push_warning("AudioManager.set_bus_mute() could not find bus: %s" % bus_name)
-		return
+func _pick_random_stream_from_folder(folder_path: String, search_recursively: bool) -> AudioStream:
+	var cache_key := _folder_cache_key(folder_path, search_recursively)
+	var cached_paths: Array = _folder_cache.get(cache_key, [])
 
-	AudioServer.set_bus_mute(bus_index, muted)
+	if cached_paths.is_empty():
+		cached_paths = _collect_audio_paths(folder_path, search_recursively)
+		_folder_cache[cache_key] = cached_paths
 
-
-func set_global_loop_volume_db(key: StringName, volume_db: float, fade_seconds: float = 0.0) -> void:
-	var player: AudioStreamPlayer = _looping_global_players.get(key, null) as AudioStreamPlayer
-	if player == null or not is_instance_valid(player):
-		return
-
-	if fade_seconds > 0.0:
-		_tween_player_volume(player, volume_db, fade_seconds)
-		return
-
-	_set_player_gain(player, volume_db)
-
-
-func set_global_loop_volume_linear(key: StringName, linear_value: float, fade_seconds: float = 0.0) -> void:
-	var safe_linear: float = clampf(linear_value, 0.0001, 1.0)
-	set_global_loop_volume_db(key, linear_to_db(safe_linear), fade_seconds)
-
-
-func play_spatial_sfx(
-	stream: AudioStream,
-	world_position: Vector3,
-	bus_name: StringName = SFX_BUS,
-	volume_db: float = 0.0,
-	unit_size: float = DEFAULT_UNIT_SIZE,
-	max_distance: float = DEFAULT_MAX_DISTANCE
-) -> AudioStreamPlayer3D:
-	return play_spatial(stream, world_position, bus_name, volume_db, unit_size, max_distance)
-
-
-func play_global_sfx(
-	stream: AudioStream,
-	bus_name: StringName = UI_BUS,
-	volume_db: float = 0.0
-) -> AudioStreamPlayer:
-	return play_global(stream, bus_name, volume_db)
-
-
-func play_global_from_streams(
-	streams: Array[AudioStream],
-	bus_name: StringName = SFX_BUS,
-	volume_db: float = 0.0,
-	pitch_mode: PitchMode = PitchMode.PRESET,
-	pitch_preset: PitchPreset = PitchPreset.NORMAL,
-	custom_pitch_range: Vector2 = Vector2(1.0, 1.0),
-	custom_pitch_scale: float = 1.0,
-	avoid_immediate_repeat: bool = true
-) -> AudioStreamPlayer:
-	return play_random_global_from_streams(streams, bus_name, volume_db, pitch_mode, pitch_preset, custom_pitch_range, custom_pitch_scale, avoid_immediate_repeat)
-
-
-func play_spatial_from_streams(
-	streams: Array[AudioStream],
-	world_position: Vector3,
-	bus_name: StringName = SFX_BUS,
-	volume_db: float = 0.0,
-	unit_size: float = DEFAULT_UNIT_SIZE,
-	max_distance: float = DEFAULT_MAX_DISTANCE,
-	pitch_mode: PitchMode = PitchMode.PRESET,
-	pitch_preset: PitchPreset = PitchPreset.NORMAL,
-	custom_pitch_range: Vector2 = Vector2(1.0, 1.0),
-	custom_pitch_scale: float = 1.0,
-	avoid_immediate_repeat: bool = true
-) -> AudioStreamPlayer3D:
-	return play_random_spatial_from_streams(streams, world_position, bus_name, volume_db, unit_size, max_distance, pitch_mode, pitch_preset, custom_pitch_range, custom_pitch_scale, avoid_immediate_repeat)
-
-
-func play_global_from_folder(
-	folder_path: String,
-	bus_name: StringName = SFX_BUS,
-	volume_db: float = 0.0,
-	pitch_mode: PitchMode = PitchMode.PRESET,
-	pitch_preset: PitchPreset = PitchPreset.NORMAL,
-	custom_pitch_range: Vector2 = Vector2(1.0, 1.0),
-	custom_pitch_scale: float = 1.0,
-	avoid_immediate_repeat: bool = true
-) -> AudioStreamPlayer:
-	return play_random_global_from_folder(folder_path, bus_name, volume_db, pitch_mode, pitch_preset, custom_pitch_range, custom_pitch_scale, avoid_immediate_repeat)
-
-
-func play_spatial_from_folder(
-	folder_path: String,
-	world_position: Vector3,
-	bus_name: StringName = SFX_BUS,
-	volume_db: float = 0.0,
-	unit_size: float = DEFAULT_UNIT_SIZE,
-	max_distance: float = DEFAULT_MAX_DISTANCE,
-	pitch_mode: PitchMode = PitchMode.PRESET,
-	pitch_preset: PitchPreset = PitchPreset.NORMAL,
-	custom_pitch_range: Vector2 = Vector2(1.0, 1.0),
-	custom_pitch_scale: float = 1.0,
-	avoid_immediate_repeat: bool = true
-) -> AudioStreamPlayer3D:
-	return play_random_spatial_from_folder(folder_path, world_position, bus_name, volume_db, unit_size, max_distance, pitch_mode, pitch_preset, custom_pitch_range, custom_pitch_scale, avoid_immediate_repeat)
-
-
-func play_random_global_from_streams(
-	streams: Array[AudioStream],
-	bus_name: StringName = SFX_BUS,
-	volume_db: float = 0.0,
-	pitch_mode: PitchMode = PitchMode.PRESET,
-	pitch_preset: PitchPreset = PitchPreset.NORMAL,
-	custom_pitch_range: Vector2 = Vector2(1.0, 1.0),
-	custom_pitch_scale: float = 1.0,
-	avoid_immediate_repeat: bool = true
-) -> AudioStreamPlayer:
-	var random_stream: AudioStream = _pick_random_stream(streams, avoid_immediate_repeat)
-	if random_stream == null:
+	if cached_paths.is_empty():
 		return null
 
-	return play_global(random_stream, bus_name, volume_db, pitch_mode, pitch_preset, custom_pitch_range, custom_pitch_scale)
+	var chosen_path: String = cached_paths[_rng.randi_range(0, cached_paths.size() - 1)]
+	return load(chosen_path) as AudioStream
 
 
-func play_random_spatial_from_streams(
-	streams: Array[AudioStream],
-	world_position: Vector3,
-	bus_name: StringName = SFX_BUS,
-	volume_db: float = 0.0,
-	unit_size: float = DEFAULT_UNIT_SIZE,
-	max_distance: float = DEFAULT_MAX_DISTANCE,
-	pitch_mode: PitchMode = PitchMode.PRESET,
-	pitch_preset: PitchPreset = PitchPreset.NORMAL,
-	custom_pitch_range: Vector2 = Vector2(1.0, 1.0),
-	custom_pitch_scale: float = 1.0,
-	avoid_immediate_repeat: bool = true
-) -> AudioStreamPlayer3D:
-	var random_stream: AudioStream = _pick_random_stream(streams, avoid_immediate_repeat)
-	if random_stream == null:
-		return null
+func _collect_audio_paths(folder_path: String, search_recursively: bool) -> Array[String]:
+	var paths: Array[String] = []
+	if not DirAccess.dir_exists_absolute(folder_path):
+		return paths
 
-	return play_spatial(random_stream, world_position, bus_name, volume_db, unit_size, max_distance, pitch_mode, pitch_preset, custom_pitch_range, custom_pitch_scale)
+	for file_name in DirAccess.get_files_at(folder_path):
+		if _is_supported_audio_extension(file_name.get_extension()):
+			paths.append(folder_path.path_join(file_name))
+
+	if search_recursively:
+		for directory_name in DirAccess.get_directories_at(folder_path):
+			paths.append_array(_collect_audio_paths(folder_path.path_join(directory_name), true))
+
+	return paths
 
 
-func play_random_global_from_folder(
-	folder_path: String,
-	bus_name: StringName = SFX_BUS,
-	volume_db: float = 0.0,
-	pitch_mode: PitchMode = PitchMode.PRESET,
-	pitch_preset: PitchPreset = PitchPreset.NORMAL,
-	custom_pitch_range: Vector2 = Vector2(1.0, 1.0),
-	custom_pitch_scale: float = 1.0,
-	avoid_immediate_repeat: bool = true
-) -> AudioStreamPlayer:
-	var stream_bank: Array[AudioStream] = get_stream_bank(folder_path)
-	return play_random_global_from_streams(stream_bank, bus_name, volume_db, pitch_mode, pitch_preset, custom_pitch_range, custom_pitch_scale, avoid_immediate_repeat)
-
-
-func play_random_spatial_from_folder(
-	folder_path: String,
-	world_position: Vector3,
-	bus_name: StringName = SFX_BUS,
-	volume_db: float = 0.0,
-	unit_size: float = DEFAULT_UNIT_SIZE,
-	max_distance: float = DEFAULT_MAX_DISTANCE,
-	pitch_mode: PitchMode = PitchMode.PRESET,
-	pitch_preset: PitchPreset = PitchPreset.NORMAL,
-	custom_pitch_range: Vector2 = Vector2(1.0, 1.0),
-	custom_pitch_scale: float = 1.0,
-	avoid_immediate_repeat: bool = true
-) -> AudioStreamPlayer3D:
-	var stream_bank: Array[AudioStream] = get_stream_bank(folder_path)
-	return play_random_spatial_from_streams(stream_bank, world_position, bus_name, volume_db, unit_size, max_distance, pitch_mode, pitch_preset, custom_pitch_range, custom_pitch_scale, avoid_immediate_repeat)
-
-
-func get_stream_bank(folder_path: String) -> Array[AudioStream]:
-	var bank_key: StringName = StringName(folder_path)
-	if _stream_bank_cache.has(bank_key):
-		return _stream_bank_cache[bank_key] as Array[AudioStream]
-
-	var loaded_streams: Array[AudioStream] = []
-	var dir: DirAccess = DirAccess.open(folder_path)
-	if dir == null:
-		push_warning("AudioManager could not open folder: %s" % folder_path)
-		_stream_bank_cache[bank_key] = loaded_streams
-		return loaded_streams
-
-	var audio_files: Array[String] = []
-	dir.list_dir_begin()
-	var file_name: String = dir.get_next()
-	while file_name != "":
-		if not dir.current_is_dir() and _is_audio_file(file_name):
-			audio_files.append(file_name)
-		file_name = dir.get_next()
-	dir.list_dir_end()
-
-	audio_files.sort()
-	for audio_file in audio_files:
-		var resource_path: String = folder_path.path_join(audio_file)
-		var stream: AudioStream = load(resource_path) as AudioStream
-		if stream != null:
-			loaded_streams.append(stream)
-
-	_stream_bank_cache[bank_key] = loaded_streams
-	return loaded_streams
-
-
-func _seed_spatial_pool(count: int) -> void:
-	for _index in range(count):
-		_available_spatial_players.append(_create_spatial_player())
-
-
-func _seed_global_pool(count: int) -> void:
-	for _index in range(count):
-		_available_global_players.append(_create_global_player())
-
-
-func _ensure_audio_buses() -> void:
-	_ensure_bus(MUSIC_BUS, MASTER_BUS)
-	_ensure_bus(SFX_BUS, MASTER_BUS)
-	_ensure_bus(AMBIENT_BUS, MASTER_BUS)
-	_ensure_bus(UI_BUS, MASTER_BUS)
-
-
-func _ensure_bus(bus_name: StringName, send_to: StringName) -> void:
-	var bus_index: int = AudioServer.get_bus_index(bus_name)
-	if bus_index == -1:
-		AudioServer.add_bus(AudioServer.get_bus_count())
-		bus_index = AudioServer.get_bus_count() - 1
-		AudioServer.set_bus_name(bus_index, bus_name)
-
-	if bus_name != MASTER_BUS:
-		AudioServer.set_bus_send(bus_index, send_to)
-
-
-func _create_spatial_player() -> AudioStreamPlayer3D:
-	var player: AudioStreamPlayer3D
-	if ClassDB.class_exists("SpatialAudioPlayer3D"):
-		player = SpatialAudioPlayer3D.new()
-	else:
-		player = AudioStreamPlayer3D.new()
-	player.finished.connect(_on_spatial_player_finished.bind(player))
-	add_child(player)
-	return player
-
-
-func _create_global_player() -> AudioStreamPlayer:
-	var player: AudioStreamPlayer = AudioStreamPlayer.new()
-	player.finished.connect(_on_global_player_finished.bind(player))
-	add_child(player)
-	return player
-
-
-func _acquire_spatial_player() -> AudioStreamPlayer3D:
-	if not _available_spatial_players.is_empty():
-		var last_index: int = _available_spatial_players.size() - 1
-		var pooled_player: AudioStreamPlayer3D = _available_spatial_players[last_index]
-		_available_spatial_players.remove_at(last_index)
-		if not _active_spatial_players.has(pooled_player):
-			_active_spatial_players.append(pooled_player)
-		return pooled_player
-
-	var created_player: AudioStreamPlayer3D = _create_spatial_player()
-	if not _active_spatial_players.has(created_player):
-		_active_spatial_players.append(created_player)
-	return created_player
-
-
-func _acquire_global_player() -> AudioStreamPlayer:
-	if not _available_global_players.is_empty():
-		var last_index: int = _available_global_players.size() - 1
-		var pooled_player: AudioStreamPlayer = _available_global_players[last_index]
-		_available_global_players.remove_at(last_index)
-		if not _active_global_players.has(pooled_player):
-			_active_global_players.append(pooled_player)
-		return pooled_player
-
-	var created_player: AudioStreamPlayer = _create_global_player()
-	if not _active_global_players.has(created_player):
-		_active_global_players.append(created_player)
-	return created_player
-
-
-func _configure_spatial_player(
-	player: AudioStreamPlayer3D,
-	stream: AudioStream,
-	world_position: Vector3,
-	bus_name: StringName,
-	volume_db: float,
-	unit_size: float,
-	max_distance: float
-) -> void:
-	player.stop()
-	player.stream = stream
-	player.bus = bus_name
-	player.global_position = world_position
-	player.unit_size = unit_size
-	player.max_distance = max_distance
-	player.attenuation_model = AudioStreamPlayer3D.ATTENUATION_INVERSE_DISTANCE
-	player.doppler_tracking = AudioStreamPlayer3D.DOPPLER_TRACKING_PHYSICS_STEP
-	_set_player_gain(player, volume_db)
-
-
-func _configure_global_player(
-	player: AudioStreamPlayer,
-	stream: AudioStream,
-	bus_name: StringName,
-	volume_db: float
-) -> void:
-	player.stop()
-	player.stream = stream
-	player.bus = bus_name
-	_set_player_gain(player, volume_db)
-
-
-func _apply_pitch(
-	player: Object,
-	pitch_mode: PitchMode,
-	pitch_preset: PitchPreset,
-	custom_pitch_range: Vector2,
-	custom_pitch_scale: float
-) -> void:
-	var pitch_scale: float = 1.0
-	match pitch_mode:
-		PitchMode.CUSTOM_VALUE:
-			pitch_scale = maxf(custom_pitch_scale, 0.01)
-		PitchMode.CUSTOM_RANGE:
-			pitch_scale = _random_pitch(custom_pitch_range)
+func _is_supported_audio_extension(extension: String) -> bool:
+	match extension.to_lower():
+		"ogg", "wav", "mp3", "flac", "opus", "xm", "s3m", "mod", "it":
+			return true
 		_:
-			var preset_range: Vector2 = _PITCH_PRESET_RANGES.get(pitch_preset, Vector2(1.0, 1.0))
-			pitch_scale = _random_pitch(preset_range)
+			return false
 
+
+func _create_player(playback_kind: int) -> Node:
+	match playback_kind:
+		PlaybackKind.SPATIAL_3D:
+			return SpatialAudioPlayer3D.new()
+		_:
+			return AudioStreamPlayer.new()
+
+
+func _configure_player(player: Node, request: SoundRequest, stream: AudioStream) -> void:
 	if player is AudioStreamPlayer:
-		(player as AudioStreamPlayer).pitch_scale = pitch_scale
-	elif player is AudioStreamPlayer3D:
-		(player as AudioStreamPlayer3D).pitch_scale = pitch_scale
-	elif _has_property(player, &"pitch_scale"):
-		player.set("pitch_scale", pitch_scale)
-
-
-func _random_pitch(value_range: Vector2) -> float:
-	var min_pitch: float = maxf(minf(value_range.x, value_range.y), 0.01)
-	var max_pitch: float = maxf(maxf(value_range.x, value_range.y), min_pitch)
-	if is_equal_approx(min_pitch, max_pitch):
-		return min_pitch
-	return randf_range(min_pitch, max_pitch)
-
-
-func _set_player_gain(player: Object, volume_db: float) -> void:
-	if player is AudioStreamPlayer:
-		(player as AudioStreamPlayer).volume_db = volume_db
+		var audio_player := player as AudioStreamPlayer
+		audio_player.stream = stream
+		audio_player.bus = get_bus_name(request.bus_category)
+		audio_player.volume_db = request.volume_db
+		audio_player.pitch_scale = _resolve_pitch_scale(request)
+		audio_player.autoplay = false
 		return
 
 	if player is AudioStreamPlayer3D:
-		(player as AudioStreamPlayer3D).volume_db = volume_db
+		var spatial_player := player as AudioStreamPlayer3D
+		spatial_player.stream = stream
+		spatial_player.bus = get_bus_name(request.bus_category)
+		spatial_player.volume_db = request.volume_db
+		spatial_player.pitch_scale = _resolve_pitch_scale(request)
+		spatial_player.unit_size = request.spatial_unit_size
+		if request.spatial_max_distance > 0.0:
+			spatial_player.max_distance = request.spatial_max_distance
+		spatial_player.attenuation_model = request.spatial_attenuation_model as AudioStreamPlayer3D.AttenuationModel
+		spatial_player.doppler_tracking = request.spatial_doppler_tracking as AudioStreamPlayer3D.DopplerTracking
+		spatial_player.autoplay = false
+
+
+func _apply_spatial_position(player: Node, request: SoundRequest) -> void:
+	if request.playback_kind != PlaybackKind.SPATIAL_3D:
 		return
 
-	if _has_property(player, &"max_db"):
-		player.set("max_db", volume_db)
-	if _has_property(player, &"volume_db"):
-		player.set("volume_db", volume_db)
+	if player is Node3D:
+		(player as Node3D).global_position = request.global_position
 
 
-func _has_property(object: Object, property_name: StringName) -> bool:
-	for property_info in object.get_property_list():
-		if StringName(property_info["name"]) == property_name:
-			return true
-	return false
-
-
-func _pick_random_stream(streams: Array[AudioStream], avoid_immediate_repeat: bool) -> AudioStream:
-	if streams.is_empty():
-		push_warning("AudioManager received an empty stream bank.")
-		return null
-
-	if streams.size() == 1:
-		return streams[0]
-
-	var bank_key: StringName = _get_stream_bank_key(streams)
-	var last_index: int = _last_random_bank_indices.get(bank_key, -1)
-	var next_index: int = randi_range(0, streams.size() - 1)
-
-	if avoid_immediate_repeat:
-		var attempts: int = 0
-		while next_index == last_index and attempts < 12:
-			next_index = randi_range(0, streams.size() - 1)
-			attempts += 1
-
-	_last_random_bank_indices[bank_key] = next_index
-	return streams[next_index]
-
-
-func _is_audio_file(file_name: String) -> bool:
-	var lower_name: String = file_name.to_lower()
-	return lower_name.ends_with(".ogg") or lower_name.ends_with(".wav") or lower_name.ends_with(".mp3") or lower_name.ends_with(".flac")
-
-
-func _get_stream_bank_key(streams: Array[AudioStream]) -> StringName:
-	var key_parts: PackedStringArray = []
-	for stream in streams:
-		if stream == null:
-			key_parts.append("null")
-		else:
-			key_parts.append(stream.resource_path)
-
-	return StringName("|".join(key_parts))
-
-
-func _release_spatial_player(player: AudioStreamPlayer3D) -> void:
-	if player == null or not is_instance_valid(player):
-		return
-
-	_kill_player_fade(player)
-	player.stop()
-	player.stream = null
-	if _active_spatial_players.has(player):
-		_active_spatial_players.erase(player)
-	if not _available_spatial_players.has(player):
-		_available_spatial_players.append(player)
-
-
-func _release_global_player(player: AudioStreamPlayer) -> void:
-	if player == null or not is_instance_valid(player):
-		return
-
-	_kill_player_fade(player)
-	player.stop()
-	player.stream = null
-	if _active_global_players.has(player):
-		_active_global_players.erase(player)
-	if not _available_global_players.has(player):
-		_available_global_players.append(player)
-
-
-func _on_spatial_player_finished(player: AudioStreamPlayer3D) -> void:
-	if _looping_spatial_players.values().has(player):
-		return
-	_release_spatial_player(player)
-
-
-func _on_global_player_finished(player: AudioStreamPlayer) -> void:
-	if _looping_global_players.values().has(player):
-		return
-	_release_global_player(player)
-
-
-func _tween_player_volume(player: Object, target_volume_db: float, duration: float, release_on_finish: bool = false) -> void:
-	if player == null or not is_instance_valid(player):
-		return
-
-	if !_has_property(player, &"volume_db"):
-		return
-
-	if duration <= 0.0:
-		_set_player_gain(player, target_volume_db)
-		if release_on_finish:
-			if player is AudioStreamPlayer:
-				_release_global_player(player as AudioStreamPlayer)
-			elif player is AudioStreamPlayer3D:
-				_release_spatial_player(player as AudioStreamPlayer3D)
-		return
-
-	_kill_player_fade(player)
-	var tween: Tween = create_tween()
-	_player_fade_tweens[player.get_instance_id()] = tween
-	tween.tween_property(player, "volume_db", target_volume_db, duration)
-	tween.finished.connect(_on_player_fade_finished.bind(player.get_instance_id(), player, release_on_finish), CONNECT_ONE_SHOT)
-
-
-func _kill_player_fade(player: Object) -> void:
-	if player == null or not is_instance_valid(player):
-		return
-
-	var player_id: int = player.get_instance_id()
-	if !_player_fade_tweens.has(player_id):
-		return
-
-	var tween: Tween = _player_fade_tweens[player_id] as Tween
-	if tween != null and is_instance_valid(tween):
-		tween.kill()
-	_player_fade_tweens.erase(player_id)
-
-
-func _on_player_fade_finished(player_id: int, player: Object, release_on_finish: bool) -> void:
-	_player_fade_tweens.erase(player_id)
-	if !release_on_finish:
-		return
-
-	if player == null or not is_instance_valid(player):
-		return
+func _track_player(player: Node, sound_id: int) -> void:
+	player.tree_exited.connect(_on_player_tree_exited.bind(sound_id))
 
 	if player is AudioStreamPlayer:
-		_release_global_player(player as AudioStreamPlayer)
+		(player as AudioStreamPlayer).finished.connect(_on_player_finished.bind(sound_id))
 	elif player is AudioStreamPlayer3D:
-		_release_spatial_player(player as AudioStreamPlayer3D)
+		(player as AudioStreamPlayer3D).finished.connect(_on_player_finished.bind(sound_id))
+
+
+func _start_player(player: Node) -> void:
+	if player is AudioStreamPlayer:
+		(player as AudioStreamPlayer).play()
+	elif player is AudioStreamPlayer3D:
+		(player as AudioStreamPlayer3D).play()
+
+
+func _stop_player(player: Node) -> void:
+	if player is AudioStreamPlayer:
+		(player as AudioStreamPlayer).stop()
+	elif player is AudioStreamPlayer3D:
+		(player as AudioStreamPlayer3D).stop()
+	player.queue_free()
+
+
+func _get_spawn_parent(playback_kind: int) -> Node:
+	if playback_kind == PlaybackKind.SPATIAL_3D:
+		var current_scene := get_tree().current_scene
+		if current_scene is Node3D:
+			return current_scene
+		push_warning("Spatial audio requested without a Node3D current scene; attaching to AudioManager instead.")
+	return self
+
+
+func _resolve_pitch_scale(request: SoundRequest) -> float:
+	if request.pitch_range != Vector2.ONE:
+		var min_pitch := minf(request.pitch_range.x, request.pitch_range.y)
+		var max_pitch := maxf(request.pitch_range.x, request.pitch_range.y)
+		return _rng.randf_range(min_pitch, max_pitch)
+
+	return request.pitch_scale
+
+
+func _folder_cache_key(folder_path: String, search_recursively: bool) -> String:
+	return "%s|%s" % [folder_path, "recursive" if search_recursively else "flat"]
+
+
+func get_bus_name(bus_category: BusCategory) -> StringName:
+	return BUS_NAMES.get(bus_category, DEFAULT_BUS)
+
+
+func set_bus_volume_db(bus_category: BusCategory, volume_db: float) -> void:
+	var bus_index := AudioServer.get_bus_index(get_bus_name(bus_category))
+	if bus_index == -1:
+		push_warning("AudioManager could not find bus %s." % get_bus_name(bus_category))
+		return
+	AudioServer.set_bus_volume_db(bus_index, volume_db)
+
+
+func set_bus_volume_linear(bus_category: BusCategory, volume_linear: float) -> void:
+	set_bus_volume_db(bus_category, linear_to_db(maxf(volume_linear, 0.0001)))
+
+
+func set_bus_mute(bus_category: BusCategory, muted: bool) -> void:
+	var bus_index := AudioServer.get_bus_index(get_bus_name(bus_category))
+	if bus_index == -1:
+		push_warning("AudioManager could not find bus %s." % get_bus_name(bus_category))
+		return
+	AudioServer.set_bus_mute(bus_index, muted)
+
+
+func _stop_entries(predicate: Callable) -> void:
+	var active_ids: Array = _active_sounds.keys()
+	for raw_id in active_ids:
+		var sound_id := int(raw_id)
+		var entry := _active_sounds.get(sound_id) as ActiveSound
+		if entry == null:
+			_active_sounds.erase(sound_id)
+			continue
+
+		if predicate.call(entry):
+			_begin_fade_out(sound_id, entry, true)
+
+
+func _entry_matches_unique_tag(entry: ActiveSound, unique_tag: StringName) -> bool:
+	return entry.unique_tag == unique_tag
+
+
+func _entry_matches_category(entry: ActiveSound, category: StringName) -> bool:
+	return entry.category == category
+
+
+func _entry_matches_all(_entry: ActiveSound) -> bool:
+	return true
+
+
+func _release_entry(sound_id: int, entry: ActiveSound, stop_player: bool) -> void:
+	_active_sounds.erase(sound_id)
+	_kill_entry_tween(entry)
+
+	if not is_instance_valid(entry.player):
+		return
+
+	if stop_player:
+		_stop_player(entry.player)
+	elif entry.player is AudioStreamPlayer:
+		(entry.player as AudioStreamPlayer).volume_db = -80.0
+	elif entry.player is AudioStreamPlayer3D:
+		(entry.player as AudioStreamPlayer3D).volume_db = -80.0
+
+	entry.player.queue_free()
+
+
+func _on_player_tree_exited(sound_id: int) -> void:
+	_active_sounds.erase(sound_id)
+
+
+func _on_player_finished(sound_id: int) -> void:
+	var entry := _active_sounds.get(sound_id) as ActiveSound
+	if entry == null:
+		return
+
+	_release_entry(sound_id, entry, false)
+
+
+func _begin_fade_out(sound_id: int, entry: ActiveSound, stop_after_fade: bool) -> void:
+	if entry.fading_out:
+		return
+
+	entry.fading_out = true
+	_kill_entry_tween(entry)
+
+	if not is_instance_valid(entry.player):
+		_release_entry(sound_id, entry, stop_after_fade)
+		return
+
+	if entry.fade_out_seconds <= 0.0:
+		_release_entry(sound_id, entry, stop_after_fade)
+		return
+
+	var tween := create_tween()
+	entry.fade_tween = tween
+	var target_volume := -80.0
+	tween.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
+	tween.tween_property(entry.player, "volume_db", target_volume, entry.fade_out_seconds)
+	tween.finished.connect(_on_entry_fade_finished.bind(sound_id, stop_after_fade), CONNECT_ONE_SHOT)
+
+
+func _on_entry_fade_finished(sound_id: int, stop_after_fade: bool) -> void:
+	var entry := _active_sounds.get(sound_id) as ActiveSound
+	if entry == null:
+		return
+
+	_release_entry(sound_id, entry, stop_after_fade)
+
+
+func _kill_entry_tween(entry: ActiveSound) -> void:
+	if entry == null:
+		return
+
+	if entry.fade_tween != null and is_instance_valid(entry.fade_tween):
+		entry.fade_tween.kill()
+	entry.fade_tween = null

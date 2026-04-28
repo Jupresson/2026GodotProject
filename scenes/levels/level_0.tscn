@@ -69,6 +69,8 @@ spawn_facing_y_degrees = -74.865
 
 [node name="Player" parent="others" unique_id=1914000597 instance=ExtResource("4_65guy")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, -0.3315935, 0)
+slide_sound_fade_out_seconds = null
+sound_fade_out_seconds = null
 
 [node name="Light" parent="others" unique_id=2096687380 instance=ExtResource("14_gj3kh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.369059, 3.7981577, 2.5549698)

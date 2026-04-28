@@ -19,10 +19,13 @@ const DASH_VOLUME_DB: float = -3
 const DASH_PITCH_RANGE: Vector2 = Vector2(0.96, 1.04)
 
 const SLIDE_SFX: AudioStream = preload("res://assets/sounds/sfx/general_slide/slide_1.ogg")
+const SLIDE_SOUND_TAG: StringName = &"slide_sound"
+const SLIDE_VOLUME_DB: float = -3
+const SLIDE_PITCH_RANGE: Vector2 = Vector2(0.86, 1.34)
 
 const LAND_SOUNDS_FOLDER: String = "res://assets/sounds/sfx/general_land/"
 const LAND_VOLUME_DB: float = 0
-const LAND_PITCH_RANGE: Vector2 = Vector2(0.86, 1.34)
+const LAND_PITCH_RANGE: Vector2 = Vector2(0.86, 1.0)
 
 @export_group("Character Speeds")
 @export var jump_velocity : float = 4.35
@@ -50,6 +53,10 @@ const LAND_PITCH_RANGE: Vector2 = Vector2(0.86, 1.34)
 @export var fov_fall_boost : float = 8.0
 @export var fov_fall_speed_max : float = 30.0
 @export var fov_smooth_speed : float = 6.0
+
+@export_group("Audio")
+@export var slide_sound_fade_out_seconds : float = 0.5
+@export var sound_fade_out_seconds : float = 0.3
 
 @export_group("Jump Feel")
 ## Grace period after stepping off a ledge where jumping is still allowed.
@@ -96,6 +103,7 @@ var last_velocity = Vector3.ZERO
 var coyote_timer = 0.3
 var was_on_ground : bool = false
 var has_ground_state : bool = false
+var is_input_enabled : bool = true
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
@@ -176,7 +184,9 @@ func _ready():
 	
 	# Only game: Run normal ready logic
 	if !Engine.is_editor_hint():
-		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+		InputManager.input_capture_changed.connect(_on_input_capture_changed)
+		InputManager.mouse_look_input.connect(_on_mouse_look_input)
+		_on_input_capture_changed(InputManager.is_input_enabled)
 		step_requested.connect(_handle_head_bob_sound)
 		
 		pass
@@ -186,20 +196,14 @@ func _exit_tree() -> void:
 	if !Engine.is_editor_hint():
 		pass
 
-func _input(event):
-	if !Engine.is_editor_hint():
-		if event is InputEventMouseMotion and !is_sliding:
-			rotate_y(deg_to_rad(-event.relative.x * MOUSE_SENSITIVITY))
-			head_node.rotate_x(deg_to_rad(-event.relative.y * MOUSE_SENSITIVITY))
-			head_node.rotation.x = clampf(head_node.rotation.x, deg_to_rad(-80), deg_to_rad(80))
 
 func _physics_process(delta):
-	if !Engine.is_editor_hint():
+	if !Engine.is_editor_hint() and is_input_enabled:
 		# Get input direction
-		var input_dir = Input.get_vector(LEFT, RIGHT, FORWARD, BACKWARD)
+		var input_dir := InputManager.get_move_vector(LEFT, RIGHT, FORWARD, BACKWARD)
 		
 		# Handle crouch, sprint, walk speed.
-		if Input.is_action_pressed(CROUCH) or is_sliding:
+		if InputManager.is_action_pressed(CROUCH) or is_sliding:
 			current_speed = lerpf(current_speed, crouch_speed, delta * 10.0)
 			head_node.position.y = lerpf(head_node.position.y, crouching_height, delta * 10.0)
 			collision_shape_normal.disabled = true
@@ -282,7 +286,8 @@ func _physics_process(delta):
 				was_on_ground = _handle_land_sound()
 		
 		# Handle jump.
-		if Input.is_action_just_pressed(JUMP) and (is_on_floor() or coyote_timer > 0.0):
+		if InputManager.is_action_just_pressed(JUMP) and (is_on_floor() or coyote_timer > 0.0):
+			AudioManager.stop_by_unique_tag(SLIDE_SOUND_TAG)
 			velocity.y = jump_velocity
 			is_sliding = false
 			coyote_timer = 0.0
@@ -322,6 +327,19 @@ func _physics_process(delta):
 			was_on_ground = is_on_floor()
 			has_ground_state = true
 
+
+func _on_input_capture_changed(enabled: bool) -> void:
+	is_input_enabled = enabled
+
+
+func _on_mouse_look_input(relative: Vector2) -> void:
+	if !is_input_enabled or is_sliding:
+		return
+
+	rotate_y(deg_to_rad(-relative.x * MOUSE_SENSITIVITY))
+	head_node.rotate_x(deg_to_rad(-relative.y * MOUSE_SENSITIVITY))
+	head_node.rotation.x = clampf(head_node.rotation.x, deg_to_rad(-80), deg_to_rad(80))
+
 func _update_dynamic_fov(delta : float):
 	if camera_node == null:
 		return
@@ -346,61 +364,60 @@ func _handle_head_bob_sound(intensity: float, is_sprinting: bool, is_crouching: 
 		volume_db -= 1.5
 	volume_db += lerpf(-1.5, 1.5, intensity)
 
-	AudioManager.play_random_global_from_folder(
-		STEP_SOUNDS_FOLDER,
-		&"SFX",
-		volume_db,
-		AudioManager.PitchMode.CUSTOM_RANGE,
-		AudioManager.PitchPreset.NORMAL,
-		STEP_PITCH_RANGE,
-		1.0,
-		true
-	)
+	# Vary pitch based on movement state and step intensity:
+	var pitch_range: Vector2 = STEP_PITCH_RANGE
+	if is_sprinting:
+		# Slightly higher pitch and wider range when sprinting
+		pitch_range = Vector2(STEP_PITCH_RANGE.x * 1.06, STEP_PITCH_RANGE.y * 1.12)
+	elif is_crouching:
+		# Slightly lower pitch when crouching
+		pitch_range = Vector2(STEP_PITCH_RANGE.x * 0.92, STEP_PITCH_RANGE.y * 0.98)
+	else:
+		# Walking: subtle pitch variation based on step intensity
+		var sway := lerpf(0.98, 1.02, intensity)
+		pitch_range = Vector2(STEP_PITCH_RANGE.x * sway, STEP_PITCH_RANGE.y * sway)
+
+	_play_spatial_folder_sound(STEP_SOUNDS_FOLDER, volume_db, pitch_range, sound_fade_out_seconds)
 		
 func _handle_jump_sound():
-	AudioManager.play_random_global_from_folder(
-		JUMP_SOUNDS_FOLDER,
-		&"SFX",
-		JUMP_VOLUME_DB,
-		AudioManager.PitchMode.CUSTOM_RANGE,
-		AudioManager.PitchPreset.NORMAL,
-		JUMP_PITCH_RANGE,
-		1.0,
-		true
-	)	
+	_play_spatial_folder_sound(JUMP_SOUNDS_FOLDER, JUMP_VOLUME_DB, JUMP_PITCH_RANGE, sound_fade_out_seconds)
+
 
 func _handle_dash_sound():
-	AudioManager.play_random_global_from_folder(
-		DASH_SOUNDS_FOLDER,
-		&"SFX",
-		DASH_VOLUME_DB,
-		AudioManager.PitchMode.CUSTOM_RANGE,
-		AudioManager.PitchPreset.NORMAL,
-		DASH_PITCH_RANGE,
-		1.0,
-		true
-	)	
+	_play_spatial_folder_sound(DASH_SOUNDS_FOLDER, DASH_VOLUME_DB, DASH_PITCH_RANGE, sound_fade_out_seconds)
 
 
 
 func _play_slide_sound() -> void:
-	AudioManager.play_spatial_sfx(
-		SLIDE_SFX,
-		global_position,
-		AudioManager.SFX_BUS,
-		0.0
-	)
+	_play_spatial_stream_sound(SLIDE_SFX, SLIDE_VOLUME_DB, SLIDE_SOUND_TAG, slide_sound_fade_out_seconds)
 
 func _handle_land_sound():
-	AudioManager.play_random_global_from_folder(
-		LAND_SOUNDS_FOLDER,
-		&"SFX",
-		LAND_VOLUME_DB,
-		AudioManager.PitchMode.CUSTOM_RANGE,
-		AudioManager.PitchPreset.NORMAL,
-		LAND_PITCH_RANGE,
-		1.0,
-		true
-	)
+	_play_spatial_folder_sound(LAND_SOUNDS_FOLDER, LAND_VOLUME_DB, LAND_PITCH_RANGE, sound_fade_out_seconds)
 
 	return true
+
+
+func _play_spatial_folder_sound(folder_path: String, volume_db: float, pitch_range: Vector2, fade_out_seconds: float = 0.15) -> void:
+	var request := AudioManager.SoundRequest.new()
+	request.folder_path = folder_path
+	request.playback_kind = AudioManager.PlaybackKind.SPATIAL_3D
+	request.global_position = camera_node.global_position
+	request.bus_category = AudioManager.BusCategory.SFX
+	request.volume_db = volume_db
+	request.pitch_range = pitch_range
+	request.search_recursively = true
+	request.fade_out_seconds = fade_out_seconds
+	AudioManager.play_sound(request)
+
+
+func _play_spatial_stream_sound(stream: AudioStream, volume_db: float = 0.0, unique_tag: StringName = &"", fade_out_seconds: float = 0.15) -> void:
+	var request := AudioManager.SoundRequest.new()
+	request.stream = stream
+	request.playback_kind = AudioManager.PlaybackKind.SPATIAL_3D
+	request.global_position = camera_node.global_position
+	request.bus_category = AudioManager.BusCategory.SFX
+	request.volume_db = volume_db
+	request.pitch_range = SLIDE_PITCH_RANGE
+	request.unique_tag = unique_tag
+	request.fade_out_seconds = fade_out_seconds
+	AudioManager.play_sound(request)
