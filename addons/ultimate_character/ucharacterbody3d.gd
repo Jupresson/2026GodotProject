@@ -380,7 +380,14 @@ func _handle_head_bob_sound(intensity: float, is_sprinting: bool, is_crouching: 
 	_play_spatial_folder_sound(STEP_SOUNDS_FOLDER, volume_db, pitch_range, sound_fade_out_seconds)
 		
 func _handle_jump_sound():
-	_play_spatial_folder_sound(JUMP_SOUNDS_FOLDER, JUMP_VOLUME_DB, JUMP_PITCH_RANGE, sound_fade_out_seconds)
+	# Vary jump pitch depending on movement state
+	var pitch_range: Vector2 = JUMP_PITCH_RANGE
+	if is_sprinting:
+		pitch_range = Vector2(JUMP_PITCH_RANGE.x * 1.03, JUMP_PITCH_RANGE.y * 1.08)
+	elif is_crouching:
+		pitch_range = Vector2(JUMP_PITCH_RANGE.x * 0.96, JUMP_PITCH_RANGE.y * 0.98)
+
+	_play_spatial_folder_sound(JUMP_SOUNDS_FOLDER, JUMP_VOLUME_DB, pitch_range, sound_fade_out_seconds)
 
 
 func _handle_dash_sound():
@@ -389,10 +396,35 @@ func _handle_dash_sound():
 
 
 func _play_slide_sound() -> void:
-	_play_spatial_stream_sound(SLIDE_SFX, SLIDE_VOLUME_DB, SLIDE_SOUND_TAG, slide_sound_fade_out_seconds)
+	# Slide pitch varies with remaining slide time and whether sprinting
+	var slide_ratio := 0.0
+	if sliding_length > 0.0:
+		slide_ratio = clampf((slide_timer + 0.1) / maxf(sliding_length, 0.0001), 0.0, 1.0)
+	var sway := lerpf(1.0, 1.15, slide_ratio)
+	var pitch_range := Vector2(SLIDE_PITCH_RANGE.x * sway, SLIDE_PITCH_RANGE.y * sway)
+	if is_sprinting:
+		pitch_range = Vector2(pitch_range.x * 1.04, pitch_range.y * 1.06)
+	elif is_crouching:
+		pitch_range = Vector2(pitch_range.x * 0.96, pitch_range.y * 0.98)
+
+	_play_spatial_stream_sound(SLIDE_SFX, SLIDE_VOLUME_DB, SLIDE_SOUND_TAG, slide_sound_fade_out_seconds, pitch_range)
 
 func _handle_land_sound():
-	_play_spatial_folder_sound(LAND_SOUNDS_FOLDER, LAND_VOLUME_DB, LAND_PITCH_RANGE, sound_fade_out_seconds)
+	# Vary landing pitch by fall intensity
+	var pitch_range: Vector2 = LAND_PITCH_RANGE
+	# Use last frame vertical velocity to judge landing severity
+	var fall_v = last_velocity.y
+	if fall_v < -12.0:
+		# Hard landing: raise pitch/range slightly
+		pitch_range = Vector2(LAND_PITCH_RANGE.x * 1.12, LAND_PITCH_RANGE.y * 1.18)
+	elif fall_v < -6.0:
+		# Medium landing
+		pitch_range = Vector2(LAND_PITCH_RANGE.x * 1.04, LAND_PITCH_RANGE.y * 1.06)
+	elif is_crouching:
+		# Crouched landing tends to be quieter/lower
+		pitch_range = Vector2(LAND_PITCH_RANGE.x * 0.96, LAND_PITCH_RANGE.y * 0.98)
+
+	_play_spatial_folder_sound(LAND_SOUNDS_FOLDER, LAND_VOLUME_DB, pitch_range, sound_fade_out_seconds)
 
 	return true
 
@@ -410,14 +442,14 @@ func _play_spatial_folder_sound(folder_path: String, volume_db: float, pitch_ran
 	AudioManager.play_sound(request)
 
 
-func _play_spatial_stream_sound(stream: AudioStream, volume_db: float = 0.0, unique_tag: StringName = &"", fade_out_seconds: float = 0.15) -> void:
+func _play_spatial_stream_sound(stream: AudioStream, volume_db: float = 0.0, unique_tag: StringName = &"", fade_out_seconds: float = 0.15, pitch_range: Vector2 = SLIDE_PITCH_RANGE) -> void:
 	var request := AudioManager.SoundRequest.new()
 	request.stream = stream
 	request.playback_kind = AudioManager.PlaybackKind.SPATIAL_3D
 	request.global_position = camera_node.global_position
 	request.bus_category = AudioManager.BusCategory.SFX
 	request.volume_db = volume_db
-	request.pitch_range = SLIDE_PITCH_RANGE
+	request.pitch_range = pitch_range
 	request.unique_tag = unique_tag
 	request.fade_out_seconds = fade_out_seconds
 	AudioManager.play_sound(request)

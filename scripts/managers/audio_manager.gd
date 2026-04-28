@@ -27,6 +27,7 @@ class SoundRequest:
 	var pitch_range: Vector2 = Vector2.ONE
 	var unique_tag: StringName = &""
 	var category: StringName = &""
+	var looping: bool = false
 	var global_position: Vector3 = Vector3.ZERO
 	var spatial_unit_size: float = 1.0
 	var spatial_max_distance: float = 0.0
@@ -46,6 +47,7 @@ class ActiveSound:
 	var stream_length: float = 0.0
 	var elapsed_time: float = 0.0
 	var fade_out_seconds: float = 0.0
+	var looping: bool = false
 	var fading_out: bool = false
 	var fade_tween: Tween = null
 
@@ -93,6 +95,9 @@ func _process(delta: float) -> void:
 		if entry.fading_out:
 			continue
 
+		if entry.looping:
+			continue
+
 		entry.elapsed_time += delta
 		if entry.fade_out_seconds <= 0.0:
 			continue
@@ -133,6 +138,7 @@ func play_sound(request: SoundRequest) -> Node:
 	entry.category = request.category
 	entry.stream_length = maxf(stream.get_length(), 0.0)
 	entry.fade_out_seconds = maxf(request.fade_out_seconds, 0.0)
+	entry.looping = request.looping and stream is AudioStreamOggVorbis
 	_active_sounds[sound_id] = entry
 
 	_configure_player(player, request, stream)

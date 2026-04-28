@@ -1,3 +1,4 @@
+SceneReadySound
 Node3D
 CSGBox3D
 FuncGodotMap
@@ -12,4 +13,3 @@ Button
 Label
 VBoxContainer
 HBoxContainer
-SpotLight3D
