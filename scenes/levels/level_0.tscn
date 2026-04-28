@@ -1,5 +1,6 @@
 [gd_scene format=4 uid="uid://cb7sgtk11y8ci"]
 
+[ext_resource type="Script" uid="uid://b2td60ehpke1m" path="res://scripts/level_start.gd" id="1_1q7iv"]
 [ext_resource type="PackedScene" uid="uid://b6dxwilaxeoun" path="res://scenes/perfromance_debug.tscn" id="1_gj3kh"]
 [ext_resource type="PackedScene" uid="uid://bwmtu28l42jk4" path="res://scenes/player.tscn" id="4_65guy"]
 [ext_resource type="PackedScene" uid="uid://b5yfoyn25mqey" path="res://scenes/spikes.tscn" id="5_p6rmu"]
@@ -50,6 +51,7 @@ _surfaces = [{
 points = PackedVector3Array(2, 0.5, 2, 2, -0.5, 2, -2, 0.5, 2, -2, -0.5, 2, 2, 0.5, -2, 2, -0.5, -2, -2, 0.5, -2, -2, -0.5, -2)
 
 [node name="Level0" type="Node3D" unique_id=511111068]
+script = ExtResource("1_1q7iv")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1799285946]
 environment = SubResource("Environment_65guy")
@@ -211,6 +213,7 @@ size = Vector3(0.14307812, 1, 0.1484375)
 [node name="SceneReadySound" type="Node" parent="." unique_id=916770156]
 script = ExtResource("10_p6rmu")
 stream = ExtResource("11_34hum")
+search_recursively = false
 pitch_range = Vector2(0.8, 1.2)
 unique_tag = &"level_0_scene_ambient_loop"
 fade_out_seconds = 0.0
@@ -220,6 +223,7 @@ metadata/_custom_type_script = "uid://0e5wkjeihitv"
 [node name="SceneReadySound2" type="Node" parent="." unique_id=1670874830]
 script = ExtResource("10_p6rmu")
 stream = ExtResource("12_vhkxn")
+search_recursively = false
 bus_category = 3
 volume_db = 1.0
 unique_tag = &"level_open_ui_sound"

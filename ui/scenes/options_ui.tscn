@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://bc31p7gj1yyny"]
 
 [ext_resource type="Script" uid="uid://dnr6riruhdp2v" path="res://ui/scripts/Options_Setting.gd" id="1_lcbjn"]
+[ext_resource type="Script" uid="uid://0e5wkjeihitv" path="res://scripts/components/scene_ready_sound_component.gd" id="2_b72go"]
+[ext_resource type="AudioStream" uid="uid://coge0iqp5x4n4" path="res://assets/sounds/sfx/general_ui/ui_open.ogg" id="3_tsemo"]
 
 [node name="OptionsUI" type="Control" unique_id=1351568746]
 layout_mode = 3
@@ -33,10 +35,6 @@ unique_name_in_owner = true
 layout_mode = 2
 alignment = 1
 script = ExtResource("1_lcbjn")
-debug_force_settings_on_startup = true
-debug_startup_fullscreen = true
-debug_startup_fsr_preset_index = 2
-debug_startup_screen_index = 1
 
 [node name="Resolution_OptionButton" type="OptionButton" parent="HBoxContainer/Options_Setting" unique_id=886868455]
 layout_mode = 2
@@ -102,6 +100,15 @@ layout_mode = 2
 [node name="BackButton" type="Button" parent="HBoxContainer/Options_Setting" unique_id=171173665]
 layout_mode = 2
 text = "Back"
+
+[node name="SceneReadySound2" type="Node" parent="." unique_id=833557798]
+script = ExtResource("2_b72go")
+stream = ExtResource("3_tsemo")
+bus_category = 3
+volume_db = 1.0
+unique_tag = &"level_open_ui_sound_1"
+looping = false
+metadata/_custom_type_script = "uid://0e5wkjeihitv"
 
 [connection signal="item_selected" from="HBoxContainer/Options_Setting/Resolution_OptionButton" to="HBoxContainer/Options_Setting" method="_on_option_button_item_selected"]
 [connection signal="value_changed" from="HBoxContainer/Options_Setting/ScaleBox/ScaleSlider" to="HBoxContainer/Options_Setting" method="_on_scale_slider_value_changed"]

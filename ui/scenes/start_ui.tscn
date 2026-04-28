@@ -61,15 +61,14 @@ stream = ExtResource("3_pkpuh")
 pitch_range = Vector2(0.8, 1.2)
 unique_tag = &"level_0_scene_ambient_loop"
 fade_out_seconds = 0.0
-delay_seconds = 0.28
 metadata/_custom_type_script = "uid://0e5wkjeihitv"
 
-[node name="SceneReadySound2" type="Node" parent="." unique_id=850480448]
+[node name="SceneReadySound2" type="Node" parent="." unique_id=847213869]
 script = ExtResource("2_74rba")
 stream = ExtResource("4_5ot50")
 bus_category = 3
 volume_db = 1.0
-unique_tag = &"level_open_ui_sound"
+unique_tag = &"level_open_ui_sound_2"
 looping = false
 metadata/_custom_type_script = "uid://0e5wkjeihitv"
 
