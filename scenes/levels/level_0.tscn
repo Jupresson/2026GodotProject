@@ -73,7 +73,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.051979, -0.33580852, -2.09
 spawn_facing_y_degrees = -74.865
 
 [node name="Player" parent="others" unique_id=1914000597 instance=ExtResource("4_65guy")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, -0.3315935, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -10.800078, 2.4509315, 0)
 landing_sound_limit_time = 0.5
 
 [node name="Light" parent="others" unique_id=2096687380 instance=ExtResource("14_gj3kh")]
@@ -87,7 +87,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.7402725, 0, -32.003418)
 next_scene_path = "uid://cb7sgtk11y8ci"
 
 [node name="FuncGodotMap" type="Node3D" parent="." unique_id=384156039]
-visible = false
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.96305346, 0, 0)
 script = ExtResource("8_p6rmu")
 local_map_file = "uid://cnjocgx0pgwgt"
 map_settings = ExtResource("9_p6rmu")
@@ -103,6 +103,7 @@ mesh = SubResource("ArrayMesh_1q7iv")
 shape = SubResource("ConvexPolygonShape3D_gj3kh")
 
 [node name="Node3D" type="Node3D" parent="." unique_id=1062229648]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.921445, 0, 0)
 
 [node name="CSGBox3D7" type="CSGBox3D" parent="Node3D" unique_id=592295744]
 transform = Transform3D(-1.9009369e-07, 0.49999994, -8.905446, 5.0935455e-08, 0.8660253, 5.1415615, 4.5022464, 1.1313338e-08, -4.3417361e-07, -7.5613346, 1.0730119, -3.8391747)
