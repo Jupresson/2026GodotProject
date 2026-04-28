@@ -61,6 +61,7 @@ const LAND_PITCH_RANGE: Vector2 = Vector2(0.86, 1.0)
 @export_group("Jump Feel")
 ## Grace period after stepping off a ledge where jumping is still allowed.
 @export var coyote_time : float = 0.3
+@export var landing_sound_limit_time : float = 0.5
 
 @export_group("Controls")
 ## The InputMap action string to be used for LEFT movement
@@ -101,6 +102,7 @@ var head_bob_vector = Vector2.ZERO
 var head_bob_index = 0.0
 var last_velocity = Vector3.ZERO
 var coyote_timer = 0.3
+var landing_sound_limit_timer: float = 0.0
 var was_on_ground : bool = false
 var has_ground_state : bool = false
 var is_input_enabled : bool = true
@@ -201,6 +203,7 @@ func _physics_process(delta):
 	if !Engine.is_editor_hint() and is_input_enabled:
 		# Get input direction
 		var input_dir := InputManager.get_move_vector(LEFT, RIGHT, FORWARD, BACKWARD)
+		landing_sound_limit_timer = maxf(landing_sound_limit_timer - delta, 0.0)
 		
 		# Handle crouch, sprint, walk speed.
 		if InputManager.is_action_pressed(CROUCH) or is_sliding:
@@ -410,6 +413,9 @@ func _play_slide_sound() -> void:
 	_play_spatial_stream_sound(SLIDE_SFX, SLIDE_VOLUME_DB, SLIDE_SOUND_TAG, slide_sound_fade_out_seconds, pitch_range)
 
 func _handle_land_sound():
+	if landing_sound_limit_timer > 0.0:
+		return true
+
 	# Vary landing pitch by fall intensity
 	var pitch_range: Vector2 = LAND_PITCH_RANGE
 	# Use last frame vertical velocity to judge landing severity
@@ -425,6 +431,7 @@ func _handle_land_sound():
 		pitch_range = Vector2(LAND_PITCH_RANGE.x * 0.96, LAND_PITCH_RANGE.y * 0.98)
 
 	_play_spatial_folder_sound(LAND_SOUNDS_FOLDER, LAND_VOLUME_DB, pitch_range, sound_fade_out_seconds)
+	landing_sound_limit_timer = landing_sound_limit_time
 
 	return true
 

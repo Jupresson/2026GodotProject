@@ -3,6 +3,9 @@ extends Control
 const OPTIONS_SCENE_PATH := "res://ui/scenes/options_ui.tscn"
 const START_SCENE_PATH := "res://scenes/levels/level_0.tscn"
 
+func _ready():
+	InputManager.set_input_enabled(true)
+	
 func _on_start_pressed() -> void:
 	SceneManager.change_scene_with_loading(START_SCENE_PATH, 2.0)
 
