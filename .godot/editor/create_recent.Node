@@ -1,4 +1,5 @@
-SceneReadySound
+LightmapGI
+VoxelGI
 Node3D
 CSGBox3D
 FuncGodotMap

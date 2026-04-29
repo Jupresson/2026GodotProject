@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bc31p7gj1yyny"]
 
 [ext_resource type="Script" uid="uid://dnr6riruhdp2v" path="res://ui/scripts/Options_Setting.gd" id="1_lcbjn"]
-[ext_resource type="Script" uid="uid://0e5wkjeihitv" path="res://scripts/components/scene_ready_sound_component.gd" id="2_b72go"]
+[ext_resource type="Script" uid="uid://0e5wkjeihitv" path="res://scripts/components/ReadySoundComponent.gd" id="2_b72go"]
 [ext_resource type="AudioStream" uid="uid://coge0iqp5x4n4" path="res://assets/sounds/sfx/general_ui/ui_open.ogg" id="3_tsemo"]
 
 [node name="OptionsUI" type="Control" unique_id=1351568746]
@@ -101,7 +101,7 @@ layout_mode = 2
 layout_mode = 2
 text = "Back"
 
-[node name="SceneReadySound2" type="Node" parent="." unique_id=833557798]
+[node name="ReadySoundComponent" type="Node" parent="." unique_id=833557798]
 script = ExtResource("2_b72go")
 stream = ExtResource("3_tsemo")
 bus_category = 3

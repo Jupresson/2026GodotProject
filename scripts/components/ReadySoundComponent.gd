@@ -1,5 +1,5 @@
 extends Node
-class_name SceneReadySound
+class_name ReadySoundComponent
 
 enum PlaybackKind {
 	GLOBAL_2D,
