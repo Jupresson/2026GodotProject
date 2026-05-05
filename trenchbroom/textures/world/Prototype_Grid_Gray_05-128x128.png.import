@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ksss2k2w7681"
-path="res://.godot/imported/Prototype_Grid_Gray_05-128x128.png-a0bacfebad78ab2b72d5b79254610b40.ctex"
+path="res://.godot/imported/Prototype_Grid_Gray_05-128x128.png-eabe3e09d09c0a4a7825b2a0e1751468.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://trenchroom/textures/world/Prototype_Grid_Gray_05-128x128.png"
-dest_files=["res://.godot/imported/Prototype_Grid_Gray_05-128x128.png-a0bacfebad78ab2b72d5b79254610b40.ctex"]
+source_file="res://trenchbroom/textures/world/Prototype_Grid_Gray_05-128x128.png"
+dest_files=["res://.godot/imported/Prototype_Grid_Gray_05-128x128.png-eabe3e09d09c0a4a7825b2a0e1751468.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cxargykv6iqqg"
-path="res://.godot/imported/Prototype_Grid_Gray_02-128x128.png-b87da92981ec56ab377a8aad5e356aa0.ctex"
+uid="uid://dh5c4i3pqfblu"
+path="res://.godot/imported/Prototype_Grid_Gray_03-128x128.png-e62c20901d73c4197fdd3efd1fd2ea66.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://trenchroom/textures/world/Prototype_Grid_Gray_02-128x128.png"
-dest_files=["res://.godot/imported/Prototype_Grid_Gray_02-128x128.png-b87da92981ec56ab377a8aad5e356aa0.ctex"]
+source_file="res://trenchbroom/textures/world/Prototype_Grid_Gray_03-128x128.png"
+dest_files=["res://.godot/imported/Prototype_Grid_Gray_03-128x128.png-e62c20901d73c4197fdd3efd1fd2ea66.ctex"]
 
 [params]
 

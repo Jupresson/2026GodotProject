@@ -41,7 +41,9 @@ folder_colors={
 "res://graphics/shaders/": "gray",
 "res://scenes/": "pink",
 "res://scripts/": "blue",
-"res://trenchroom/": "purple",
+"res://scripts/trenchbroom/": "purple",
+"res://trenchbroom/": "purple",
+"res://trenchbroom/textures/": "gray",
 "res://ui/": "green"
 }
 

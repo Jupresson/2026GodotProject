@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bxhcc44yceqfq"
-path="res://.godot/imported/skip.png-ea72a5117b23da036227e62db2481448.ctex"
+uid="uid://d3rm8cyd38uae"
+path="res://.godot/imported/Prototype_Grid_Gray_04-128x128.png-8e0751463184c69a878cfbf6ff25cde5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://trenchroom/textures/special/skip.png"
-dest_files=["res://.godot/imported/skip.png-ea72a5117b23da036227e62db2481448.ctex"]
+source_file="res://trenchbroom/textures/world/Prototype_Grid_Gray_04-128x128.png"
+dest_files=["res://.godot/imported/Prototype_Grid_Gray_04-128x128.png-8e0751463184c69a878cfbf6ff25cde5.ctex"]
 
 [params]
 
