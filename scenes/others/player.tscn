@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://bwmtu28l42jk4"]
 
 [ext_resource type="Script" uid="uid://cps4j0bdsx55v" path="res://addons/ultimate_character/ucharacterbody3d.gd" id="1_g2els"]
+[ext_resource type="CameraAttributesPractical" uid="uid://dxraqbxohnaxe" path="res://graphics/camera/new_camera_attributes_practical.tres" id="2_37q5r"]
 [ext_resource type="Script" uid="uid://d0ies2qn7sx5b" path="res://scripts/components/healt_component.gd" id="2_qhqgy"]
 [ext_resource type="Shader" uid="uid://cv41hwb0obad6" path="res://graphics/shaders/bodycam_shader.gdshader" id="3_qhqgy"]
 
@@ -40,7 +41,7 @@ disabled = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
 
 [node name="Camera" type="Camera3D" parent="Head" unique_id=333131559]
-fov = 37.849285
+attributes = ExtResource("2_37q5r")
 
 [node name="RayCast3D" type="RayCast3D" parent="." unique_id=2101007585]
 target_position = Vector3(0, 2, 0)

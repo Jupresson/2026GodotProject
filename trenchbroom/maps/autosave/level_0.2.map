@@ -1,0 +1,9 @@
+// Game: 2026GodotProject
+// Format: Valve
+// entity 0
+{
+"mapversion" "220"
+"wad" ""
+"classname" "worldspawn"
+"_tb_mod" "trenchroom"
+}

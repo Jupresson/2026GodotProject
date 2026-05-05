@@ -1,10 +1,14 @@
-[gd_resource type="Resource" script_class="FuncGodotFGDFile" load_steps=4 format=3 uid="uid://b7oob5da3kyas"]
+[gd_resource type="Resource" script_class="FuncGodotFGDFile" format=3 uid="uid://b7oob5da3kyas"]
 
 [ext_resource type="Resource" uid="uid://crgpdahjaj" path="res://addons/func_godot/fgd/func_godot_fgd.tres" id="1_g0old"]
 [ext_resource type="Script" uid="uid://drlmgulwbjwqu" path="res://addons/func_godot/src/fgd/func_godot_fgd_file.gd" id="1_qjlmp"]
+[ext_resource type="Resource" uid="uid://b6f15tcouhvjo" path="res://trenchbroom/fgd/solid/custom_moving_platform.tres" id="2_eykpc"]
+[ext_resource type="Resource" uid="uid://ddqttfhlvmfoo" path="res://trenchbroom/fgd/point/custom_light.tres" id="3_bxq3u"]
+[ext_resource type="Resource" uid="uid://cmycrahiu3egu" path="res://trenchbroom/fgd/model_point/custom_light_model.tres" id="4_bxq3u"]
 
 [resource]
 script = ExtResource("1_qjlmp")
 fgd_name = "2026GodotProject"
 base_fgd_files = Array[Resource]([ExtResource("1_g0old")])
+entity_definitions = Array[Resource]([ExtResource("2_eykpc"), ExtResource("3_bxq3u"), ExtResource("4_bxq3u")])
 metadata/_custom_type_script = "uid://drlmgulwbjwqu"

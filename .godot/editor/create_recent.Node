@@ -1,9 +1,11 @@
+SpotLight3D
+OmniLight3D
+MeshInstance3D
 LightmapGI
 VoxelGI
 Node3D
 CSGBox3D
 FuncGodotMap
-MeshInstance3D
 GridMap
 CSGMesh3D
 StaticBody3D
@@ -11,5 +13,3 @@ CollisionShape3D
 Area3D
 ColorRect
 Button
-Label
-VBoxContainer

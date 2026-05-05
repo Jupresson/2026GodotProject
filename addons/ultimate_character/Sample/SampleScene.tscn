@@ -1,11 +1,11 @@
 [gd_scene format=3 uid="uid://dj1fkbs5vhuti"]
 
-[ext_resource type="PackedScene" uid="uid://b6dxwilaxeoun" path="res://scenes/perfromance_debug.tscn" id="1_866nw"]
-[ext_resource type="PackedScene" uid="uid://dhyc01xe37yl" path="res://scenes/check_point.tscn" id="2_866nw"]
-[ext_resource type="PackedScene" uid="uid://cae4vnwco30xv" path="res://scenes/body_cam_shader.tscn" id="3_1ohy6"]
+[ext_resource type="PackedScene" uid="uid://b6dxwilaxeoun" path="res://scenes/others/perfromance_debug.tscn" id="1_866nw"]
+[ext_resource type="PackedScene" uid="uid://dhyc01xe37yl" path="res://scenes/others/check_point.tscn" id="2_866nw"]
+[ext_resource type="PackedScene" uid="uid://cae4vnwco30xv" path="res://scenes/others/body_cam_shader.tscn" id="3_1ohy6"]
 [ext_resource type="PackedScene" uid="uid://bc31p7gj1yyny" path="res://ui/scenes/options_ui.tscn" id="3_866nw"]
-[ext_resource type="PackedScene" uid="uid://b5yfoyn25mqey" path="res://scenes/spikes.tscn" id="5_pt6io"]
-[ext_resource type="PackedScene" uid="uid://bwmtu28l42jk4" path="res://scenes/player.tscn" id="6_866nw"]
+[ext_resource type="PackedScene" uid="uid://b5yfoyn25mqey" path="res://scenes/others/spikes.tscn" id="5_pt6io"]
+[ext_resource type="PackedScene" uid="uid://bwmtu28l42jk4" path="res://scenes/others/player.tscn" id="6_866nw"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jvxgj"]
 albedo_color = Color(0.385493, 0.385492, 0.385492, 1)

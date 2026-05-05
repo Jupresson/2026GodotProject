@@ -25,8 +25,11 @@ func export_button() -> void:
 func do_export_file(target_editor: FuncGodotTargetMapEditors = FuncGodotTargetMapEditors.TRENCHBROOM, fgd_output_folder: String = "") -> void:
 	if fgd_output_folder.is_empty():
 		fgd_output_folder = FuncGodotLocalConfig.get_setting(FuncGodotLocalConfig.PROPERTY.FGD_OUTPUT_FOLDER) as String
+	if fgd_output_folder.is_empty() and not resource_path.is_empty():
+		fgd_output_folder = resource_path.get_base_dir()
+	fgd_output_folder = _normalize_folder_path(fgd_output_folder)
 	if fgd_output_folder.is_empty():
-		printerr("Skipping export: No game config folder")
+		printerr("Skipping export: No FGD output folder")
 		return
 
 	if fgd_name == "":
@@ -47,6 +50,11 @@ func do_export_file(target_editor: FuncGodotTargetMapEditors = FuncGodotTargetMa
 	print("Exporting FGD to ", fgd_file)
 	file_obj.store_string(build_class_text(target_editor))
 	file_obj.close()
+
+func _normalize_folder_path(folder_path: String) -> String:
+	if folder_path.begins_with("res://") or folder_path.begins_with("user://"):
+		return ProjectSettings.globalize_path(folder_path)
+	return folder_path
 
 @export_group("Map Editor")
 

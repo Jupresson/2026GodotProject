@@ -1,0 +1,41 @@
+[gd_scene format=4 uid="uid://curpy8cqmq2cg"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fnnws"]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_2hpc1"]
+resource_name = "light_model_Plane"
+_surfaces = [{
+"aabb": AABB(-1, 0, -1, 2, 0.4, 2),
+"attribute_data": PackedByteArray("AAAAAAAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AACAPwAAgD8AAIA/AACAPwAAAAAAAIA/AACAPwAAgD8AAIA/AAAAAAAAgD8AAAAAAACAPwAAgD8AAAAAAAAAAAAAAAAAAIA/AAAAAAAAgD8AAAAAAAAAAA=="),
+"format": 34359742487,
+"index_count": 30,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEA"),
+"material": SubResource("StandardMaterial3D_fnnws"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 20,
+"vertex_data": PackedByteArray("AACAvwAAAAAAAIA/AACAPwAAAAAAAIC/AACAvwAAAAAAAIC/AACAPwAAAAAAAIA/AACAPwAAAAAAAIC/AACAv83MzD4AAIC/AACAvwAAAAAAAIC/AACAP83MzD4AAIC/AACAvwAAAAAAAIA/AACAP83MzD4AAIA/AACAPwAAAAAAAIA/AACAv83MzD4AAIA/AACAPwAAAAAAAIA/AACAP83MzD4AAIC/AACAPwAAAAAAAIC/AACAP83MzD4AAIA/AACAvwAAAAAAAIC/AACAv83MzD4AAIA/AACAvwAAAAAAAIA/AACAv83MzD4AAIC//38AAP///z//fwAA////P/9/AAD///8//38AAP///z//////////v/////////+//////////7//////////v/9//3////8//3//f////z//f/9/////P/9//3////8/////f////7////9/////v////3////+/////f////78AAP9/////vwAA/3////+/AAD/f////78AAP9/////vw==")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cur4t"]
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 5.3
+
+[node name="Light" type="Node3D" unique_id=2096687380]
+
+[node name="light_model" type="Node3D" parent="." unique_id=1206681102]
+transform = Transform3D(0.5, 0, 0, 0, 0.4, 0, 0, 0, 0.5, 0, 0, 0)
+
+[node name="Plane" type="MeshInstance3D" parent="light_model" unique_id=1928419443]
+transform = Transform3D(1.2, 0, 0, 0, 1, 0, 0, 0, 1.2, 0, 0, 0)
+mesh = SubResource("ArrayMesh_2hpc1")
+surface_material_override/0 = SubResource("StandardMaterial3D_cur4t")
+
+[node name="SpotLight3D" type="SpotLight3D" parent="." unique_id=1438385927]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
+light_bake_mode = 1
+spot_attenuation = -0.3
+spot_angle = 80.0
+spot_angle_attenuation = 7.210002

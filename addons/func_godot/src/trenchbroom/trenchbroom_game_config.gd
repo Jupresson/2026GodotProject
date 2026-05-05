@@ -199,8 +199,11 @@ func _parse_default_uv_scale(texture_scale : Vector2) -> String:
 func export_file() -> void:
 	var config_folder: String = FuncGodotLocalConfig.get_setting(FuncGodotLocalConfig.PROPERTY.TRENCHBROOM_GAME_CONFIG_FOLDER) as String
 	if config_folder.is_empty():
+		config_folder = _get_default_game_config_folder()
+	if config_folder.is_empty():
 		printerr("Skipping export: No TrenchBroom Game folder")
 		return
+	config_folder = _normalize_folder_path(config_folder)
 	
 	# Make sure FGD file is set
 	if not fgd_file:
@@ -235,6 +238,18 @@ func export_file() -> void:
 	export_fgd.generate_model_point_class_models = generate_model_point_class_models
 	export_fgd.do_export_file(FuncGodotFGDFile.FuncGodotTargetMapEditors.TRENCHBROOM, config_folder)
 	print("TrenchBroom Game Config export complete\n")
+
+func _get_default_game_config_folder() -> String:
+	var project_root := ProjectSettings.globalize_path("res://")
+	var candidate := project_root.path_join("TrenchBroom-Win64-AMD64-v2025.4-Release/games/%s" % game_name)
+	if DirAccess.dir_exists_absolute(candidate):
+		return candidate
+	return ""
+
+func _normalize_folder_path(folder_path: String) -> String:
+	if folder_path.begins_with("res://") or folder_path.begins_with("user://"):
+		return ProjectSettings.globalize_path(folder_path)
+	return folder_path
 
 #region GameConfigDeclarations
 func _get_game_config_v4_text() -> String:
