@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c33xa6h70k33q"
-path.s3tc="res://.godot/imported/carpet_color.png-59d38c01dd5653eb49ca168c3a05144b.s3tc.ctex"
+uid="uid://7w4pg3sju0br"
+path.s3tc="res://.godot/imported/wallpaper_rough.png-1c2c8a32aa8bef842aef0d7762460eaa.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/textures/carpet/carpet_color.png"
-dest_files=["res://.godot/imported/carpet_color.png-59d38c01dd5653eb49ca168c3a05144b.s3tc.ctex"]
+source_file="res://assets/textures/wallpaper_2/wallpaper_rough.png"
+dest_files=["res://.godot/imported/wallpaper_rough.png-1c2c8a32aa8bef842aef0d7762460eaa.s3tc.ctex"]
 
 [params]
 

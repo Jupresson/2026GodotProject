@@ -1,0 +1,15 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" uid="uid://bymgpdqqklyiy" path="res://trenchbroom/textures/world/all_directions/pool_tiles/pool_tiles.png" id="1_pool"]
+[ext_resource type="Texture2D" uid="uid://dmfav01d20at6" path="res://assets/textures/pool_tiles/pool_tiles_normal.png" id="2_pool"]
+[ext_resource type="Texture2D" uid="uid://bp6s28rg3rpgb" path="res://assets/textures/pool_tiles/pool_tiles_rough.png" id="3_pool"]
+
+
+[resource]
+albedo_texture = ExtResource("1_pool")
+roughness_texture = ExtResource("3_pool")
+roughness = 0.3
+normal_enabled = true
+normal_scale = 1.0
+normal_texture = ExtResource("2_pool")
+metallic = 0.1

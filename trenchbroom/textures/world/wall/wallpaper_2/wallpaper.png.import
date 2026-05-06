@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c33xa6h70k33q"
-path.s3tc="res://.godot/imported/carpet_color.png-59d38c01dd5653eb49ca168c3a05144b.s3tc.ctex"
+uid="uid://chnh34xjs5h4d"
+path.s3tc="res://.godot/imported/wallpaper.png-5142bb5d84555546fe74c1af6cfc0aaf.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/textures/carpet/carpet_color.png"
-dest_files=["res://.godot/imported/carpet_color.png-59d38c01dd5653eb49ca168c3a05144b.s3tc.ctex"]
+source_file="res://trenchbroom/textures/world/wall/wallpaper_2/wallpaper.png"
+dest_files=["res://.godot/imported/wallpaper.png-5142bb5d84555546fe74c1af6cfc0aaf.s3tc.ctex"]
 
 [params]
 

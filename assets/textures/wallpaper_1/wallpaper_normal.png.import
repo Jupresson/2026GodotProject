@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c33xa6h70k33q"
-path.s3tc="res://.godot/imported/carpet_color.png-59d38c01dd5653eb49ca168c3a05144b.s3tc.ctex"
+uid="uid://cvw23rqjhhiff"
+path.s3tc="res://.godot/imported/wallpaper_normal.png-b6f20e1713ea904291f5a6a952c30c9c.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/textures/carpet/carpet_color.png"
-dest_files=["res://.godot/imported/carpet_color.png-59d38c01dd5653eb49ca168c3a05144b.s3tc.ctex"]
+source_file="res://assets/textures/wallpaper_1/wallpaper_normal.png"
+dest_files=["res://.godot/imported/wallpaper_normal.png-b6f20e1713ea904291f5a6a952c30c9c.s3tc.ctex"]
 
 [params]
 
@@ -22,12 +22,12 @@ compress/lossy_quality=0.7
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
-compress/normal_map=0
+compress/normal_map=1
 compress/channel_pack=0
 mipmaps/generate=true
 mipmaps/limit=-1
-roughness/mode=0
-roughness/src_normal=""
+roughness/mode=1
+roughness/src_normal="res://assets/textures/wallpaper/wallpaper_normal.png"
 process/channel_remap/red=0
 process/channel_remap/green=1
 process/channel_remap/blue=2

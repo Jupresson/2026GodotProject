@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c33xa6h70k33q"
-path.s3tc="res://.godot/imported/carpet_color.png-59d38c01dd5653eb49ca168c3a05144b.s3tc.ctex"
+uid="uid://d3rm8cyd38uae"
+path.s3tc="res://.godot/imported/Prototype_Grid_Gray_04-128x128.png-c0e33a283d1b48d0a268268b1da17bc5.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/textures/carpet/carpet_color.png"
-dest_files=["res://.godot/imported/carpet_color.png-59d38c01dd5653eb49ca168c3a05144b.s3tc.ctex"]
+source_file="res://trenchbroom/textures/world/all_directions/debug_grid/Prototype_Grid_Gray_04-128x128.png"
+dest_files=["res://.godot/imported/Prototype_Grid_Gray_04-128x128.png-c0e33a283d1b48d0a268268b1da17bc5.s3tc.ctex"]
 
 [params]
 

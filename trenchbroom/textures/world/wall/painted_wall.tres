@@ -1,0 +1,12 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://ccm5fsj2ve36b"]
+
+[ext_resource type="Texture2D" uid="uid://1pilvn5g30d" path="res://trenchbroom/textures/world/wall/painted_wall.png" id="1_pwall"]
+[ext_resource type="Texture2D" uid="uid://d4dxkvyg3vq7o" path="res://assets/textures/painted_wall/painted_wall_normal.png" id="2_pwall"]
+[ext_resource type="Texture2D" uid="uid://dkhfndlmbe58t" path="res://assets/textures/painted_wall/painted_wall_rough.png" id="3_pwall"]
+
+[resource]
+albedo_texture = ExtResource("1_pwall")
+roughness = 0.84
+roughness_texture = ExtResource("3_pwall")
+normal_enabled = true
+normal_texture = ExtResource("2_pwall")

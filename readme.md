@@ -73,6 +73,21 @@ scripts/      # Game scripts (scaffold)
 ui/           # Debug and options UI scenes/scripts
 ```
 
+## TrenchBroom Materials
+
+FuncGodot and TrenchBroom use two different layers here:
+
+- TrenchBroom reads image-based materials from the game folder's `textures/` directory.
+- FuncGodot can generate Godot `.tres` materials from those textures for use in the engine.
+
+In this project, the TrenchBroom-facing files live in `trenchbroom/textures/`, and the source textures live in `assets/textures/`.
+
+If the Material Browser only shows the default entries, make sure the TrenchBroom game folder was exported with its `textures/` directory, not just `GameConfig.cfg` and the FGD. For this repository, the target game folder is:
+
+- `TrenchBroom-Win64-AMD64-v2025.4-Release/games/2026GodotProject/textures/`
+
+The current FuncGodot map settings already point both `base_texture_dir` and `base_material_dir` at `res://trenchbroom/textures`, so saving generated materials there will keep TrenchBroom and Godot in sync.
+
 ## Next Recommended Steps
 
 1. Move from plugin sample scene to your own `scenes/` main scene.
