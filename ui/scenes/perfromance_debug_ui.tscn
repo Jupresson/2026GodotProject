@@ -68,6 +68,13 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "..."
 
+[node name="spaceRow" type="HBoxContainer" parent="VBoxContainer/MetricsContainer" unique_id=1898758910]
+layout_mode = 2
+
+[node name="FrameTimeLabel" type="Label" parent="VBoxContainer/MetricsContainer/spaceRow" unique_id=1809583681]
+layout_mode = 2
+text = " "
+
 [node name="FrameTimeRow" type="HBoxContainer" parent="VBoxContainer/MetricsContainer" unique_id=1328762184]
 layout_mode = 2
 
