@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://b3mnbbeyyee5x"
-path="res://.godot/imported/custom_light_model.glb-6bbb7f39d298e0ef370208a95f185d37.scn"
+uid="uid://druy0p3oa7g6i"
+path="res://.godot/imported/custom_light_model.glb-37d32db2d6b4e281547e5e37b7d86d91.scn"
 
 [deps]
 
-source_file="res://trenchbroom/fgd/model_point/custom_light_model.glb"
-dest_files=["res://.godot/imported/custom_light_model.glb-6bbb7f39d298e0ef370208a95f185d37.scn"]
+source_file="res://assets/trenchbroom_models/custom_light_model.glb"
+dest_files=["res://.godot/imported/custom_light_model.glb-37d32db2d6b4e281547e5e37b7d86d91.scn"]
 
 [params]
 

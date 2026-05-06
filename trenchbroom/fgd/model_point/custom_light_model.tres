@@ -11,7 +11,7 @@ scene_file = ExtResource("2_bcpl1")
 classname = "custom_light_model"
 meta_properties = Dictionary[String, Variant]({
 "color": Color(0.8, 0.8, 0.8, 1),
-"model": "{\"path\": \"custom_light_model.glb\", \"scale\": 32.0 }",
+"model": "{\"path\": \"assets/trenchbroom_models/custom_light_model.glb\", \"scale\": 32.0 }",
 "size": AABB(-8, -8, -8, 8, 8, 8)
 })
 metadata/_custom_type_script = "uid://ldfqjtq0br35"

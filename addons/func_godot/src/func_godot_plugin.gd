@@ -6,6 +6,8 @@ var map_import_plugin : QuakeMapImportPlugin = null
 var palette_import_plugin : QuakePaletteImportPlugin = null
 var wad_import_plugin: QuakeWadImportPlugin = null
 
+const DEFAULT_MODEL_POINT_CLASS_SAVE_PATH := "assets/trenchbroom_models"
+
 #var func_godot_map_progress_bar: Control = null
 var edited_object_ref: WeakRef = weakref(null)
 
@@ -63,15 +65,16 @@ func _enter_tree() -> void:
 		ProjectSettings.set_initial_value("func_godot/default_inverse_scale_factor", 32.0)
 	
 	# Model Point Class Default Path
-	if not ProjectSettings.has_setting("func_godot/model_point_class_save_path"):
-		ProjectSettings.set_setting("func_godot/model_point_class_save_path", "")
+	var model_point_class_save_path := ProjectSettings.get_setting("func_godot/model_point_class_save_path", "") as String
+	if not ProjectSettings.has_setting("func_godot/model_point_class_save_path") or model_point_class_save_path.is_empty() or model_point_class_save_path == "res://":
+		ProjectSettings.set_setting("func_godot/model_point_class_save_path", DEFAULT_MODEL_POINT_CLASS_SAVE_PATH)
 		var property_info = {
 			"name": "func_godot/model_point_class_save_path",
 			"type": TYPE_STRING
 		}
 		ProjectSettings.add_property_info(property_info)
 		ProjectSettings.set_as_basic("func_godot/model_point_class_save_path", true)
-		ProjectSettings.set_initial_value("func_godot/model_point_class_save_path", "")
+		ProjectSettings.set_initial_value("func_godot/model_point_class_save_path", DEFAULT_MODEL_POINT_CLASS_SAVE_PATH)
 
 func _exit_tree() -> void:
 	remove_custom_type("FuncGodotMap")

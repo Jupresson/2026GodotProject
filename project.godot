@@ -36,6 +36,7 @@ folder_colors={
 "res://addons/": "gray",
 "res://addons/ultimate_character/Sample/": "gray",
 "res://assets/": "gray",
+"res://assets/trenchbroom_models/": "purple",
 "res://audio/": "green",
 "res://entities/": "pink",
 "res://graphics/": "yellow",
@@ -51,6 +52,10 @@ folder_colors={
 [filesystem]
 
 import/blender/enabled=false
+
+[func_godot]
+
+model_point_class_save_path="assets/trenchbroom_models"
 
 [input]
 
