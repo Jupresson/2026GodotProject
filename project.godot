@@ -35,10 +35,11 @@ enabled=PackedStringArray("res://addons/func_godot/plugin.cfg", "res://addons/sp
 folder_colors={
 "res://addons/": "gray",
 "res://addons/ultimate_character/Sample/": "gray",
+"res://assets/": "gray",
 "res://audio/": "green",
 "res://entities/": "pink",
-"res://graphics/": "gray",
-"res://graphics/shaders/": "gray",
+"res://graphics/": "yellow",
+"res://graphics/shaders/": "yellow",
 "res://scenes/": "pink",
 "res://scripts/": "blue",
 "res://scripts/environment/": "purple",
@@ -103,3 +104,4 @@ pause={
 [rendering]
 
 rendering_device/driver.windows="d3d12"
+environment/defaults/default_clear_color=Color(0, 0, 0, 1)

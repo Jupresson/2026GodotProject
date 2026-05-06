@@ -7,6 +7,8 @@ class_name PerformanceDebugUI
 
 @onready var _metrics_container: VBoxContainer = %MetricsContainer
 @onready var _fps_value_label: Label = %FPSValue
+@onready var _cpu_usage_value_label: Label = %CPUUsageValue
+@onready var _gpu_usage_value_label: Label = %GPUUsageValue
 @onready var _frame_time_value_label: Label = %FrameTimeValue
 @onready var _physics_time_value_label: Label = %PhysicsTimeValue
 @onready var _object_count_value_label: Label = %ObjectCountValue
@@ -18,7 +20,13 @@ var _refresh_time: float = 0.0
 
 
 func _ready() -> void:
+	var viewport := get_viewport()
+	if viewport != null:
+		RenderingServer.viewport_set_measure_render_time(viewport.get_viewport_rid(), true)
+
 	_bind_scene_metric_label("FPS", _fps_value_label)
+	_bind_scene_metric_label("CPU Usage", _cpu_usage_value_label)
+	_bind_scene_metric_label("GPU Usage", _gpu_usage_value_label)
 	_bind_scene_metric_label("Frame Time", _frame_time_value_label)
 	_bind_scene_metric_label("Physics Time", _physics_time_value_label)
 	_bind_scene_metric_label("Object Count", _object_count_value_label)
@@ -34,6 +42,12 @@ func _ready() -> void:
 	)
 	register_performance_monitor("Physics Time", Performance.TIME_PHYSICS_PROCESS, func(raw_value: Variant) -> String:
 		return "%0.2f ms" % (float(raw_value) * 1000.0)
+	)
+	register_metric("CPU Usage", func() -> String:
+		return _format_usage_percent(_get_cpu_usage_percent())
+	)
+	register_metric("GPU Usage", func() -> String:
+		return _format_usage_percent(_get_gpu_usage_percent())
 	)
 	register_performance_monitor("Object Count", Performance.OBJECT_COUNT)
 	register_performance_monitor("RAM Usage", Performance.MEMORY_STATIC, _format_bytes)
@@ -147,3 +161,37 @@ func _format_bytes(raw_value: Variant) -> String:
 	var bytes: float = float(raw_value)
 	var megabytes: float = bytes / (1024.0 * 1024.0)
 	return "%0.1f MB" % megabytes
+
+
+func _get_cpu_usage_percent() -> float:
+	var viewport := get_viewport()
+	if viewport == null:
+		return 0.0
+
+	var frame_budget_ms := _get_frame_budget_ms()
+	var viewport_rid := viewport.get_viewport_rid()
+	var setup_time_ms := RenderingServer.get_frame_setup_time_cpu()
+	var render_time_ms := RenderingServer.viewport_get_measured_render_time_cpu(viewport_rid)
+	return clamp(((setup_time_ms + render_time_ms) / frame_budget_ms) * 100.0, 0.0, 100.0)
+
+
+func _get_gpu_usage_percent() -> float:
+	var viewport := get_viewport()
+	if viewport == null:
+		return 0.0
+
+	var frame_budget_ms := _get_frame_budget_ms()
+	var render_time_ms := RenderingServer.viewport_get_measured_render_time_gpu(viewport.get_viewport_rid())
+	return clamp((render_time_ms / frame_budget_ms) * 100.0, 0.0, 100.0)
+
+
+func _get_frame_budget_ms() -> float:
+	var frame_time_ms := float(Performance.get_monitor(Performance.TIME_PROCESS)) * 1000.0
+	if frame_time_ms <= 0.0:
+		return 1000.0 / 60.0
+
+	return frame_time_ms
+
+
+func _format_usage_percent(percent: float) -> String:
+	return "%0.1f%%" % percent

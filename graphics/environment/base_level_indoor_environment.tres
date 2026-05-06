@@ -1,0 +1,17 @@
+[gd_resource type="Environment" format=3 uid="uid://u7q12this5tw"]
+
+[resource]
+tonemap_mode = 3
+sdfgi_read_sky_light = false
+glow_enabled = true
+glow_levels/5 = 0.3
+glow_levels/6 = 0.3
+glow_strength = 0.85
+glow_bloom = 1.0
+glow_blend_mode = 0
+fog_enabled = true
+fog_mode = 1
+fog_light_color = Color(0, 0, 0, 1)
+fog_density = 1.0
+fog_sky_affect = 0.0
+adjustment_saturation = 0.0

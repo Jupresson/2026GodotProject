@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bwmtu28l42jk4"]
 
 [ext_resource type="Script" uid="uid://cps4j0bdsx55v" path="res://addons/ultimate_character/ucharacterbody3d.gd" id="1_g2els"]
-[ext_resource type="CameraAttributesPractical" uid="uid://dxraqbxohnaxe" path="res://graphics/camera/new_camera_attributes_practical.tres" id="2_37q5r"]
+[ext_resource type="CameraAttributesPractical" uid="uid://dxraqbxohnaxe" path="res://graphics/camera/camera_attributes_practical.tres" id="2_37q5r"]
 [ext_resource type="Script" uid="uid://d0ies2qn7sx5b" path="res://scripts/components/healt_component.gd" id="2_qhqgy"]
 [ext_resource type="Shader" uid="uid://cv41hwb0obad6" path="res://graphics/shaders/bodycam_shader.gdshader" id="3_qhqgy"]
 
@@ -21,8 +21,8 @@ shader_parameter/alpha = 1.0
 shader_parameter/crop = 0.943
 shader_parameter/crop_color = Color(0, 0, 0, 1)
 shader_parameter/crop_feathering = 0.1
-shader_parameter/channel_offset = 0.005
-shader_parameter/noise_strength = 5.0
+shader_parameter/channel_offset = 0.007000003592379997
+shader_parameter/noise_strength = 7.0
 
 [node name="Player" type="CharacterBody3D" unique_id=1914000597 groups=["player"]]
 script = ExtResource("1_g2els")
@@ -42,6 +42,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
 
 [node name="Camera" type="Camera3D" parent="Head" unique_id=333131559]
 attributes = ExtResource("2_37q5r")
+fov = 125.8
 
 [node name="RayCast3D" type="RayCast3D" parent="." unique_id=2101007585]
 target_position = Vector3(0, 2, 0)

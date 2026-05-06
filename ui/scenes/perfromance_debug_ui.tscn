@@ -42,6 +42,32 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "..."
 
+[node name="CPUUsageRow" type="HBoxContainer" parent="VBoxContainer/MetricsContainer" unique_id=2012301149]
+layout_mode = 2
+
+[node name="CPUUsageLabel" type="Label" parent="VBoxContainer/MetricsContainer/CPUUsageRow" unique_id=1710336112]
+layout_mode = 2
+text = "CPU Usage"
+
+[node name="CPUUsageValue" type="Label" parent="VBoxContainer/MetricsContainer/CPUUsageRow" unique_id=1448703537]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "..."
+
+[node name="GPUUsageRow" type="HBoxContainer" parent="VBoxContainer/MetricsContainer" unique_id=312928398]
+layout_mode = 2
+
+[node name="GPUUsageLabel" type="Label" parent="VBoxContainer/MetricsContainer/GPUUsageRow" unique_id=1604569093]
+layout_mode = 2
+text = "GPU Usage"
+
+[node name="GPUUsageValue" type="Label" parent="VBoxContainer/MetricsContainer/GPUUsageRow" unique_id=944565079]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "..."
+
 [node name="FrameTimeRow" type="HBoxContainer" parent="VBoxContainer/MetricsContainer" unique_id=1328762184]
 layout_mode = 2
 
