@@ -45,7 +45,6 @@ folder_colors={
 "res://scripts/environment/": "purple",
 "res://scripts/trenchbroom/": "purple",
 "res://trenchbroom/": "purple",
-"res://trenchbroom/textures/": "gray",
 "res://ui/": "green"
 }
 

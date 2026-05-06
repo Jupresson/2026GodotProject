@@ -1,0 +1,14 @@
+[gd_resource type="StandardMaterial3D" load_steps=4 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/textures/pool_tiles/pool_tiles_color.png" id="1_pool"]
+[ext_resource type="Texture2D" path="res://assets/textures/pool_tiles/pool_tiles_normal.png" id="2_pool"]
+[ext_resource type="Texture2D" path="res://assets/textures/pool_tiles/pool_tiles_rough.png" id="3_pool"]
+
+[resource]
+albedo_texture = ExtResource("1_pool")
+roughness_texture = ExtResource("3_pool")
+roughness = 0.3
+normal_enabled = true
+normal_scale = 1.0
+normal_texture = ExtResource("2_pool")
+metallic = 0.1

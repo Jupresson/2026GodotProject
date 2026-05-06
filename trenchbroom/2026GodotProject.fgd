@@ -40,4 +40,4 @@
 
 @PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = custom_light : "adds a light" []
 
-@PointClass color(204 204 204) model({"path": "custom_light_model.glb", "scale": 32.0 }) size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) = custom_light_model : "custom_light_model" []
+@PointClass color(204 204 204) model({"path": "models/custom_light_model.glb", "scale": 32.0 }) size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) = custom_light_model : "custom_light_model" []
