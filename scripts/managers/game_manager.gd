@@ -13,7 +13,7 @@ class_name GameManagerClass
 @export_range(50.0, 200.0, 1.0) var startup_scale_percent: float = 100.0
 @export_range(-1, 2, 1) var startup_scaler_index: int = -1
 @export_range(-1, 4, 1) var startup_fsr_preset_index: int = 2
-@export_range(-1, 8, 1) var startup_screen_index: int = 1
+@export_range(-1, 8, 1) var startup_screen_index: int = 0
 
 const STARTUP_RESOLUTIONS: Dictionary = {
 	"3840x2160": Vector2i(3840, 2160),

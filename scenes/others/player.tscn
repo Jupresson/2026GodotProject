@@ -26,6 +26,9 @@ shader_parameter/noise_strength = 5.0
 
 [node name="Player" type="CharacterBody3D" unique_id=1914000597 groups=["player"]]
 script = ExtResource("1_37q5r")
+fov_low = 110.0
+MOUSE_SENSITIVITY = 0.18
+mouse_smoothing_speed = 0.25
 metadata/_custom_type_script = "uid://cps4j0bdsx55v"
 
 [node name="CollisionShapeNormal" type="CollisionShape3D" parent="." unique_id=1439296526]
@@ -42,7 +45,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
 
 [node name="Camera" type="Camera3D" parent="Head" unique_id=333131559]
 attributes = ExtResource("2_37q5r")
-fov = 125.8
+fov = 125.0
+near = 0.001
 
 [node name="RayCast3D" type="RayCast3D" parent="." unique_id=2101007585]
 target_position = Vector3(0, 2, 0)

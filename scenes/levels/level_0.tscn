@@ -739,20 +739,8 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 3
 [node name="entity_6_custom_light_model" parent="FuncGodotMap" unique_id=637718294 instance=ExtResource("14_gj3kh")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 3.25, -32.5)
 
-[node name="entity_7_custom_light_model" parent="FuncGodotMap" unique_id=483737597 instance=ExtResource("14_gj3kh")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -5, 3.25, -37.5)
-
-[node name="entity_8_custom_light_model" parent="FuncGodotMap" unique_id=826978850 instance=ExtResource("14_gj3kh")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -5, 3.25, -42.5)
-
 [node name="entity_9_custom_light_model" parent="FuncGodotMap" unique_id=1337204509 instance=ExtResource("14_gj3kh")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 3.25, -47.5)
-
-[node name="entity_10_custom_light_model" parent="FuncGodotMap" unique_id=2034044598 instance=ExtResource("14_gj3kh")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -5, 3.25, -53)
-
-[node name="entity_11_custom_light_model" parent="FuncGodotMap" unique_id=824511448 instance=ExtResource("14_gj3kh")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -4, 3.25, -57.5)
 
 [node name="entity_12_custom_light_model" parent="FuncGodotMap" unique_id=563706983 instance=ExtResource("14_gj3kh")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 3.25, -62.5)

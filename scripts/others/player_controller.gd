@@ -27,58 +27,81 @@ const LAND_VOLUME_DB: float = 0
 const LAND_PITCH_RANGE: Vector2 = Vector2(0.86, 1.0)
 
 @export_group("Character Speeds")
+## Jump strength. Higher values make the player jump higher.
 @export var jump_velocity : float = 4.35
+## Walk speed. Higher values make normal movement faster.
 @export var walk_speed : float = 3.0
+## Sprint speed. Higher values make sprinting faster.
 @export var sprint_speed : float = 4.6
+## Crouch speed. Higher values make crouch movement faster.
 @export var crouch_speed : float = 1.6
+## Slide speed. Higher values make the slide cover more distance faster.
 @export var slide_speed : float = 7.0
 
 @export_group("Character Settings")
-## Where the camera will be positioned, default of 1.8 is based off of a character height of 2.0
+## Standing camera height. Higher values place the view higher.
 @export var standing_height : float = 1.8
-## Where the camera will be positioned, default of 1.3 is based off of a character height of 2.0
+## Crouching camera height. Lower values bring the view closer to the ground.
 @export var crouching_height : float = 1.3
-## The slide length in seconds for how far the player can slide
+## Slide duration in seconds. Higher values make slides last longer.
 @export var sliding_length : float = 1.0
+## Walking head bob speed. Higher values make the motion cycle faster.
 @export var head_bob_walking_speed : float = 12.0
+## Sprinting head bob speed. Higher values make the motion cycle faster.
 @export var head_bob_sprinting_speed : float = 15.0
+## Crouching head bob speed. Higher values make the motion cycle faster.
 @export var head_bob_crouching_speed : float = 11.0
-## The head bob intensity is for crouching, where walking is multiplied by 2, and sprinting is multiplied by 4
+## Base head bob intensity. Higher values make the camera movement stronger.
 @export var head_bob_intensity : float = 0.09
 
 @export_group("Camera FOV")
-@export var fov_low : float = 125.8
-@export var fov_high : float = 145.8
-@export var fov_fall_boost : float = 8.0
+## Default field of view. Higher values feel wider and faster.
+@export var fov_low : float = 110.0
+## Maximum field of view. Higher values feel more stretched and intense.
+@export var fov_high : float = 140.0
+## Extra FOV added while falling. Higher values make falling feel faster.
+@export var fov_fall_boost : float = 70.0
+## Speed cap used for the falling FOV effect. Lower values make the change smoother, higher values make it react faster.
 @export var fov_fall_speed_max : float = 30.0
+## FOV smoothing speed. Lower values make the camera change smoother, higher values make it respond faster.
 @export var fov_smooth_speed : float = 6.0
 
 @export_group("Audio")
+## Slide sound fade-out time. Higher values make the sound linger longer.
 @export var slide_sound_fade_out_seconds : float = 0.5
+## General sound fade-out time. Higher values make sounds fade more slowly.
 @export var sound_fade_out_seconds : float = 0.3
 
 @export_group("Jump Feel")
-## Grace period after stepping off a ledge where jumping is still allowed.
+## Coyote time in seconds. Higher values make jumping feel more forgiving after leaving a ledge.
 @export var coyote_time : float = 0.3
+## Landing sound cooldown in seconds. Higher values play landing sounds less often.
 @export var landing_sound_limit_time : float = 0.5
 
 @export_group("Controls")
-## The InputMap action string to be used for LEFT movement
+## InputMap action used for moving left.
 @export var LEFT : String = "move_left"
-## The InputMap action string to be used for RIGHT movement
+## InputMap action used for moving right.
 @export var RIGHT : String = "move_right"
-## The InputMap action string to be used for FORWARD movement
+## InputMap action used for moving forward.
 @export var FORWARD : String = "move_forward"
-## The InputMap action string to be used for BACKWARD movement
+## InputMap action used for moving backward.
 @export var BACKWARD : String = "move_backward"
-## The InputMap action string to be used for sprinting
+## InputMap action used for sprinting.
 @export var SPRINT : String = "action_sprint"
-## The InputMap action string to be used for crouching
+## InputMap action used for crouching.
 @export var CROUCH : String = "action_crouch"
-## The InputMap action string to be used for jumping
+## InputMap action used for jumping.
 @export var JUMP : String = "action_jump"
-## A default value of 0.4 is a good starting point, stay between 0.01 and 1.0
-@export var MOUSE_SENSITIVITY : float = 0.4
+## Mouse look sensitivity. Higher values make turning faster.
+@export var MOUSE_SENSITIVITY : float = 0.18
+
+@export_group("Mouse")
+## Enables mouse smoothing for a more natural, less jerky look feel.
+@export var enable_mouse_smoothing : bool = true
+## Mouse smoothing amount from 0 to 1. Lower values feel smoother; higher values feel snappier.
+@export_range(0.0, 1.0, 0.01)
+var mouse_smoothing_speed : float = 0.25
 
 var is_walking = false
 var is_sprinting = false
@@ -110,6 +133,9 @@ var is_input_enabled : bool = true
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 var direction = Vector3.ZERO
 var scene
+var pending_mouse_relative := Vector2.ZERO
+var smoothed_mouse_relative := Vector2.ZERO
+var smoothed_mouse_prev := Vector2.ZERO
 
 func _enter_tree():
 	if Engine.is_editor_hint():
@@ -200,6 +226,8 @@ func _exit_tree() -> void:
 
 func _physics_process(delta):
 	if !Engine.is_editor_hint() and is_input_enabled:
+		# Apply smoothed mouse look each physics frame
+		_process_mouse_look(delta)
 		# Get input direction
 		var input_dir := InputManager.get_move_vector(LEFT, RIGHT, FORWARD, BACKWARD)
 		landing_sound_limit_timer = maxf(landing_sound_limit_timer - delta, 0.0)
@@ -250,7 +278,7 @@ func _physics_process(delta):
 		
 		# Handle head bob.
 		if is_sprinting:
-			head_bob_current_intensity = head_bob_intensity * 4
+			head_bob_current_intensity = head_bob_intensity * 2
 			head_bob_index += head_bob_sprinting_speed * delta
 		elif is_walking:
 			head_bob_current_intensity = head_bob_intensity * 2
@@ -269,6 +297,8 @@ func _physics_process(delta):
 			camera_node.position.y = lerp(camera_node.position.y, head_bob_vector.y * (head_bob_current_intensity/2.0), delta * 10.0)
 			camera_node.position.x = lerp(camera_node.position.x, head_bob_vector.x * head_bob_current_intensity, delta * 10.0)
 		else:
+			# Reset head bob when not actively moving
+			head_bob_index = 0.0
 			camera_node.position.y = lerp(camera_node.position.y, 0.0, delta * 10.0)
 			camera_node.position.x = lerp(camera_node.position.x, 0.0, delta * 10.0)
 		
@@ -338,9 +368,53 @@ func _on_mouse_look_input(relative: Vector2) -> void:
 	if !is_input_enabled or is_sliding:
 		return
 
-	rotate_y(deg_to_rad(-relative.x * MOUSE_SENSITIVITY))
-	head_node.rotate_x(deg_to_rad(-relative.y * MOUSE_SENSITIVITY))
-	head_node.rotation.x = clampf(head_node.rotation.x, deg_to_rad(-80), deg_to_rad(80))
+	# Queue the raw mouse delta; actual rotation is applied in _physics_process
+	# accumulate deltas so smoothing can interpolate across frames
+	pending_mouse_relative += relative
+
+	# If smoothing is disabled, also apply immediately so input feels responsive
+	if not enable_mouse_smoothing:
+		if head_node != null:
+			rotate_y(deg_to_rad(-pending_mouse_relative.x * MOUSE_SENSITIVITY))
+			head_node.rotate_x(deg_to_rad(-pending_mouse_relative.y * MOUSE_SENSITIVITY))
+			head_node.rotation.x = clampf(head_node.rotation.x, deg_to_rad(-80), deg_to_rad(80))
+		# clear pending so we don't reapply in _process
+		pending_mouse_relative = Vector2.ZERO
+		smoothed_mouse_relative = Vector2.ZERO
+		smoothed_mouse_prev = Vector2.ZERO
+
+
+func _process_mouse_look(delta: float) -> void:
+	if head_node == null or camera_node == null:
+		return
+
+	if not enable_mouse_smoothing:
+		return
+
+	# Smooth towards the latest pending mouse delta using lerp
+	var smoothing_speed := lerpf(1.0, 30.0, mouse_smoothing_speed)
+	var t := clampf(delta * smoothing_speed, 0.0, 1.0)
+	# Interpolate the smoothed target towards the pending delta
+	smoothed_mouse_relative = smoothed_mouse_relative.lerp(pending_mouse_relative, t)
+
+	# Apply only the change since last frame to avoid repeatedly reapplying the same delta
+	var delta_apply := smoothed_mouse_relative - smoothed_mouse_prev
+	if delta_apply != Vector2.ZERO:
+		rotate_y(deg_to_rad(-delta_apply.x * MOUSE_SENSITIVITY))
+		head_node.rotate_x(deg_to_rad(-delta_apply.y * MOUSE_SENSITIVITY))
+		head_node.rotation.x = clampf(head_node.rotation.x, deg_to_rad(-80), deg_to_rad(80))
+
+	# Consume the applied portion from the pending target so smoothing continues across frames
+	pending_mouse_relative -= delta_apply
+
+	# Move previous smoothed tracker
+	smoothed_mouse_prev = smoothed_mouse_relative
+
+	# If the remaining pending is tiny, clear to avoid residual micro-rotations
+	if pending_mouse_relative.length() < 0.001:
+		pending_mouse_relative = Vector2.ZERO
+		smoothed_mouse_relative = Vector2.ZERO
+		smoothed_mouse_prev = Vector2.ZERO
 
 func _update_dynamic_fov(delta : float):
 	if camera_node == null:
@@ -459,3 +533,4 @@ func _play_spatial_stream_sound(stream: AudioStream, volume_db: float = 0.0, uni
 	request.unique_tag = unique_tag
 	request.fade_out_seconds = fade_out_seconds
 	AudioManager.play_sound(request)
+
