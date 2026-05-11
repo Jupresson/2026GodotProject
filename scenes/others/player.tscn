@@ -22,7 +22,7 @@ shader_parameter/crop = 0.943
 shader_parameter/crop_color = Color(0, 0, 0, 1)
 shader_parameter/crop_feathering = 0.1
 shader_parameter/channel_offset = 0.00700000359237999
-shader_parameter/noise_strength = 8.2
+shader_parameter/noise_strength = 5.0
 
 [node name="Player" type="CharacterBody3D" unique_id=1914000597 groups=["player"]]
 script = ExtResource("1_37q5r")

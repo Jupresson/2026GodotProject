@@ -100,6 +100,10 @@ pause={
 ]
 }
 
+[layer_names]
+
+3d_render/layer_10="static light layer"
+
 [physics]
 
 3d/physics_engine="Jolt Physics"

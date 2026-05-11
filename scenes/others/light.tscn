@@ -16,7 +16,6 @@ _surfaces = [{
 "vertex_count": 20,
 "vertex_data": PackedByteArray("AACAvwAAAAAAAIA/AACAPwAAAAAAAIC/AACAvwAAAAAAAIC/AACAPwAAAAAAAIA/AACAPwAAAAAAAIC/AACAv83MzD4AAIC/AACAvwAAAAAAAIC/AACAP83MzD4AAIC/AACAvwAAAAAAAIA/AACAP83MzD4AAIA/AACAPwAAAAAAAIA/AACAv83MzD4AAIA/AACAPwAAAAAAAIA/AACAP83MzD4AAIC/AACAPwAAAAAAAIC/AACAP83MzD4AAIA/AACAvwAAAAAAAIC/AACAv83MzD4AAIA/AACAvwAAAAAAAIA/AACAv83MzD4AAIC//38AAP///z//fwAA////P/9/AAD///8//38AAP///z//////////v/////////+//////////7//////////v/9//3////8//3//f////z//f/9/////P/9//3////8/////f////7////9/////v////3////+/////f////78AAP9/////vwAA/3////+/AAD/f////78AAP9/////vw==")
 }]
-blend_shape_mode = 0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cur4t"]
 emission_enabled = true
@@ -30,10 +29,14 @@ transform = Transform3D(0.5, 0, 0, 0, 0.4, 0, 0, 0, 0.5, 0, 0, 0)
 
 [node name="Plane" type="MeshInstance3D" parent="light_model" unique_id=1928419443]
 transform = Transform3D(1.2, 0, 0, 0, 1, 0, 0, 0, 1.2, 0, 0, 0)
+layers = 512
+cast_shadow = 0
+gi_mode = 0
 mesh = SubResource("ArrayMesh_2hpc1")
 surface_material_override/0 = SubResource("StandardMaterial3D_cur4t")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=1446727794]
+layers = 512
 light_color = Color(1, 1, 0.73333335, 1)
 light_energy = 0.35
 light_bake_mode = 1
