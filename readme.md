@@ -2,95 +2,49 @@
 
 ![Project Icon](icon.png)
 
-A Godot 4.6 first-person prototype project built around a custom controller plugin: **UCharacterBody3D**.
-
-The project currently runs a playable sample scene with:
-
-- FPS-style movement (walk, sprint, crouch, jump, slide)
-- Mouse look with clamped vertical rotation
-- Head bob while moving
-- Runtime graphics/options panel (window mode, resolution, scaling, FSR2, VSync, screen selection)
-- FPS debug label
-- Bodycam shader integration in the sample scene
-
-## Project Status
-
-> [!NOTE]
-> This repository is a foundation/prototype workspace. Folder structure for content (`entities`, `scenes`, `resources`, `audio`, `graphics`, `scripts`) is prepared for expansion.
+A first-person backrooms 3D platformer built in Godot 4.6.2. Navigate eerie, procedurally-inspired environments with precise platforming mechanics and immersive exploration.
 
 ## Requirements
 
-- Godot Engine 4.6
-- Forward Plus renderer
-- Windows target configured to use D3D12
-- Jolt Physics enabled for 3D physics
+- **Godot Engine** 4.6.2
+- **Renderer:** Forward Plus
+- **Physics:** Jolt Physics enabled
 
-## Quick Start
+## Getting Started
 
-1. Open this folder in Godot.
-2. Run the project.
-3. The current main scene is `addons/ultimate_character/Sample/SampleScene.tscn`.
+1. Open this folder in Godot Engine 4.6.2
+2. Configure editor settings (see Setup Notes below)
+3. Run the project with `F5` or the Play button
+4. Main scene: `level_0`
 
-## Default Controls
+## Controls
 
-- Move: `W` `A` `S` `D`
-- Sprint: `Shift`
-- Crouch: `Ctrl`
-- Jump: `Space`
-- Look: Mouse
+| Action | Key |
+|--------|-----|
+| Move Forward/Back | `W` / `S` |
+| Move Left/Right | `A` / `D` |
+| Sprint | `Shift` |
+| Crouch | `Ctrl` |
+| Jump | `Space` |
+| Look Around | Mouse |
 
-Input actions are configured in `project.godot` as:
+*Input actions configured in `project.godot`*
 
-- `move_left`, `move_right`, `move_forward`, `move_backward`
-- `action_sprint`, `action_crouch`, `action_jump`
+## Setup Notes
 
-## Using UCharacterBody3D In Your Own Scene
+> [!IMPORTANT]
+> **Disable Embedded Window Mode** before running the project for optimal performance and proper script functionality.
+>
+> Navigate to: **Editor Settings** → **Debug** → **GDScript** → **Disable Embedded Window Mode**
 
-1. Ensure the plugin is enabled in Project Settings > Plugins.
-2. Add a `UCharacterBody3D` node to your scene.
-3. Configure exported movement and control settings in the Inspector.
-4. Confirm your InputMap action names match the controller settings.
+## Project Structure
 
-The custom node script is located at `addons/ultimate_character/ucharacterbody3d.gd`.
+- **`level_0`** - Main scene
+- **Input actions:** `move_left`, `move_right`, `move_forward`, `move_backward`, `action_sprint`, `action_crouch`, `action_jump`
 
-## UI Systems Included
+## Features
 
-- `ui/fps_debug.tscn`: Minimal FPS display
-- `ui/options_example.tscn`: Graphics/settings menu example
-- `ui/Options_Setting.gd`: Resolution, fullscreen, render scale, FSR2 presets, VSync, and screen selection logic
-
-## Workspace Layout
-
-```text
-addons/       # Plugins (includes ultimate_character)
-audio/        # Ambient, music, and SFX placeholders
-autoloads/    # Global singleton scripts (currently empty scaffold)
-entities/     # Gameplay entities (scaffold)
-graphics/     # Materials, shaders, textures
-resources/    # Shared resources (scaffold)
-scenes/       # Game scenes (scaffold)
-scripts/      # Game scripts (scaffold)
-ui/           # Debug and options UI scenes/scripts
-```
-
-## TrenchBroom Materials
-
-FuncGodot and TrenchBroom use two different layers here:
-
-- TrenchBroom reads image-based materials from the game folder's `textures/` directory.
-- FuncGodot can generate Godot `.tres` materials from those textures for use in the engine.
-
-In this project, the TrenchBroom-facing files live in `trenchbroom/textures/`, and the source textures live in `assets/textures/`.
-
-If the Material Browser only shows the default entries, make sure the TrenchBroom game folder was exported with its `textures/` directory, not just `GameConfig.cfg` and the FGD. For this repository, the target game folder is:
-
-- `TrenchBroom-Win64-AMD64-v2025.4-Release/games/2026GodotProject/textures/`
-
-The current FuncGodot map settings already point both `base_texture_dir` and `base_material_dir` at `res://trenchbroom/textures`, so saving generated materials there will keep TrenchBroom and Godot in sync.
-
-## Next Recommended Steps
-
-1. Move from plugin sample scene to your own `scenes/` main scene.
-2. Add core game entities under `entities/` and supporting logic in `scripts/`.
-3. Promote shared managers (audio, save, settings) into `autoloads/` as needed.
-4. Expand options persistence (save/load display settings between sessions).
+- First-person perspective with smooth camera controls
+- Precision platforming with sprint and crouch mechanics
+- Forward Plus rendering for modern 3D visuals
+- Jolt Physics for reliable collision and movement
