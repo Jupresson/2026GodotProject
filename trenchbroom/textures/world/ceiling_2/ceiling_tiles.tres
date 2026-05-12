@@ -2,13 +2,13 @@
 
 [ext_resource type="Texture2D" uid="uid://mmmwgyr6l82j" path="res://assets/textures/ceiling_tiles_2/ceiling_tiles_2_color.png" id="1_ts8qb"]
 [ext_resource type="Texture2D" uid="uid://bn7pyxrlhhflo" path="res://assets/textures/ceiling_tiles_2/ceiling_tiles_2_normal.png" id="2_otxuq"]
-[ext_resource type="Texture2D" uid="uid://cbv7dgm10ji1n" path="res://assets/textures/ceiling_tiles_1/ceiling_tiles_1_rough.png" id="3_scp66"]
+[ext_resource type="Texture2D" uid="uid://16nv4d0h65ym" path="res://assets/textures/ceiling_tiles_2/ceiling_tiles_2_rough.png" id="3_ts8qb"]
 
 [resource]
 albedo_color = Color(0.7910893, 0.68954784, 0.34987834, 1)
 albedo_texture = ExtResource("1_ts8qb")
-roughness = 0.7
-roughness_texture = ExtResource("3_scp66")
+roughness_texture = ExtResource("3_ts8qb")
 normal_enabled = true
 normal_scale = 0.5
 normal_texture = ExtResource("2_otxuq")
+uv1_triplanar_sharpness = 1e-05

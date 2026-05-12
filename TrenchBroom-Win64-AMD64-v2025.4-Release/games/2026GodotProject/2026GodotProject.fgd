@@ -41,3 +41,13 @@
 @PointClass size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) color(204 204 204) = custom_light : "adds a light" []
 
 @PointClass color(204 204 204) model({"path": "assets/trenchbroom_models/custom_light_model.glb", "scale": 32.0 }) size(-8.0 -8.0 -8.0, 8.0 8.0 8.0) = custom_light_model : "custom_light_model" []
+
+@SolidClass color(204 204 204) = custom_killing_area : "Kill area" 
+[
+	target_group(string) : "" : "player"
+]
+
+@SolidClass color(204 204 204) = custom_checkpoint_area : "Checkpoint area" 
+[
+	spawn_rotation(string) : "" : "0.0 0.0 0.0"
+]

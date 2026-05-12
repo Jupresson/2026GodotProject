@@ -5,10 +5,12 @@
 [ext_resource type="Resource" uid="uid://b6f15tcouhvjo" path="res://trenchbroom/fgd/solid/custom_moving_platform.tres" id="2_eykpc"]
 [ext_resource type="Resource" uid="uid://ddqttfhlvmfoo" path="res://trenchbroom/fgd/point/custom_light.tres" id="3_bxq3u"]
 [ext_resource type="Resource" uid="uid://cmycrahiu3egu" path="res://trenchbroom/fgd/model_point/custom_light_model.tres" id="4_bxq3u"]
+[ext_resource type="Resource" uid="uid://ldiofxpckp67" path="res://trenchbroom/fgd/solid/custom_killing_area.tres" id="5_pcwog"]
+[ext_resource type="Resource" uid="uid://c88d6e0dmn0cw" path="res://trenchbroom/fgd/solid/custom_checkpoint_area.tres" id="6_pgt4y"]
 
 [resource]
 script = ExtResource("1_qjlmp")
 fgd_name = "2026GodotProject"
 base_fgd_files = Array[Resource]([ExtResource("1_g0old")])
-entity_definitions = Array[Resource]([ExtResource("2_eykpc"), ExtResource("3_bxq3u"), ExtResource("4_bxq3u")])
+entity_definitions = Array[Resource]([ExtResource("2_eykpc"), ExtResource("3_bxq3u"), ExtResource("4_bxq3u"), ExtResource("5_pcwog"), ExtResource("6_pgt4y")])
 metadata/_custom_type_script = "uid://drlmgulwbjwqu"

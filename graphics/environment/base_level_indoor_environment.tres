@@ -1,6 +1,8 @@
 [gd_resource type="Environment" format=3 uid="uid://u7q12this5tw"]
 
 [resource]
+background_mode = 1
+background_color = Color(0.646029, 0.646029, 0.646029, 1)
 tonemap_mode = 3
 sdfgi_read_sky_light = false
 glow_enabled = true

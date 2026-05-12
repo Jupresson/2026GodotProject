@@ -2,18 +2,18 @@
 extends Node
 class_name GameManagerClass
 
-@export var respawn_scene_path: String = "res://addons/ultimate_character/Sample/SampleScene.tscn"
-@export var player_prefab_path: String = "res://scenes/player.tscn"
+#@export var respawn_scene_path: String = "res://scenes/others/player.tscn"
+@export var player_prefab_path: String = "res://scenes/others/player.tscn"
 
 @export_group("Startup Display Settings")
 @export var apply_display_settings_on_startup: bool = true
-@export var startup_resolution: String = "1920x1080"
+@export var startup_resolution: String = "2560x1440"
 @export var startup_fullscreen: bool = true
 @export var startup_vsync: bool = false
 @export_range(50.0, 200.0, 1.0) var startup_scale_percent: float = 100.0
 @export_range(-1, 2, 1) var startup_scaler_index: int = -1
 @export_range(-1, 4, 1) var startup_fsr_preset_index: int = 2
-@export_range(-1, 8, 1) var startup_screen_index: int = 0
+@export_range(-1, 8, 1) var startup_screen_index: int = 1
 
 const STARTUP_RESOLUTIONS: Dictionary = {
 	"3840x2160": Vector2i(3840, 2160),
@@ -116,6 +116,7 @@ func respawn_player() -> void:
 func set_checkpoint(position: Vector3, rotation: Vector3) -> void:
 	current_respawn_point_position = position
 	current_respawn_point_rotation = rotation
+	print(current_respawn_point_position)
 
 func _on_player_died(_player: Node3D) -> void:
 	player_died.emit()

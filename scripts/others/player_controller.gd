@@ -429,9 +429,12 @@ func _update_dynamic_fov(delta : float):
 	target_fov += fall_ratio * fov_fall_boost
 
 	var max_fov := fov_high + fov_fall_boost
+
+	max_fov = clampf(max_fov, 0.1, 179.0) # limit fov always be 0.1 - 179.0
+
 	target_fov = clampf(target_fov, fov_low, max_fov)
 	camera_node.fov = lerpf(camera_node.fov, target_fov, delta * fov_smooth_speed)
-
+	
 func _handle_head_bob_sound(intensity: float, _is_sprinting: bool, _is_crouching: bool) -> void:
 	var volume_db: float = STEP_VOLUME_DB
 	if _is_sprinting:
